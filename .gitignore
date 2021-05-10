@@ -1,0 +1,11 @@
+# IntelliJ IDEA files.
+**/*.iws
+**/*.iml
+**/.idea
+**/*.ipr
+
+# VSCode files.
+.vscode/
+
+# Java output directories.
+**/target/

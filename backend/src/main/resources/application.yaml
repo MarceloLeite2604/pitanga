@@ -1,0 +1,9 @@
+pitanga:
+  room:
+    min-id: 10000000
+    max-id: 99999999
+  web-socket:
+    paths:
+      - pitanga
+    allowed-origins:
+      - http://localhost:3000
