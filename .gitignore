@@ -9,3 +9,9 @@
 
 # Java output directories.
 **/target/
+
+# Node modules
+**/node_modules
+
+# Log files
+**/*.log
