@@ -1,4 +1,4 @@
-package com.github.marceloleite2604.pitanga.model;
+package com.github.marceloleite2604.pitanga.model.incoming;
 
 import com.fasterxml.jackson.databind.annotation.JsonDeserialize;
 import com.github.marceloleite2604.pitanga.model.deserializer.IncomingEventDeserializer;

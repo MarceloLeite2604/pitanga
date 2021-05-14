@@ -1,5 +1,8 @@
+import { User } from '../User';
+
 enum OutgoingEventType {
-  CreateRoom = 'create-room'
+  CreateRoom = 'create-room',
+  JoinUser = 'join-user'
 };
 
 export interface OutgoingEvent<T> {
@@ -7,8 +10,15 @@ export interface OutgoingEvent<T> {
   payload?: T
 }
 
-export function buildCreateRoomEvent() {
+export function buildCreateRoomEvent(user: User) {
   return {
-    type: OutgoingEventType.CreateRoom
-  } as OutgoingEvent<null>;
+    type: OutgoingEventType.CreateRoom,
+    payload: user
+  } as OutgoingEvent<User>;
 };
+
+export function buildJoinUserEvent() {
+  return {
+    type: OutgoingEventType.JoinUser
+  } as OutgoingEvent<null>;
+}

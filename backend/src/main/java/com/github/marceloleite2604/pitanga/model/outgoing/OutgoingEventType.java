@@ -1,10 +1,13 @@
-package com.github.marceloleite2604.pitanga.model;
+package com.github.marceloleite2604.pitanga.model.outgoing;
 
+import com.github.marceloleite2604.pitanga.model.Room;
+import com.github.marceloleite2604.pitanga.model.User;
 import lombok.Getter;
 import org.springframework.util.ObjectUtils;
 
 @Getter
 public enum OutgoingEventType {
+    USER_JOINED("user-joined", User.class),
     ROOM_CREATED("room-created", Room.class);
 
     private final String value;

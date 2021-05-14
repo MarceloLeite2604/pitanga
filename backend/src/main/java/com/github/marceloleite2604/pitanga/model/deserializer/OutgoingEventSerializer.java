@@ -4,7 +4,7 @@ import com.fasterxml.jackson.core.JsonGenerator;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.fasterxml.jackson.databind.SerializerProvider;
 import com.fasterxml.jackson.databind.ser.std.StdSerializer;
-import com.github.marceloleite2604.pitanga.model.OutgoingEvent;
+import com.github.marceloleite2604.pitanga.model.outgoing.OutgoingEvent;
 
 import java.io.IOException;
 import java.util.Objects;

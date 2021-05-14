@@ -31,7 +31,7 @@ export function usePitangaWebSocket() {
   const [$connected] = useState(new Subject<boolean>());
   const [$incomingEvent] = useState(new Subject<IncomingEvent<any>>());
   const [$outgoingEvent] = useState(new Subject<OutgoingEvent<any>>());
-  const [client] = useState(createClient($connected, $incomingEvent));
+  const [client] = useState(() => createClient($connected, $incomingEvent));
 
   useEffect(() => {
     $outgoingEvent.subscribe(data => {

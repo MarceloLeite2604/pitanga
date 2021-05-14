@@ -1,5 +1,6 @@
 export enum IncomingEventType {
-  RoomCreated = 'room-created'
+  RoomCreated = 'room-created',
+  UserJoined = 'user-joined'
 };
 
 export interface IncomingEvent<T> {

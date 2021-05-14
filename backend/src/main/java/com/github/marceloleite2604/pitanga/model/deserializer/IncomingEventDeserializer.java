@@ -4,8 +4,8 @@ import com.fasterxml.jackson.core.JsonParser;
 import com.fasterxml.jackson.databind.DeserializationContext;
 import com.fasterxml.jackson.databind.JsonNode;
 import com.fasterxml.jackson.databind.deser.std.StdDeserializer;
-import com.github.marceloleite2604.pitanga.model.IncomingEvent;
-import com.github.marceloleite2604.pitanga.model.IncomingEventType;
+import com.github.marceloleite2604.pitanga.model.incoming.IncomingEvent;
+import com.github.marceloleite2604.pitanga.model.incoming.IncomingEventType;
 
 import java.io.IOException;
 import java.util.Objects;

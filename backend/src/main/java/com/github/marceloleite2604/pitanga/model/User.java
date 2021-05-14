@@ -5,24 +5,23 @@ import lombok.*;
 
 import javax.persistence.Entity;
 import javax.persistence.Id;
-import javax.persistence.OneToMany;
-import java.time.LocalDateTime;
-import java.util.Set;
+import javax.persistence.ManyToOne;
+import java.util.UUID;
 
 @Entity
 @Builder
 @Data
 @NoArgsConstructor
 @AllArgsConstructor(access = AccessLevel.PRIVATE)
-public class Room {
+public class User {
 
     @Id
-    private long id;
-
-    @Singular
-    @OneToMany
-    private Set<User> users;
+    private UUID id;
 
     @JsonIgnore
-    private LocalDateTime lastUpdate;
+    private String sessionId;
+
+    @JsonIgnore
+    @ManyToOne
+    private Room room;
 }

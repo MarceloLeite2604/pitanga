@@ -9,23 +9,18 @@ import com.github.marceloleite2604.pitanga.model.outgoing.OutgoingEvent;
 import com.github.marceloleite2604.pitanga.model.outgoing.OutgoingEventType;
 import org.springframework.stereotype.Component;
 
-import java.util.Objects;
-
 @Component
-public class CreateRoomEventHandler extends AbstractEventHandler {
-
-    public CreateRoomEventHandler(PitangaService pitangaService) {
-        super(pitangaService, IncomingEventType.CREATE_ROOM);
+public class JoinUserEventHandler extends AbstractEventHandler{
+    protected JoinUserEventHandler(PitangaService pitangaService) {
+        super(pitangaService, IncomingEventType.JOIN_USER);
     }
 
     @Override
     protected OutgoingEvent<?> doHandle(IncomingContext incomingContext) {
-        User user = retrievePayload(incomingContext, User.class);
-
-        var room = pitangaService.createRoom(user);
-        return OutgoingEvent.<Room>builder()
-                .type(OutgoingEventType.ROOM_CREATED)
-                .payload(room)
+        User user = pitangaService.createUser(incomingContext.getSessionId());
+        return OutgoingEvent.<User>builder()
+                .type(OutgoingEventType.USER_JOINED)
+                .payload(user)
                 .build();
     }
 }

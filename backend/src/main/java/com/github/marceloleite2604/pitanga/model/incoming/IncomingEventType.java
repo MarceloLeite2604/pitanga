@@ -1,11 +1,13 @@
-package com.github.marceloleite2604.pitanga.model;
+package com.github.marceloleite2604.pitanga.model.incoming;
 
+import com.github.marceloleite2604.pitanga.model.User;
 import lombok.Getter;
 import org.springframework.util.ObjectUtils;
 
 @Getter
 public enum IncomingEventType {
-    CREATE_ROOM("create-room");
+    JOIN_USER("join-user"),
+    CREATE_ROOM("create-room", User.class);
 
     private final String value;
 
