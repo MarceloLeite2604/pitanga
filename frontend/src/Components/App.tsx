@@ -21,12 +21,14 @@ export function App() {
       setConnected(connected);
     });
     $incomingEvent.subscribe(incomingEvent => {
+      console.log(`Event type: ${incomingEvent.type}`);
       switch (incomingEvent.type) {
         case IncomingEventType.RoomCreated:
           setRoom(incomingEvent.payload as Room);
           break;
         case IncomingEventType.UserJoined:
           setUser(incomingEvent.payload as User);
+          break;
       }
     });
   }, []);
@@ -40,7 +42,7 @@ export function App() {
       <p>Connected? {String(connected)}</p>
       <button
         disabled={!connected}
-        onClick={sendMessage}>Send message</button>
+        onClick={sendMessage}>Create room</button>
       {user && <p>User id: {user.id}</p>}
       {room && <p>Room id: {room.id}</p>}
     </div >

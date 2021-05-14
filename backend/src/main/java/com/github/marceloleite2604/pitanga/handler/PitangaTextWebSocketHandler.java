@@ -4,9 +4,8 @@ import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.github.marceloleite2604.pitanga.PitangaService;
 import com.github.marceloleite2604.pitanga.handler.event.EventHandler;
-import com.github.marceloleite2604.pitanga.model.incoming.IncomingContext;
-import com.github.marceloleite2604.pitanga.model.incoming.IncomingEvent;
-import com.github.marceloleite2604.pitanga.model.outgoing.OutgoingEvent;
+import com.github.marceloleite2604.pitanga.model.IncomingContext;
+import com.github.marceloleite2604.pitanga.model.event.Event;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Component;
 import org.springframework.web.socket.CloseStatus;
@@ -59,9 +58,9 @@ public class PitangaTextWebSocketHandler extends TextWebSocketHandler {
     }
 
     private IncomingContext createContext(WebSocketSession session, TextMessage incomingTextMessage) {
-        IncomingEvent<?> incomingEvent = retrieveEvent(incomingTextMessage);
+        Event<?> event = retrieveEvent(incomingTextMessage);
         return IncomingContext.builder()
-                .incomingEvent(incomingEvent)
+                .event(event)
                 .sessionId(session.getId())
                 .build();
     }
@@ -74,7 +73,7 @@ public class PitangaTextWebSocketHandler extends TextWebSocketHandler {
         }
     }
 
-    private TextMessage elaborateOutgoingTextMessage(OutgoingEvent<?> outgoingEvent) {
+    private TextMessage elaborateOutgoingTextMessage(Event<?> outgoingEvent) {
         try {
             var payload = objectMapper.writeValueAsString(outgoingEvent);
             return new TextMessage(payload);
@@ -84,9 +83,9 @@ public class PitangaTextWebSocketHandler extends TextWebSocketHandler {
         }
     }
 
-    private IncomingEvent<?> retrieveEvent(TextMessage incomingTextMessage) {
+    private Event<?> retrieveEvent(TextMessage incomingTextMessage) {
         try {
-            return objectMapper.readValue(incomingTextMessage.getPayload(), IncomingEvent.class);
+            return objectMapper.readValue(incomingTextMessage.getPayload(), Event.class);
         } catch (JsonProcessingException exception) {
             throw new IllegalArgumentException("Received an event, but it could not be processed.", exception);
         }

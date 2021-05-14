@@ -1,25 +1,23 @@
 package com.github.marceloleite2604.pitanga.handler.event;
 
 import com.github.marceloleite2604.pitanga.PitangaService;
-import com.github.marceloleite2604.pitanga.model.Room;
 import com.github.marceloleite2604.pitanga.model.User;
-import com.github.marceloleite2604.pitanga.model.incoming.IncomingContext;
-import com.github.marceloleite2604.pitanga.model.incoming.IncomingEventType;
-import com.github.marceloleite2604.pitanga.model.outgoing.OutgoingEvent;
-import com.github.marceloleite2604.pitanga.model.outgoing.OutgoingEventType;
+import com.github.marceloleite2604.pitanga.model.event.Event;
+import com.github.marceloleite2604.pitanga.model.event.EventType;
+import com.github.marceloleite2604.pitanga.model.event.UserJoinedEvent;
+import com.github.marceloleite2604.pitanga.model.IncomingContext;
 import org.springframework.stereotype.Component;
 
 @Component
-public class JoinUserEventHandler extends AbstractEventHandler{
+public class JoinUserEventHandler extends AbstractEventHandler<User> {
     protected JoinUserEventHandler(PitangaService pitangaService) {
-        super(pitangaService, IncomingEventType.JOIN_USER);
+        super(pitangaService, EventType.JOIN_USER, User.class);
     }
 
     @Override
-    protected OutgoingEvent<?> doHandle(IncomingContext incomingContext) {
-        User user = pitangaService.createUser(incomingContext.getSessionId());
-        return OutgoingEvent.<User>builder()
-                .type(OutgoingEventType.USER_JOINED)
+    protected Event<?> doHandle(IncomingContext incomingContext) {
+        var user = pitangaService.createUser(incomingContext.getSessionId());
+        return UserJoinedEvent.<User>builder()
                 .payload(user)
                 .build();
     }
