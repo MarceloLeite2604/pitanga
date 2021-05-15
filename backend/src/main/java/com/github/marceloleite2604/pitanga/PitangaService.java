@@ -7,6 +7,7 @@ import com.github.marceloleite2604.pitanga.repository.UserRepository;
 import com.github.marceloleite2604.pitanga.util.RoomIdGenerator;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
+import org.springframework.util.CollectionUtils;
 
 import java.time.LocalDateTime;
 import java.util.Objects;
@@ -65,10 +66,17 @@ public class PitangaService {
     }
 
     private void removeUserFromRoom(User user) {
-        if (Objects.nonNull(user.getRoom())) {
-            user.getRoom()
-                    .getUsers()
+        var room = user.getRoom();
+        if (Objects.nonNull(room)) {
+            room.getUsers()
                     .remove(user);
+            if (CollectionUtils.isEmpty(room.getUsers())) {
+                roomRepository.delete(room);
+            }
         }
+    }
+
+    public boolean checkRoomExists(long roomId) {
+        return roomRepository.existsById(roomId);
     }
 }

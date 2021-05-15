@@ -2,25 +2,26 @@ import { useEffect, useState } from 'react';
 import { usePitangaWebSocket } from '../Hooks';
 import { Room, User } from '../Model';
 import {
-  buildCreateRoomEvent,
   buildJoinUserEvent,
   IncomingEventType
 } from '../Model/Events';
+import { Home } from './Home';
+import { Switch, Route } from 'react-router-dom';
 
 export function App() {
   const [connected, setConnected] = useState(false);
-  const { $connected, $outgoingEvent, $incomingEvent } = usePitangaWebSocket();
   const [room, setRoom] = useState<Room>();
   const [user, setUser] = useState<User>();
+  const pitangaWebSocket = usePitangaWebSocket();
 
   useEffect(() => {
-    $connected.subscribe(connected => {
+    pitangaWebSocket.$connected.subscribe(connected => {
       if (connected && !user) {
-        $outgoingEvent.next(buildJoinUserEvent());
+        pitangaWebSocket.$outgoingEvent.next(buildJoinUserEvent());
       }
       setConnected(connected);
     });
-    $incomingEvent.subscribe(incomingEvent => {
+    pitangaWebSocket.$incomingEvent.subscribe(incomingEvent => {
       console.log(`Event type: ${incomingEvent.type}`);
       switch (incomingEvent.type) {
         case IncomingEventType.RoomCreated:
@@ -33,18 +34,20 @@ export function App() {
     });
   }, []);
 
-  const sendMessage = () => {
-    user && $outgoingEvent.next(buildCreateRoomEvent(user));
-  };
-
   return (
-    <div>
-      <p>Connected? {String(connected)}</p>
-      <button
-        disabled={!connected}
-        onClick={sendMessage}>Create room</button>
-      {user && <p>User id: {user.id}</p>}
-      {room && <p>Room id: {room.id}</p>}
-    </div >
-  );
+    <Switch>
+      <Route path='/:roomId'>
+        <div>
+          <p>Welcome to the room.</p>
+        </div>
+      </Route>
+      <Route path='/'>
+        {!room &&
+          <Home
+            connected={connected}
+            user={user}
+            pitangaWebSocket={pitangaWebSocket}
+            setRoom={setRoom} />}
+      </Route>
+    </Switch>);
 }

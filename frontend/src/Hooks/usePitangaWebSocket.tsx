@@ -27,6 +27,12 @@ function createClient($connected : Subject<boolean>, $incomingEvent : Subject<In
   return client;
 }
 
+export interface PitangaWebSocket {
+  $connected: Subject<boolean>,
+  $incomingEvent: Subject<IncomingEvent<any>>,
+  $outgoingEvent: Subject<OutgoingEvent<any>>,
+}
+
 export function usePitangaWebSocket() {
   const [$connected] = useState(new Subject<boolean>());
   const [$incomingEvent] = useState(new Subject<IncomingEvent<any>>());
@@ -43,5 +49,5 @@ export function usePitangaWebSocket() {
     $connected,
     $incomingEvent,
     $outgoingEvent
-  };
+  } as PitangaWebSocket;
 };
