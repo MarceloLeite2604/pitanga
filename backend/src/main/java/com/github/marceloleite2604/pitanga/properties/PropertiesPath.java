@@ -10,4 +10,6 @@ public class PropertiesPath {
     static final String WEB_SOCKET = PREFIX + ".web-socket";
 
     static final String ROOM = PREFIX + ".room";
+
+    static final String USER = PREFIX + ".user";
 }

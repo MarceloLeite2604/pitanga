@@ -1,14 +1,23 @@
-import { FC } from 'react';
+import { FC, useEffect } from 'react';
+import { useHistory } from 'react-router';
 import { PitangaWebSocket } from '../../Hooks';
-import { Room as RoomModel, User } from '../../Model';
+import { Room as RoomModel, User, buildCheckRoomExists } from '../../Model';
 
 interface Props {
-  connected: boolean,
-  user: User,
+  user?: User,
+  room?: RoomModel,
   pitangaWebSocket: PitangaWebSocket
-  room: RoomModel
 }
 
-export const Room: FC<Props> = ({connected, user, pitangaWebSocket, room}) => {
-  return (<></>);
+export const Room: FC<Props> = ({ user, room, pitangaWebSocket }) => {
+
+  const history = useHistory();
+
+  useEffect(() => {
+    if (!room) {
+      history.push('/');
+    }
+    room && pitangaWebSocket.$outgoingEvent.next(buildCheckRoomExists(room));
+  });
+  return (<p>{`Welcome user ${user?.id} to room #${room?.id}.`}</p>);
 };

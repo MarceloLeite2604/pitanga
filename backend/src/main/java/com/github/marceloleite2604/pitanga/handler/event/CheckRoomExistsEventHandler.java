@@ -1,6 +1,6 @@
 package com.github.marceloleite2604.pitanga.handler.event;
 
-import com.github.marceloleite2604.pitanga.PitangaService;
+import com.github.marceloleite2604.pitanga.service.PitangaService;
 import com.github.marceloleite2604.pitanga.model.IncomingContext;
 import com.github.marceloleite2604.pitanga.model.event.Event;
 import com.github.marceloleite2604.pitanga.model.event.EventType;

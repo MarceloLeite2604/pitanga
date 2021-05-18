@@ -6,24 +6,12 @@ import org.springframework.boot.context.properties.ConfigurationProperties;
 import org.springframework.stereotype.Component;
 import org.springframework.validation.annotation.Validated;
 
-import javax.validation.constraints.Positive;
-
 @Component
-@ConfigurationProperties(PropertiesPath.ROOM)
+@ConfigurationProperties(PropertiesPath.USER)
 @Getter
 @Setter
 @Validated
-public class RoomProperties {
+public class UserProperties {
 
-    @Positive
-    private long minId;
-
-    @Positive
-    private long maxId;
-
-    @Positive
-    private long maxRooms;
-
-    @Positive
     private long maxUsers;
 }

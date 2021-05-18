@@ -1,7 +1,12 @@
 package com.github.marceloleite2604.pitanga.model;
 
 import com.fasterxml.jackson.annotation.JsonIgnore;
-import lombok.*;
+import lombok.AccessLevel;
+import lombok.AllArgsConstructor;
+import lombok.Builder;
+import lombok.Data;
+import lombok.NoArgsConstructor;
+import lombok.Singular;
 
 import javax.persistence.Entity;
 import javax.persistence.Id;

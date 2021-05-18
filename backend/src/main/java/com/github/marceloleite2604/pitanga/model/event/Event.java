@@ -3,6 +3,8 @@ package com.github.marceloleite2604.pitanga.model.event;
 import com.fasterxml.jackson.annotation.JsonSubTypes;
 import com.fasterxml.jackson.annotation.JsonTypeInfo;
 import com.github.marceloleite2604.pitanga.model.event.checkroomexists.CheckRoomExists;
+import com.github.marceloleite2604.pitanga.model.event.joinuser.JoinUserEvent;
+import com.github.marceloleite2604.pitanga.model.event.userjoined.UserJoinedEvent;
 import lombok.AllArgsConstructor;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
@@ -11,10 +13,17 @@ import lombok.NoArgsConstructor;
 @Getter
 @JsonTypeInfo(use = JsonTypeInfo.Id.NAME, property = "type")
 @JsonSubTypes({
-        @JsonSubTypes.Type(value = JoinUserEvent.class, name = "join-user"),
-        @JsonSubTypes.Type(value = CreateRoomEvent.class, name = "create-room"),
-        @JsonSubTypes.Type(value = CheckRoomExists.class, name = "check-room-exists")}
-)
+        @JsonSubTypes.Type(value = CreateUserEvent.class, name = EventType.Values.CREATE_USER),
+        @JsonSubTypes.Type(value = UserCreatedEvent.class, name = EventType.Values.USER_CREATED),
+        @JsonSubTypes.Type(value = MaxUsersReachedEvent.class, name = EventType.Values.MAX_USERS_REACHED),
+        @JsonSubTypes.Type(value = JoinUserEvent.class, name = EventType.Values.JOIN_USER),
+        @JsonSubTypes.Type(value = UserJoinedEvent.class, name = EventType.Values.USER_JOINED),
+        @JsonSubTypes.Type(value = MaxRoomsUsersReachedEvent.class, name = EventType.Values.MAX_ROOM_USERS_REACHED),
+        @JsonSubTypes.Type(value = CreateRoomEvent.class, name = EventType.Values.CREATE_ROOM),
+        @JsonSubTypes.Type(value = RoomCreatedEvent.class, name = EventType.Values.ROOM_CREATED),
+        @JsonSubTypes.Type(value = MaxRoomsReachedEvent.class, name = EventType.Values.MAX_ROOMS_REACHED),
+        @JsonSubTypes.Type(value = CheckRoomExists.class, name = EventType.Values.CHECK_ROOM_EXISTS)
+})
 @NoArgsConstructor
 public class Event<T> {
     private EventType type;

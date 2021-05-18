@@ -1,11 +1,11 @@
 import { useEffect, useState } from 'react';
 import { Subject } from 'rxjs';
 import { w3cwebsocket as W3CWebSocket } from 'websocket';
-import { OutgoingEvent, IncomingEvent } from '../Model/Events';
+import { Event } from '../Model';
 
 const SERVER_ADDRESS = 'ws://localhost:8080/pitanga';
 
-function createClient($connected : Subject<boolean>, $incomingEvent : Subject<IncomingEvent<any>>) {
+function createClient($connected : Subject<boolean>, $incomingEvent : Subject<Event<any>>) {
   const client = new W3CWebSocket(SERVER_ADDRESS);
   client.onopen = () => {
     $connected.next(true);
@@ -20,7 +20,7 @@ function createClient($connected : Subject<boolean>, $incomingEvent : Subject<In
       throw new Error('Unsuported message data type.');
     }
   
-    const data = JSON.parse(message.data) as IncomingEvent<any>;
+    const data = JSON.parse(message.data) as Event<any>;
     $incomingEvent.next(data);
   };
 
@@ -29,14 +29,14 @@ function createClient($connected : Subject<boolean>, $incomingEvent : Subject<In
 
 export interface PitangaWebSocket {
   $connected: Subject<boolean>,
-  $incomingEvent: Subject<IncomingEvent<any>>,
-  $outgoingEvent: Subject<OutgoingEvent<any>>,
+  $incomingEvent: Subject<Event<any>>,
+  $outgoingEvent: Subject<Event<any>>,
 }
 
 export function usePitangaWebSocket() {
   const [$connected] = useState(new Subject<boolean>());
-  const [$incomingEvent] = useState(new Subject<IncomingEvent<any>>());
-  const [$outgoingEvent] = useState(new Subject<OutgoingEvent<any>>());
+  const [$incomingEvent] = useState(new Subject<Event<any>>());
+  const [$outgoingEvent] = useState(new Subject<Event<any>>());
   const [client] = useState(() => createClient($connected, $incomingEvent));
 
   useEffect(() => {

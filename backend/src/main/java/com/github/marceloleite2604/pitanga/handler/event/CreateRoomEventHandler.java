@@ -1,12 +1,12 @@
 package com.github.marceloleite2604.pitanga.handler.event;
 
-import com.github.marceloleite2604.pitanga.PitangaService;
-import com.github.marceloleite2604.pitanga.model.Room;
+import com.github.marceloleite2604.pitanga.service.PitangaService;
+import com.github.marceloleite2604.pitanga.model.IncomingContext;
 import com.github.marceloleite2604.pitanga.model.User;
 import com.github.marceloleite2604.pitanga.model.event.Event;
 import com.github.marceloleite2604.pitanga.model.event.EventType;
+import com.github.marceloleite2604.pitanga.model.event.MaxRoomsReachedEvent;
 import com.github.marceloleite2604.pitanga.model.event.RoomCreatedEvent;
-import com.github.marceloleite2604.pitanga.model.IncomingContext;
 import org.springframework.stereotype.Component;
 
 @Component
@@ -20,9 +20,14 @@ public class CreateRoomEventHandler extends AbstractEventHandler<User> {
     protected Event<?> doHandle(IncomingContext incomingContext) {
         var user = retrievePayload(incomingContext);
 
-        var room = pitangaService.createRoom(user);
-        return RoomCreatedEvent.<Room>builder()
-                .payload(room)
-                .build();
+        var createRoomResult = pitangaService.createRoom(user);
+
+        return switch (createRoomResult.getStatus()) {
+            case CREATED -> RoomCreatedEvent.builder()
+                    .payload(createRoomResult.getRoom())
+                    .build();
+            case MAX_ROOMS_REACHED -> MaxRoomsReachedEvent.builder()
+                    .build();
+        };
     }
 }

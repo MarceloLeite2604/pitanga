@@ -12,8 +12,12 @@ pitanga:
   room:
     min-id: 10000000
     max-id: 99999999
+    max-rooms: 4
+    max-users: 4
   web-socket:
     paths:
       - pitanga
     allowed-origins:
       - http://localhost:3000
+  user:
+    max-users: 4

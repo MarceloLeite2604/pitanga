@@ -2,7 +2,7 @@ package com.github.marceloleite2604.pitanga.handler;
 
 import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
-import com.github.marceloleite2604.pitanga.PitangaService;
+import com.github.marceloleite2604.pitanga.service.PitangaService;
 import com.github.marceloleite2604.pitanga.handler.event.EventHandler;
 import com.github.marceloleite2604.pitanga.model.IncomingContext;
 import com.github.marceloleite2604.pitanga.model.event.Event;
@@ -96,10 +96,11 @@ public class PitangaTextWebSocketHandler extends TextWebSocketHandler {
         EventHandler previous = null;
         for (EventHandler eventHandler : eventHandlerSet) {
             if (Objects.isNull(first)) {
-                first = previous = eventHandler;
+                first = eventHandler;
             } else {
                 previous.setNext(eventHandler);
             }
+            previous = eventHandler;
         }
         return first;
     }
