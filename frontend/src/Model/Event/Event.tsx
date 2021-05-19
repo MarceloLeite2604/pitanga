@@ -15,7 +15,7 @@ export enum EventType {
 };
 
 export interface CheckRoomExistsPayload {
-  id: number,
+  room: Room,
   exists ?: boolean
 }
 
@@ -23,6 +23,11 @@ export interface JoinUserPayload {
   room: Room,
   user: User
 }
+
+export interface UserJoinedPayload {
+  room: Room,
+  user: User
+};
 
 export interface Event<T> {
   type: EventType,

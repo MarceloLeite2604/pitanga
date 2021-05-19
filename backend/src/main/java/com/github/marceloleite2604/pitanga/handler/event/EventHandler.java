@@ -1,12 +1,13 @@
 package com.github.marceloleite2604.pitanga.handler.event;
 
-import com.github.marceloleite2604.pitanga.model.event.Event;
 import com.github.marceloleite2604.pitanga.model.IncomingContext;
+import com.github.marceloleite2604.pitanga.model.OutgoingContext;
+import org.springframework.transaction.annotation.Transactional;
 
 public interface EventHandler {
 
-    @SuppressWarnings("squid:S1452")
-    Event<?> handle(IncomingContext incomingContext);
+    @Transactional
+    OutgoingContext handle(IncomingContext incomingContext);
 
     void setNext(EventHandler eventHandler);
 }

@@ -29,7 +29,7 @@ export function buildCheckRoomExists(room: Room) {
   return {
     type: EventType.CheckRoomExists,
     payload: {
-      id: room.id
+      room
     }
   } as Event<CheckRoomExistsPayload>;
 }

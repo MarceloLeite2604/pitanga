@@ -39,12 +39,12 @@ export const Home: FC<Props> = ({ connected, user, pitangaWebSocket }) => {
         <label htmlFor='roomNumber'>Room #:</label>
         <input id='roomNumber' type='text' maxLength={8} onChange={ event => setRoomNumber(event.target.value)}></input>
         <button
-          disabled={!connected}>Join Room</button>
+          disabled={!connected || !user}>Join Room</button>
       </div>
       <div><p>Or</p></div>
       <div>
         <button
-          disabled={!connected}
+          disabled={!connected || !user}
           onClick={sendCreateRoomEvent}>Create room</button>
       </div>
     </>

@@ -1,5 +1,7 @@
 package com.github.marceloleite2604.pitanga.model.event;
 
+import com.fasterxml.jackson.annotation.JsonIgnore;
+import com.fasterxml.jackson.annotation.JsonInclude;
 import com.fasterxml.jackson.annotation.JsonSubTypes;
 import com.fasterxml.jackson.annotation.JsonTypeInfo;
 import com.github.marceloleite2604.pitanga.model.event.checkroomexists.CheckRoomExists;
@@ -25,7 +27,10 @@ import lombok.NoArgsConstructor;
         @JsonSubTypes.Type(value = CheckRoomExists.class, name = EventType.Values.CHECK_ROOM_EXISTS)
 })
 @NoArgsConstructor
+@JsonInclude(JsonInclude.Include.NON_NULL)
 public class Event<T> {
+
+    @JsonIgnore
     private EventType type;
 
     private T payload;

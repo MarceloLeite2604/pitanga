@@ -2,12 +2,14 @@ package com.github.marceloleite2604.pitanga.handler;
 
 import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
-import com.github.marceloleite2604.pitanga.service.PitangaService;
 import com.github.marceloleite2604.pitanga.handler.event.EventHandler;
 import com.github.marceloleite2604.pitanga.model.IncomingContext;
+import com.github.marceloleite2604.pitanga.model.OutgoingContext;
 import com.github.marceloleite2604.pitanga.model.event.Event;
+import com.github.marceloleite2604.pitanga.service.PitangaService;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Component;
+import org.springframework.transaction.annotation.Transactional;
 import org.springframework.web.socket.CloseStatus;
 import org.springframework.web.socket.TextMessage;
 import org.springframework.web.socket.WebSocketSession;
@@ -17,6 +19,7 @@ import java.io.IOException;
 import java.util.HashMap;
 import java.util.Map;
 import java.util.Objects;
+import java.util.Optional;
 import java.util.Set;
 
 @Component
@@ -51,10 +54,24 @@ public class PitangaTextWebSocketHandler extends TextWebSocketHandler {
 
     @Override
     public void handleTextMessage(WebSocketSession session, TextMessage incomingTextMessage) {
-        var incomingContext = createContext(session, incomingTextMessage);
-        var outgoingEvent = firstEventHandler.handle(incomingContext);
-        var outgoingTextMessage = elaborateOutgoingTextMessage(outgoingEvent);
-        sendOutgoingTextMessage(session, outgoingTextMessage);
+        try {
+            var incomingContext = createContext(session, incomingTextMessage);
+            log.info("Received event \"{}\".", incomingContext.getEvent()
+                    .getType());
+            var outgoingContext = firstEventHandler.handle(incomingContext);
+            sendEvent(outgoingContext);
+        } catch (Exception exception) {
+            log.error("Error while handling message.", exception);
+            throw exception;
+        }
+    }
+
+    private void sendEvent(OutgoingContext outgoingContext) {
+        var outgoingTextMessage = elaborateOutgoingTextMessage(outgoingContext);
+        outgoingContext.getNotifiedSessions()
+                .forEach(notifiedSession ->
+                        Optional.ofNullable(sessions.get(notifiedSession))
+                                .ifPresent(webSocketSession -> sendOutgoingTextMessage(webSocketSession, outgoingTextMessage)));
     }
 
     private IncomingContext createContext(WebSocketSession session, TextMessage incomingTextMessage) {
@@ -73,12 +90,13 @@ public class PitangaTextWebSocketHandler extends TextWebSocketHandler {
         }
     }
 
-    private TextMessage elaborateOutgoingTextMessage(Event<?> outgoingEvent) {
+    private TextMessage elaborateOutgoingTextMessage(OutgoingContext outgoingContext) {
         try {
-            var payload = objectMapper.writeValueAsString(outgoingEvent);
+            var payload = objectMapper.writeValueAsString(outgoingContext.getEvent());
             return new TextMessage(payload);
         } catch (JsonProcessingException exception) {
-            var message = String.format("Error while creating payload for outgoing event \"%s\".", outgoingEvent.getType());
+            var message = String.format("Error while creating payload for outgoing event \"%s\".", outgoingContext.getEvent()
+                    .getType());
             throw new IllegalStateException(message, exception);
         }
     }

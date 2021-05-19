@@ -1,3 +1,6 @@
+import { User } from './User';
+
 export interface Room {
-  id: number
-}
+  id: number,
+  users: User[]
+};

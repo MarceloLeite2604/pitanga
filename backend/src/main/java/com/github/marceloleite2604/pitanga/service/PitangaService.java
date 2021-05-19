@@ -1,25 +1,31 @@
 package com.github.marceloleite2604.pitanga.service;
 
-import com.github.marceloleite2604.pitanga.service.result.CreateRoomResult;
-import com.github.marceloleite2604.pitanga.service.result.CreateUserResult;
 import com.github.marceloleite2604.pitanga.model.Room;
 import com.github.marceloleite2604.pitanga.model.User;
 import com.github.marceloleite2604.pitanga.properties.RoomProperties;
 import com.github.marceloleite2604.pitanga.properties.UserProperties;
 import com.github.marceloleite2604.pitanga.repository.RoomRepository;
 import com.github.marceloleite2604.pitanga.repository.UserRepository;
+import com.github.marceloleite2604.pitanga.service.result.CreateRoomResult;
+import com.github.marceloleite2604.pitanga.service.result.CreateUserResult;
 import com.github.marceloleite2604.pitanga.service.result.JoinUserResult;
 import com.github.marceloleite2604.pitanga.util.RoomIdGenerator;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 import org.springframework.util.CollectionUtils;
 
 import java.time.LocalDateTime;
+import java.util.HashSet;
 import java.util.Objects;
+import java.util.Optional;
+import java.util.Set;
 import java.util.UUID;
+import java.util.stream.Collectors;
 
 @Service
 @RequiredArgsConstructor
+@Transactional
 public class PitangaService {
 
     private final RoomIdGenerator roomIdGenerator;
@@ -51,6 +57,10 @@ public class PitangaService {
 
         room = roomRepository.save(room);
 
+        user.setRoom(room);
+
+        userRepository.save(user);
+
         return CreateRoomResult.builder()
                 .status(CreateRoomResult.Status.CREATED)
                 .room(room)
@@ -78,35 +88,40 @@ public class PitangaService {
                 .build();
     }
 
-    public JoinUserResult joinUserIntoRoom(UUID userId, long roomId) {
-        var user = userRepository.findById(userId)
-                .orElseThrow(() -> new IllegalArgumentException(String.format("Could not find a user with id \"%s\"", userId)));
+    public JoinUserResult joinUserIntoRoom(User user, Room room) {
+        var persistedUser = userRepository.findById(user.getId())
+                .orElseThrow(() -> new IllegalArgumentException(String.format("Could not find a user with id \"%s\"", user.getId())));
 
-        var room = roomRepository.findById(roomId)
-                .orElseThrow(() -> new IllegalArgumentException(String.format("Could not find a room with id \"%d\"", roomId)));
+        var persistedRoom = roomRepository.findById(room.getId())
+                .orElseThrow(() -> new IllegalArgumentException(String.format("Could not find a room with id \"%d\"", room.getId())));
 
-        if (room.getUsers()
+        if (persistedRoom.getUsers()
                 .size() >= roomProperties.getMaxUsers()) {
             return JoinUserResult.builder()
                     .status(JoinUserResult.Status.MAX_ROOM_USERS_REACHED)
                     .build();
         }
 
-        room.getUsers()
-                .add(user);
-        roomRepository.save(room);
+        persistedRoom.getUsers()
+                .add(persistedUser);
+        persistedRoom = roomRepository.save(persistedRoom);
 
-        user.setRoom(room);
-        user = userRepository.save(user);
+        persistedUser.setRoom(persistedRoom);
+        persistedUser = userRepository.save(persistedUser);
 
         return JoinUserResult.builder()
-                .user(user)
+                .status(JoinUserResult.Status.USER_JOINED)
+                .user(persistedUser)
+                .room(persistedRoom)
                 .build();
     }
 
     public void excludeUserBySessionId(String sessionId) {
         userRepository.findBySessionId(sessionId)
-                .ifPresent(this::removeUserFromRoom);
+                .ifPresent(user -> {
+                    removeUserFromRoom(user);
+                    userRepository.delete(user);
+                });
     }
 
     private void removeUserFromRoom(User user) {
@@ -120,7 +135,14 @@ public class PitangaService {
         }
     }
 
-    public boolean checkRoomExists(long roomId) {
-        return roomRepository.existsById(roomId);
+    public Optional<Room> findById(long roomId) {
+        return roomRepository.findById(roomId);
+    }
+
+    public Set<String> retrieveSessionIdsFromUsersOnRoom(Room room) {
+        return room.getUsers()
+                .stream()
+                .map(User::getSessionId)
+                .collect(Collectors.toCollection(HashSet::new));
     }
 }

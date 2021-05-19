@@ -4,7 +4,7 @@ import com.fasterxml.jackson.annotation.JsonIgnore;
 import lombok.AccessLevel;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
-import lombok.Data;
+import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Singular;
 
@@ -16,7 +16,7 @@ import java.util.Set;
 
 @Entity
 @Builder
-@Data
+@Getter
 @NoArgsConstructor
 @AllArgsConstructor(access = AccessLevel.PRIVATE)
 public class Room {
@@ -25,7 +25,7 @@ public class Room {
     private long id;
 
     @Singular
-    @OneToMany
+    @OneToMany(mappedBy = "room")
     private Set<User> users;
 
     @JsonIgnore

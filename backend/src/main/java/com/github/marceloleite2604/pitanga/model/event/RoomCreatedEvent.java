@@ -1,12 +1,12 @@
 package com.github.marceloleite2604.pitanga.model.event;
 
-import com.github.marceloleite2604.pitanga.model.Room;
+import com.github.marceloleite2604.pitanga.model.dao.RoomDao;
 import lombok.Builder;
 
-public class RoomCreatedEvent extends Event<Room> {
+public class RoomCreatedEvent extends Event<RoomDao> {
 
     @Builder
-    public RoomCreatedEvent(Room payload) {
+    public RoomCreatedEvent(RoomDao payload) {
         super(EventType.ROOM_CREATED, payload);
     }
 }

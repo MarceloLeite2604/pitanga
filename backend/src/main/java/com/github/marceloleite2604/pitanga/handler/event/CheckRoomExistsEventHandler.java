@@ -1,26 +1,44 @@
 package com.github.marceloleite2604.pitanga.handler.event;
 
-import com.github.marceloleite2604.pitanga.service.PitangaService;
 import com.github.marceloleite2604.pitanga.model.IncomingContext;
-import com.github.marceloleite2604.pitanga.model.event.Event;
+import com.github.marceloleite2604.pitanga.model.OutgoingContext;
 import com.github.marceloleite2604.pitanga.model.event.EventType;
 import com.github.marceloleite2604.pitanga.model.event.checkroomexists.CheckRoomExists;
 import com.github.marceloleite2604.pitanga.model.event.checkroomexists.CheckRoomExistsPayload;
+import com.github.marceloleite2604.pitanga.model.mapper.RoomToDao;
+import com.github.marceloleite2604.pitanga.service.PitangaService;
 import org.springframework.stereotype.Component;
+import org.springframework.transaction.annotation.Transactional;
 
 @Component
-public class CheckRoomExistsEventHandler extends AbstractEventHandler<CheckRoomExistsPayload>{
+public class CheckRoomExistsEventHandler extends AbstractEventHandler<CheckRoomExistsPayload> {
 
-    public CheckRoomExistsEventHandler(PitangaService pitangaService) {
+    private final RoomToDao roomToDao;
+
+    public CheckRoomExistsEventHandler(PitangaService pitangaService, RoomToDao roomToDao) {
         super(pitangaService, EventType.CHECK_ROOM_EXISTS, CheckRoomExistsPayload.class);
+        this.roomToDao = roomToDao;
     }
 
     @Override
-    protected Event<?> doHandle(IncomingContext incomingContext) {
+    protected OutgoingContext doHandle(IncomingContext incomingContext) {
         var checkRoomExistsPayload = retrievePayload(incomingContext);
-        checkRoomExistsPayload.setExists(pitangaService.checkRoomExists(checkRoomExistsPayload.getId()));
-        return CheckRoomExists.builder()
+        var optionalRoom = pitangaService.findById(checkRoomExistsPayload.getRoom()
+                .getId());
+
+        var room = roomToDao.mapTo(optionalRoom.orElse(null));
+
+        checkRoomExistsPayload = CheckRoomExistsPayload.builder()
+                .exists(optionalRoom.isPresent())
+                .room(room)
+                .build();
+
+        var checkRoomExists = CheckRoomExists.builder()
                 .payload(checkRoomExistsPayload)
+                .build();
+
+        return OutgoingContext.builder()
+                .event(checkRoomExists)
                 .build();
     }
 }

@@ -40,8 +40,9 @@ export function usePitangaWebSocket() {
   const [client] = useState(() => createClient($connected, $incomingEvent));
 
   useEffect(() => {
-    $outgoingEvent.subscribe(data => {
-      client.send(JSON.stringify(data));
+    $outgoingEvent.subscribe(event => {
+      console.log(`Sending event "${event.type}"`);
+      client.send(JSON.stringify(event));
     });
   }, []);
 

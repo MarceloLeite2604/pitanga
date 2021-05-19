@@ -1,30 +1,41 @@
 package com.github.marceloleite2604.pitanga.handler.event;
 
-import com.github.marceloleite2604.pitanga.service.PitangaService;
 import com.github.marceloleite2604.pitanga.model.IncomingContext;
+import com.github.marceloleite2604.pitanga.model.OutgoingContext;
 import com.github.marceloleite2604.pitanga.model.User;
-import com.github.marceloleite2604.pitanga.model.event.Event;
 import com.github.marceloleite2604.pitanga.model.event.EventType;
 import com.github.marceloleite2604.pitanga.model.event.MaxUsersReachedEvent;
 import com.github.marceloleite2604.pitanga.model.event.UserCreatedEvent;
+import com.github.marceloleite2604.pitanga.model.mapper.UserToDao;
+import com.github.marceloleite2604.pitanga.service.PitangaService;
 import org.springframework.stereotype.Component;
 
 @Component
 public class CreateUserEventHandler extends AbstractEventHandler<User> {
-    protected CreateUserEventHandler(PitangaService pitangaService) {
+
+    private final UserToDao userToDao;
+
+    public CreateUserEventHandler(PitangaService pitangaService, UserToDao userToDao) {
         super(pitangaService, EventType.CREATE_USER, User.class);
+        this.userToDao = userToDao;
     }
 
     @Override
-    protected Event<?> doHandle(IncomingContext incomingContext) {
+    protected OutgoingContext doHandle(IncomingContext incomingContext) {
         var createUserResult = pitangaService.createUser(incomingContext.getSessionId());
 
-        return switch (createUserResult.getStatus()) {
+        var user = userToDao.mapTo(createUserResult.getUser());
+
+        var event = switch (createUserResult.getStatus()) {
             case CREATED -> UserCreatedEvent.builder()
-                    .payload(createUserResult.getUser())
+                    .payload(user)
                     .build();
             case MAX_USERS_REACHED -> MaxUsersReachedEvent.builder()
                     .build();
         };
+
+        return OutgoingContext.builder()
+                .event(event)
+                .build();
     }
 }
