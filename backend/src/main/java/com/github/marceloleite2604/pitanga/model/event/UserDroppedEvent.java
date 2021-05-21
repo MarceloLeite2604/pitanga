@@ -3,14 +3,14 @@ package com.github.marceloleite2604.pitanga.model.event;
 import com.github.marceloleite2604.pitanga.model.dao.UserDao;
 import lombok.Builder;
 
-public class CreateUserEvent extends Event<UserDao> {
+public class UserDroppedEvent extends Event<UserDao> {
 
-    public CreateUserEvent() {
+    public UserDroppedEvent() {
         this(null);
     }
 
     @Builder
-    public CreateUserEvent(UserDao userDao) {
-        super(EventType.CREATE_USER, userDao);
+    public UserDroppedEvent(UserDao payload) {
+        super(EventType.USER_DROPPED, payload);
     }
 }

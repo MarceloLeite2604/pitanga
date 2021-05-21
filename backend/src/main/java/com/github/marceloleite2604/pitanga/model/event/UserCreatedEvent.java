@@ -5,6 +5,10 @@ import lombok.Builder;
 
 public class UserCreatedEvent extends Event<UserDao> {
 
+    public UserCreatedEvent() {
+        this(null);
+    }
+
     @Builder
     public UserCreatedEvent(UserDao payload) {
         super(EventType.USER_CREATED, payload);

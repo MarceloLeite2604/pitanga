@@ -5,11 +5,14 @@ import com.fasterxml.jackson.databind.ObjectMapper;
 import com.github.marceloleite2604.pitanga.handler.event.EventHandler;
 import com.github.marceloleite2604.pitanga.model.IncomingContext;
 import com.github.marceloleite2604.pitanga.model.OutgoingContext;
+import com.github.marceloleite2604.pitanga.model.dao.UserDao;
+import com.github.marceloleite2604.pitanga.model.event.CreateUserEvent;
 import com.github.marceloleite2604.pitanga.model.event.Event;
-import com.github.marceloleite2604.pitanga.service.PitangaService;
+import com.github.marceloleite2604.pitanga.model.event.UserDroppedEvent;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Component;
 import org.springframework.transaction.annotation.Transactional;
+import org.springframework.util.CollectionUtils;
 import org.springframework.web.socket.CloseStatus;
 import org.springframework.web.socket.TextMessage;
 import org.springframework.web.socket.WebSocketSession;
@@ -24,18 +27,17 @@ import java.util.Set;
 
 @Component
 @Slf4j
+@Transactional
 public class PitangaTextWebSocketHandler extends TextWebSocketHandler {
 
     private final ObjectMapper objectMapper;
     private final EventHandler firstEventHandler;
-    private final PitangaService pitangaService;
 
     private final Map<String, WebSocketSession> sessions;
 
-    public PitangaTextWebSocketHandler(ObjectMapper objectMapper, Set<EventHandler> eventHandlerSet, PitangaService pitangaService) {
+    public PitangaTextWebSocketHandler(ObjectMapper objectMapper, Set<EventHandler> eventHandlers) {
         this.objectMapper = objectMapper;
-        this.firstEventHandler = createEventHandlerChain(eventHandlerSet);
-        this.pitangaService = pitangaService;
+        this.firstEventHandler = createEventHandlerChain(eventHandlers);
         this.sessions = new HashMap<>();
     }
 
@@ -43,13 +45,46 @@ public class PitangaTextWebSocketHandler extends TextWebSocketHandler {
     public void afterConnectionEstablished(WebSocketSession session) throws Exception {
         super.afterConnectionEstablished(session);
         sessions.put(session.getId(), session);
+
+        var userDao = UserDao.builder()
+                .id(session.getId())
+                .build();
+
+        var createUserEvent = CreateUserEvent.builder()
+                .userDao(userDao)
+                .build();
+
+        var incomingContext = IncomingContext.builder()
+                .sender(userDao)
+                .event(createUserEvent)
+                .build();
+
+        var outgoingContext = firstEventHandler.handle(incomingContext);
+
+        sendEvent(outgoingContext);
     }
 
     @Override
     public void afterConnectionClosed(WebSocketSession session, CloseStatus status) throws Exception {
         super.afterConnectionClosed(session, status);
-        pitangaService.excludeUserBySessionId(session.getId());
         sessions.remove(session.getId());
+
+        var userDao = UserDao.builder()
+                .id(session.getId())
+                .build();
+
+        var userDroppedEvent = UserDroppedEvent.builder()
+                .payload(userDao)
+                .build();
+
+        var incomingContext = IncomingContext.builder()
+                .sender(userDao)
+                .event(userDroppedEvent)
+                .build();
+
+        var outgoingContext = firstEventHandler.handle(incomingContext);
+
+        sendEvent(outgoingContext);
     }
 
     @Override
@@ -67,18 +102,35 @@ public class PitangaTextWebSocketHandler extends TextWebSocketHandler {
     }
 
     private void sendEvent(OutgoingContext outgoingContext) {
-        var outgoingTextMessage = elaborateOutgoingTextMessage(outgoingContext);
-        outgoingContext.getNotifiedSessions()
-                .forEach(notifiedSession ->
-                        Optional.ofNullable(sessions.get(notifiedSession))
+
+        if (CollectionUtils.isEmpty(outgoingContext.getRecipients())) {
+            return;
+        }
+
+        var optionalOutgoingTextMessage = elaborateOutgoingTextMessage(outgoingContext);
+
+        if (optionalOutgoingTextMessage.isEmpty()) {
+            return;
+        }
+
+        var outgoingTextMessage = optionalOutgoingTextMessage.get();
+
+        outgoingContext.getRecipients()
+                .forEach(recipient ->
+                        Optional.ofNullable(sessions.get(recipient.getId()))
                                 .ifPresent(webSocketSession -> sendOutgoingTextMessage(webSocketSession, outgoingTextMessage)));
     }
 
     private IncomingContext createContext(WebSocketSession session, TextMessage incomingTextMessage) {
-        Event<?> event = retrieveEvent(incomingTextMessage);
+        var event = retrieveEvent(incomingTextMessage);
+
+        var userDao = UserDao.builder()
+                .id(session.getId())
+                .build();
+
         return IncomingContext.builder()
                 .event(event)
-                .sessionId(session.getId())
+                .sender(userDao)
                 .build();
     }
 
@@ -90,10 +142,14 @@ public class PitangaTextWebSocketHandler extends TextWebSocketHandler {
         }
     }
 
-    private TextMessage elaborateOutgoingTextMessage(OutgoingContext outgoingContext) {
+    private Optional<TextMessage> elaborateOutgoingTextMessage(OutgoingContext outgoingContext) {
+        if (Objects.isNull(outgoingContext.getEvent())) {
+            return Optional.empty();
+        }
+
         try {
             var payload = objectMapper.writeValueAsString(outgoingContext.getEvent());
-            return new TextMessage(payload);
+            return Optional.of(new TextMessage(payload));
         } catch (JsonProcessingException exception) {
             var message = String.format("Error while creating payload for outgoing event \"%s\".", outgoingContext.getEvent()
                     .getType());

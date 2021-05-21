@@ -2,7 +2,7 @@ package com.github.marceloleite2604.pitanga.handler.event;
 
 import com.github.marceloleite2604.pitanga.model.IncomingContext;
 import com.github.marceloleite2604.pitanga.model.OutgoingContext;
-import com.github.marceloleite2604.pitanga.model.User;
+import com.github.marceloleite2604.pitanga.model.dao.UserDao;
 import com.github.marceloleite2604.pitanga.model.event.EventType;
 import com.github.marceloleite2604.pitanga.model.event.MaxUsersReachedEvent;
 import com.github.marceloleite2604.pitanga.model.event.UserCreatedEvent;
@@ -11,18 +11,20 @@ import com.github.marceloleite2604.pitanga.service.PitangaService;
 import org.springframework.stereotype.Component;
 
 @Component
-public class CreateUserEventHandler extends AbstractEventHandler<User> {
+public class CreateUserEventHandler extends AbstractEventHandler<UserDao> {
 
     private final UserToDao userToDao;
 
     public CreateUserEventHandler(PitangaService pitangaService, UserToDao userToDao) {
-        super(pitangaService, EventType.CREATE_USER, User.class);
+        super(pitangaService, EventType.CREATE_USER);
         this.userToDao = userToDao;
     }
 
     @Override
     protected OutgoingContext doHandle(IncomingContext incomingContext) {
-        var createUserResult = pitangaService.createUser(incomingContext.getSessionId());
+        var userDao = retrievePayload(incomingContext);
+
+        var createUserResult = pitangaService.createUser(userDao.getId());
 
         var user = userToDao.mapTo(createUserResult.getUser());
 

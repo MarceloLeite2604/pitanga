@@ -12,6 +12,10 @@ import com.github.marceloleite2604.pitanga.model.mapper.UserToDao;
 import com.github.marceloleite2604.pitanga.service.PitangaService;
 import org.springframework.stereotype.Component;
 
+import java.util.Collections;
+import java.util.HashSet;
+import java.util.stream.Collectors;
+
 @Component
 public class JoinUserEventHandler extends AbstractEventHandler<JoinUserPayload> {
 
@@ -20,7 +24,7 @@ public class JoinUserEventHandler extends AbstractEventHandler<JoinUserPayload> 
     private final UserToDao userToDao;
 
     public JoinUserEventHandler(PitangaService pitangaService, RoomToDao roomToDao, UserToDao userToDao) {
-        super(pitangaService, EventType.JOIN_USER, JoinUserPayload.class);
+        super(pitangaService, EventType.JOIN_USER);
         this.roomToDao = roomToDao;
         this.userToDao = userToDao;
     }
@@ -31,7 +35,7 @@ public class JoinUserEventHandler extends AbstractEventHandler<JoinUserPayload> 
 
         var room = roomToDao.mapFrom(joinUserPayload.getRoom());
         var user = userToDao.mapFrom(joinUserPayload.getUser());
-        user.setSessionId(incomingContext.getSessionId());
+//        user.setSessionId(incomingContext.getSessionId());
 
         var joinUserResult = pitangaService.joinUserIntoRoom(user, room);
 
@@ -56,8 +60,16 @@ public class JoinUserEventHandler extends AbstractEventHandler<JoinUserPayload> 
                     .build();
         };
 
+        var recipients = switch (joinUserResult.getStatus()) {
+            case USER_JOINED -> room.getUsers()
+                        .stream()
+                        .map(userToDao::mapTo)
+                        .collect(Collectors.toSet());
+            case MAX_ROOM_USERS_REACHED -> new HashSet<>(Collections.singleton(userDao));
+        };
+
         return OutgoingContext.builder()
-                .notifiedSessions(pitangaService.retrieveSessionIdsFromUsersOnRoom(room))
+                .recipients(recipients)
                 .event(event)
                 .build();
     }

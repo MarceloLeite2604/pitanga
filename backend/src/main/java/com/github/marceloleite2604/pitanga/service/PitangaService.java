@@ -8,16 +8,14 @@ import com.github.marceloleite2604.pitanga.repository.RoomRepository;
 import com.github.marceloleite2604.pitanga.repository.UserRepository;
 import com.github.marceloleite2604.pitanga.service.result.CreateRoomResult;
 import com.github.marceloleite2604.pitanga.service.result.CreateUserResult;
+import com.github.marceloleite2604.pitanga.service.result.ExcludeUserBySessionIdResult;
 import com.github.marceloleite2604.pitanga.service.result.JoinUserResult;
 import com.github.marceloleite2604.pitanga.util.RoomIdGenerator;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
-import org.springframework.transaction.annotation.Transactional;
-import org.springframework.util.CollectionUtils;
 
 import java.time.LocalDateTime;
 import java.util.HashSet;
-import java.util.Objects;
 import java.util.Optional;
 import java.util.Set;
 import java.util.UUID;
@@ -25,7 +23,6 @@ import java.util.stream.Collectors;
 
 @Service
 @RequiredArgsConstructor
-@Transactional
 public class PitangaService {
 
     private final RoomIdGenerator roomIdGenerator;
@@ -77,8 +74,7 @@ public class PitangaService {
         }
 
         var user = User.builder()
-                .id(UUID.randomUUID())
-                .sessionId(sessionId)
+                .id(UUID.fromString(sessionId))
                 .build();
         user = userRepository.save(user);
 
@@ -116,24 +112,9 @@ public class PitangaService {
                 .build();
     }
 
-    public void excludeUserBySessionId(String sessionId) {
-        userRepository.findBySessionId(sessionId)
-                .ifPresent(user -> {
-                    removeUserFromRoom(user);
-                    userRepository.delete(user);
-                });
-    }
-
-    private void removeUserFromRoom(User user) {
-        var room = user.getRoom();
-        if (Objects.nonNull(room)) {
-            room.getUsers()
-                    .remove(user);
-            if (CollectionUtils.isEmpty(room.getUsers())) {
-                roomRepository.delete(room);
-            }
-        }
-    }
+    public void deleteUser(User user) {
+        userRepository.delete(user);
+    };
 
     public Optional<Room> findById(long roomId) {
         return roomRepository.findById(roomId);
@@ -142,7 +123,12 @@ public class PitangaService {
     public Set<String> retrieveSessionIdsFromUsersOnRoom(Room room) {
         return room.getUsers()
                 .stream()
-                .map(User::getSessionId)
+                .map(User::getId)
+                .map(UUID::toString)
                 .collect(Collectors.toCollection(HashSet::new));
+    }
+
+    public Optional<User> retrieveUser(String id) {
+        return userRepository.findById(UUID.fromString(id));
     }
 }

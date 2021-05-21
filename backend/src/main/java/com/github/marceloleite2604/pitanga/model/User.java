@@ -24,9 +24,9 @@ public class User {
     @Id
     private UUID id;
 
-    @JsonIgnore
-    @Setter
-    private String sessionId;
+//    @JsonIgnore
+//    @Setter
+//    private String sessionId;
 
     @JsonIgnore
     @ManyToOne(fetch = FetchType.LAZY)

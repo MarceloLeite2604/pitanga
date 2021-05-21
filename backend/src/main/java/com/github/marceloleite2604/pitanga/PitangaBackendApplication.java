@@ -7,8 +7,8 @@ import org.springframework.transaction.annotation.EnableTransactionManagement;
 @SpringBootApplication
 public class PitangaBackendApplication {
 
-	public static void main(String[] args) {
-		SpringApplication.run(PitangaBackendApplication.class, args);
-	}
+    public static void main(String[] args) {
+        SpringApplication.run(PitangaBackendApplication.class, args);
+    }
 
 }

@@ -11,6 +11,7 @@ spring:
 logging:
   level:
     root: INFO
+    org.springframework.transaction.interceptor: INFO
 pitanga:
   room:
     min-id: 10000000

@@ -1,49 +1,46 @@
 package com.github.marceloleite2604.pitanga.model.event;
 
 import com.fasterxml.jackson.annotation.JsonValue;
-import com.github.marceloleite2604.pitanga.model.event.checkroomexists.CheckRoomExists;
+import com.github.marceloleite2604.pitanga.model.dao.RoomDao;
+import com.github.marceloleite2604.pitanga.model.dao.UserDao;
+import com.github.marceloleite2604.pitanga.model.event.checkroomexists.CheckRoomExistsEvent;
+import com.github.marceloleite2604.pitanga.model.event.checkroomexists.CheckRoomExistsPayload;
 import com.github.marceloleite2604.pitanga.model.event.joinuser.JoinUserEvent;
+import com.github.marceloleite2604.pitanga.model.event.joinuser.JoinUserPayload;
 import com.github.marceloleite2604.pitanga.model.event.userjoined.UserJoinedEvent;
+import com.github.marceloleite2604.pitanga.model.event.userjoined.UserJoinedPayload;
 import lombok.Getter;
 import lombok.experimental.UtilityClass;
-import org.springframework.util.ObjectUtils;
 
 @Getter
 public enum EventType {
-    CREATE_USER(Values.CREATE_USER, CreateUserEvent.class),
-    USER_CREATED(Values.USER_CREATED, UserCreatedEvent.class),
+    CREATE_USER(Values.CREATE_USER, CreateUserEvent.class, UserDao.class),
+    USER_CREATED(Values.USER_CREATED, UserCreatedEvent.class, UserDao.class),
     MAX_USERS_REACHED(Values.MAX_USERS_REACHED, MaxUsersReachedEvent.class),
-    JOIN_USER(Values.JOIN_USER, JoinUserEvent.class),
-    USER_JOINED(Values.USER_JOINED, UserJoinedEvent.class),
+    JOIN_USER(Values.JOIN_USER, JoinUserEvent.class, JoinUserPayload.class),
+    USER_JOINED(Values.USER_JOINED, UserJoinedEvent.class, UserJoinedPayload.class),
     MAX_ROOM_USERS_REACHED(Values.MAX_ROOM_USERS_REACHED, MaxRoomsUsersReachedEvent.class),
-    CREATE_ROOM(Values.CREATE_ROOM, CreateRoomEvent.class),
-    ROOM_CREATED(Values.ROOM_CREATED, RoomCreatedEvent.class),
+    CREATE_ROOM(Values.CREATE_ROOM, CreateRoomEvent.class, UserDao.class),
+    ROOM_CREATED(Values.ROOM_CREATED, RoomCreatedEvent.class, RoomDao.class),
     MAX_ROOMS_REACHED(Values.MAX_ROOMS_REACHED, MaxRoomsReachedEvent.class),
-    CHECK_ROOM_EXISTS(Values.CHECK_ROOM_EXISTS, CheckRoomExists.class);
+    CHECK_ROOM_EXISTS(Values.CHECK_ROOM_EXISTS, CheckRoomExistsEvent.class, CheckRoomExistsPayload.class),
+    USER_DROPPED(Values.USER_DROPPED, UserDroppedEvent.class, UserDao.class);
 
     @JsonValue
     private final String value;
 
     private final Class<? extends Event<?>> eventClass;
 
-    EventType(String value, Class<? extends Event<?>> eventClass) {
+    private final Class<?> payloadClass;
+
+    EventType(String value, Class<? extends Event<?>> eventClass, Class<?> payloadClass) {
         this.value = value;
         this.eventClass = eventClass;
+        this.payloadClass = payloadClass;
     }
 
-    public static EventType findByValue(String value) {
-
-        if (ObjectUtils.isEmpty(value)) {
-            throw new IllegalArgumentException("Value is empty.");
-        }
-
-        for (EventType eventType : values()) {
-            if (value.equals(eventType.value)) {
-                return eventType;
-            }
-        }
-
-        throw new IllegalArgumentException(String.format("Unrecognized value \"%s\".", value));
+    EventType(String value, Class<? extends Event<?>> eventClass) {
+        this(value, eventClass, null);
     }
 
     @Override
@@ -63,5 +60,6 @@ public enum EventType {
         public static final String ROOM_CREATED = "room-created";
         public static final String MAX_ROOMS_REACHED = "max-rooms-reached";
         public static final String CHECK_ROOM_EXISTS = "check-room-exists";
+        public static final String USER_DROPPED = "user-dropped";
     }
 }

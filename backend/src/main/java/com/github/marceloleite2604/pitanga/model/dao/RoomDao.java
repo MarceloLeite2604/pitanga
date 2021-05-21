@@ -3,7 +3,7 @@ package com.github.marceloleite2604.pitanga.model.dao;
 import lombok.AccessLevel;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
-import lombok.Data;
+import lombok.EqualsAndHashCode;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Singular;
@@ -14,8 +14,10 @@ import java.util.Set;
 @NoArgsConstructor
 @AllArgsConstructor(access = AccessLevel.PRIVATE)
 @Getter
+@EqualsAndHashCode(onlyExplicitlyIncluded = true)
 public class RoomDao {
 
+    @EqualsAndHashCode.Include
     private long id;
 
     @Singular

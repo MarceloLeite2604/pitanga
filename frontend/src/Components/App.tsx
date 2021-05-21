@@ -5,7 +5,6 @@ import { Subscription } from 'rxjs';
 import {
   Room,
   User,
-  buildCreateUserEvent,
   EventType,
   Event,
   CheckRoomExistsPayload,
@@ -70,11 +69,8 @@ export function App() {
   }, [history, room]);
 
   const connectionCallback = useCallback((connected: boolean) => {
-    if (connected && !user) {
-      pitangaWebSocket.$outgoingEvent.next(buildCreateUserEvent());
-    }
     setConnected(connected);
-  }, [user]);
+  }, []);
 
   useEffect(() => {
     eventsSubscription?.unsubscribe();

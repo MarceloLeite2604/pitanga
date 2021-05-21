@@ -1,5 +1,6 @@
 package com.github.marceloleite2604.pitanga.model;
 
+import com.github.marceloleite2604.pitanga.model.dao.UserDao;
 import com.github.marceloleite2604.pitanga.model.event.Event;
 import lombok.AccessLevel;
 import lombok.AllArgsConstructor;
@@ -15,7 +16,7 @@ import java.util.Set;
 public class OutgoingContext {
 
     @Builder.Default
-    private final Set<String> notifiedSessions = new HashSet<>();
+    private final Set<UserDao> recipients = new HashSet<>();
 
     private final Event<?> event;
 }

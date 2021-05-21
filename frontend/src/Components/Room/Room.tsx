@@ -19,9 +19,8 @@ export const Room: FC<Props> = ({ connected, user, room, pitangaWebSocket }) => 
   const eventsCallback = useCallback(event => {
     if (event.type === EventType.CheckRoomExists) {
       const payload = event.payload as CheckRoomExistsPayload;
-      if (payload.exists) {
-        console.log('Sending join user event');
-        user && pitangaWebSocket.$outgoingEvent.next(buildJoinUserEvent(user, payload.room));
+      if (user && payload.exists) {
+        pitangaWebSocket.$outgoingEvent.next(buildJoinUserEvent(user, payload.room));
       }
     }
   }, [user]);

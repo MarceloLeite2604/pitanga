@@ -3,12 +3,11 @@ package com.github.marceloleite2604.pitanga.handler.event;
 import com.github.marceloleite2604.pitanga.model.IncomingContext;
 import com.github.marceloleite2604.pitanga.model.OutgoingContext;
 import com.github.marceloleite2604.pitanga.model.event.EventType;
-import com.github.marceloleite2604.pitanga.model.event.checkroomexists.CheckRoomExists;
+import com.github.marceloleite2604.pitanga.model.event.checkroomexists.CheckRoomExistsEvent;
 import com.github.marceloleite2604.pitanga.model.event.checkroomexists.CheckRoomExistsPayload;
 import com.github.marceloleite2604.pitanga.model.mapper.RoomToDao;
 import com.github.marceloleite2604.pitanga.service.PitangaService;
 import org.springframework.stereotype.Component;
-import org.springframework.transaction.annotation.Transactional;
 
 @Component
 public class CheckRoomExistsEventHandler extends AbstractEventHandler<CheckRoomExistsPayload> {
@@ -16,7 +15,7 @@ public class CheckRoomExistsEventHandler extends AbstractEventHandler<CheckRoomE
     private final RoomToDao roomToDao;
 
     public CheckRoomExistsEventHandler(PitangaService pitangaService, RoomToDao roomToDao) {
-        super(pitangaService, EventType.CHECK_ROOM_EXISTS, CheckRoomExistsPayload.class);
+        super(pitangaService, EventType.CHECK_ROOM_EXISTS);
         this.roomToDao = roomToDao;
     }
 
@@ -33,7 +32,7 @@ public class CheckRoomExistsEventHandler extends AbstractEventHandler<CheckRoomE
                 .room(room)
                 .build();
 
-        var checkRoomExists = CheckRoomExists.builder()
+        var checkRoomExists = CheckRoomExistsEvent.builder()
                 .payload(checkRoomExistsPayload)
                 .build();
 

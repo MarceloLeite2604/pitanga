@@ -2,11 +2,11 @@ import { Event, EventType, CheckRoomExistsPayload, JoinUserPayload } from './Eve
 import { Room } from '../Room';
 import { User } from '../User';
 
-export function buildCreateUserEvent() {
-  return {
-    type: EventType.CreateUser
-  } as Event<null>;
-};
+// export function buildCreateUserEvent() {
+//   return {
+//     type: EventType.CreateUser
+//   } as Event<null>;
+// };
 
 export function buildJoinUserEvent(user: User, room: Room) {
   return {

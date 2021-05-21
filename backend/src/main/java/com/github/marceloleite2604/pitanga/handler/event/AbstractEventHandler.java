@@ -4,21 +4,19 @@ import com.github.marceloleite2604.pitanga.model.IncomingContext;
 import com.github.marceloleite2604.pitanga.model.OutgoingContext;
 import com.github.marceloleite2604.pitanga.model.event.EventType;
 import com.github.marceloleite2604.pitanga.service.PitangaService;
-import org.springframework.transaction.annotation.Transactional;
 
 import java.util.Objects;
+import java.util.Optional;
 
 public abstract class AbstractEventHandler<T> implements EventHandler {
 
     protected final PitangaService pitangaService;
     private final EventType eventType;
-    private final Class<T> payloadClass;
     private EventHandler next;
 
-    protected AbstractEventHandler(PitangaService pitangaService, EventType eventType, Class<T> payloadClass) {
+    protected AbstractEventHandler(PitangaService pitangaService, EventType eventType) {
         this.pitangaService = pitangaService;
         this.eventType = eventType;
-        this.payloadClass = payloadClass;
     }
 
     @Override
@@ -36,8 +34,10 @@ public abstract class AbstractEventHandler<T> implements EventHandler {
     }
 
     private OutgoingContext mergeSessions(IncomingContext incomingContext, OutgoingContext outgoingContext) {
-        outgoingContext.getNotifiedSessions()
-                .add(incomingContext.getSessionId());
+        Optional.ofNullable(incomingContext.getSender())
+                .ifPresent(sender -> outgoingContext.getRecipients()
+                        .add(sender)
+                );
         return outgoingContext;
     }
 
@@ -56,19 +56,26 @@ public abstract class AbstractEventHandler<T> implements EventHandler {
 
     @SuppressWarnings("unchecked")
     T retrievePayload(IncomingContext incomingContext) {
+
+        if (Objects.isNull(eventType.getPayloadClass())) {
+            var message = String.format("Event \"%s\" does not have a payload class type defined.", eventType.getValue());
+            throw new IllegalStateException(message);
+        }
+
         Object payload = incomingContext.getEvent()
                 .getPayload();
+
         if (Objects.isNull(payload)) {
             throw new IllegalArgumentException(
                     String.format("Incoming event \"%s\" does not have a payload.", eventType.getValue()));
         }
 
-        if (!payloadClass
+        if (!eventType.getPayloadClass()
                 .isInstance(payload)) {
             throw new IllegalArgumentException(
                     String.format("Event \"%s\" must contain a payload of type \"%s\", but incoming event payload is of type \"%s\".",
                             eventType.getValue(),
-                            payloadClass,
+                            eventType.getPayloadClass(),
                             payload.getClass()));
         }
 

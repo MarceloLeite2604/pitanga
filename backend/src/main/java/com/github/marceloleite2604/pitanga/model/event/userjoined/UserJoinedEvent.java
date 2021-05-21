@@ -6,6 +6,10 @@ import lombok.Builder;
 
 public class UserJoinedEvent extends Event<UserJoinedPayload> {
 
+    public UserJoinedEvent() {
+        this(null);
+    }
+
     @Builder
     public UserJoinedEvent(UserJoinedPayload payload) {
         super(EventType.USER_JOINED, payload);

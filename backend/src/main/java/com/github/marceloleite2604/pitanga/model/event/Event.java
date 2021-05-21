@@ -4,7 +4,7 @@ import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.fasterxml.jackson.annotation.JsonInclude;
 import com.fasterxml.jackson.annotation.JsonSubTypes;
 import com.fasterxml.jackson.annotation.JsonTypeInfo;
-import com.github.marceloleite2604.pitanga.model.event.checkroomexists.CheckRoomExists;
+import com.github.marceloleite2604.pitanga.model.event.checkroomexists.CheckRoomExistsEvent;
 import com.github.marceloleite2604.pitanga.model.event.joinuser.JoinUserEvent;
 import com.github.marceloleite2604.pitanga.model.event.userjoined.UserJoinedEvent;
 import lombok.AllArgsConstructor;
@@ -24,7 +24,8 @@ import lombok.NoArgsConstructor;
         @JsonSubTypes.Type(value = CreateRoomEvent.class, name = EventType.Values.CREATE_ROOM),
         @JsonSubTypes.Type(value = RoomCreatedEvent.class, name = EventType.Values.ROOM_CREATED),
         @JsonSubTypes.Type(value = MaxRoomsReachedEvent.class, name = EventType.Values.MAX_ROOMS_REACHED),
-        @JsonSubTypes.Type(value = CheckRoomExists.class, name = EventType.Values.CHECK_ROOM_EXISTS)
+        @JsonSubTypes.Type(value = CheckRoomExistsEvent.class, name = EventType.Values.CHECK_ROOM_EXISTS),
+        @JsonSubTypes.Type(value = UserDroppedEvent.class, name = EventType.Values.USER_DROPPED)
 })
 @NoArgsConstructor
 @JsonInclude(JsonInclude.Include.NON_NULL)

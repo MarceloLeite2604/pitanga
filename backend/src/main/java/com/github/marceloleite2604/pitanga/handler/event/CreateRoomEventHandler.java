@@ -2,7 +2,6 @@ package com.github.marceloleite2604.pitanga.handler.event;
 
 import com.github.marceloleite2604.pitanga.model.IncomingContext;
 import com.github.marceloleite2604.pitanga.model.OutgoingContext;
-import com.github.marceloleite2604.pitanga.model.User;
 import com.github.marceloleite2604.pitanga.model.dao.UserDao;
 import com.github.marceloleite2604.pitanga.model.event.EventType;
 import com.github.marceloleite2604.pitanga.model.event.MaxRoomsReachedEvent;
@@ -20,7 +19,7 @@ public class CreateRoomEventHandler extends AbstractEventHandler<UserDao> {
     private final UserToDao userToDao;
 
     public CreateRoomEventHandler(PitangaService pitangaService, RoomToDao roomToDao, UserToDao userToDao) {
-        super(pitangaService, EventType.CREATE_ROOM, UserDao.class);
+        super(pitangaService, EventType.CREATE_ROOM);
         this.roomToDao = roomToDao;
         this.userToDao = userToDao;
     }
@@ -28,7 +27,7 @@ public class CreateRoomEventHandler extends AbstractEventHandler<UserDao> {
     @Override
     protected OutgoingContext doHandle(IncomingContext incomingContext) {
         var user = userToDao.mapFrom(retrievePayload(incomingContext));
-        user.setSessionId(incomingContext.getSessionId());
+//        user.setSessionId(incomingContext.getSessionId());
 
         var createRoomResult = pitangaService.createRoom(user);
 

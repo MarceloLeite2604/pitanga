@@ -4,14 +4,14 @@ import com.github.marceloleite2604.pitanga.model.event.Event;
 import com.github.marceloleite2604.pitanga.model.event.EventType;
 import lombok.Builder;
 
-public class CheckRoomExists extends Event<CheckRoomExistsPayload> {
+public class CheckRoomExistsEvent extends Event<CheckRoomExistsPayload> {
 
-    public CheckRoomExists() {
+    public CheckRoomExistsEvent() {
         this(null);
     }
 
     @Builder
-    public CheckRoomExists(CheckRoomExistsPayload payload) {
+    public CheckRoomExistsEvent(CheckRoomExistsPayload payload) {
         super(EventType.CHECK_ROOM_EXISTS, payload);
     }
 }
