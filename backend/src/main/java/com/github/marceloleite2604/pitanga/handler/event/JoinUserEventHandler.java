@@ -41,17 +41,13 @@ public class JoinUserEventHandler extends AbstractEventHandler<JoinUserPayload> 
 
         var joinUserResult = pitangaService.joinUserIntoRoom(user, room);
 
-        var attendee = joinUserResult.getAttendee();
+        var attendee = joinUserResult.attendee();
 
         var roomDao = roomToDao.mapTo(attendee.getRoom());
         var userDao = userToDao.mapTo(attendee.getUser());
 
-        var event = switch (joinUserResult.getStatus()) {
+        var event = switch (joinUserResult.status()) {
             case USER_JOINED -> {
-//                var userJoinedPayload = UserJoinedPayload.builder()
-//                        .user(userDao)
-//                        .room(roomDao)
-//                        .build();
 
                 var userJoinedPayload = UserJoinedPayload.builder()
                         .room(roomDao)
@@ -64,11 +60,7 @@ public class JoinUserEventHandler extends AbstractEventHandler<JoinUserPayload> 
             case MAX_ROOM_USERS_REACHED -> MaxRoomsUsersReachedEvent.builder()
                     .build();
             case ALREADY_IN_ROOM -> {
-//                var userAlreadyInRoomPayload = UserAlreadyInRoomPayload.builder()
-//                        .user(userDao)
-//                        .room(roomDao)
-//
-//                        .build();
+
                 var userAlreadyInRoomPayload = UserAlreadyInRoomPayload.builder()
                         .user(userDao)
                         .room(roomDao)
@@ -80,7 +72,7 @@ public class JoinUserEventHandler extends AbstractEventHandler<JoinUserPayload> 
             }
         };
 
-        var recipients = switch (joinUserResult.getStatus()) {
+        var recipients = switch (joinUserResult.status()) {
             case USER_JOINED -> room.getAttendees()
                     .stream()
                     .map(Attendee::getUser)

@@ -2,15 +2,12 @@ package com.github.marceloleite2604.pitanga.service.result;
 
 import com.github.marceloleite2604.pitanga.model.User;
 import lombok.Builder;
-import lombok.Getter;
 
-@Getter
-@Builder
-public class CreateUserResult {
+public record CreateUserResult(Status status,
+                               User user) {
 
-    private final Status status;
-
-    private final User user;
+    @Builder
+    public CreateUserResult {}
 
     public enum Status {
         CREATED,

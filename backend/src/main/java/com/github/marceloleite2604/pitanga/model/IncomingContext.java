@@ -4,12 +4,11 @@ import com.github.marceloleite2604.pitanga.model.dao.UserDao;
 import com.github.marceloleite2604.pitanga.model.event.Event;
 import com.github.marceloleite2604.pitanga.model.event.Payload;
 import lombok.Builder;
-import lombok.Getter;
 
-@Getter
-@Builder
-public class IncomingContext {
+public record IncomingContext(
+        Event<? extends Payload> event,
+        UserDao sender) {
 
-    private final Event<? extends Payload> event;
-    private final UserDao sender;
+    @Builder
+    public IncomingContext{}
 }

@@ -101,7 +101,7 @@ public class PitangaTextWebSocketHandler extends TextWebSocketHandler {
     public void handleTextMessage(WebSocketSession session, TextMessage incomingTextMessage) {
         try {
             var incomingContext = createContext(session, incomingTextMessage);
-            log.info("Received event \"{}\".", incomingContext.getEvent()
+            log.info("Received event \"{}\".", incomingContext.event()
                     .getType());
             var outgoingContext = firstEventHandler.handle(incomingContext);
             sendEvent(outgoingContext);

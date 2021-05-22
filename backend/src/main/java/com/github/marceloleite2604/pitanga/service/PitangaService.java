@@ -19,11 +19,8 @@ import org.springframework.stereotype.Service;
 
 import javax.persistence.EntityManager;
 import java.time.LocalDateTime;
-import java.util.HashSet;
 import java.util.Optional;
-import java.util.Set;
 import java.util.UUID;
-import java.util.stream.Collectors;
 
 @Service
 @RequiredArgsConstructor
@@ -61,27 +58,7 @@ public class PitangaService {
                 .lastUpdate(LocalDateTime.now())
                 .build();
 
-//        var attendeeId = AttendeeId.builder()
-//                .userId(user.getId())
-//                .roomId(room.getId())
-//                .build();
-//
-//        var attendee = Attendee.builder()
-//                .id(attendeeId)
-//                .room(room)
-//                .user(user)
-//                .joinedAt(LocalDateTime.now())
-//                .icon(iconRetriever.retrieve(room))
-//                .build();
-//
-//        attendeeRepository.saveAndFlush(attendee);
-
         var attendee = createAttendee(user, room);
-
-//        room = roomRepository.findById(room.getId())
-//                .orElseThrow(IllegalStateException::new);
-//
-//        entityManager.refresh(room);
 
         return CreateRoomResult.builder()
                 .status(CreateRoomResult.Status.CREATED)
@@ -139,20 +116,6 @@ public class PitangaService {
 
         var attendee = createAttendee(persistedUser, persistedRoom);
 
-//        room = roomRepository.findById(room.getId())
-//                .orElseThrow(IllegalStateException::new);
-//
-//        entityManager.refresh(room);
-
-//        persistedUser.setIcon(iconRetriever.retrieve(persistedRoom));
-//
-//        persistedRoom.getUsers()
-//                .add(persistedUser);
-//        persistedRoom = roomRepository.save(persistedRoom);
-//
-//        persistedUser.setRoom(persistedRoom);
-//        persistedUser = userRepository.save(persistedUser);
-
         return JoinUserResult.builder()
                 .status(JoinUserResult.Status.USER_JOINED)
                 .attendee(attendee)
@@ -182,20 +145,9 @@ public class PitangaService {
         userRepository.delete(user);
     }
 
-    ;
-
     public Optional<Room> findById(long roomId) {
         return roomRepository.findById(roomId);
     }
-
-//    public Set<String> retrieveSessionIdsFromUsersOnRoom(Room room) {
-//        return room.getAttendees()
-//                .stream()
-//                .map(Attendee::getUser)
-//                .map(User::getId)
-//                .map(UUID::toString)
-//                .collect(Collectors.toCollection(HashSet::new));
-//    }
 
     public Optional<User> retrieveUser(String id) {
         return userRepository.findById(UUID.fromString(id));

@@ -2,15 +2,12 @@ package com.github.marceloleite2604.pitanga.service.result;
 
 import com.github.marceloleite2604.pitanga.model.attendee.Attendee;
 import lombok.Builder;
-import lombok.Getter;
 
-@Builder
-@Getter
-public class JoinUserResult {
+public record JoinUserResult(Status status,
+                             Attendee attendee) {
 
-    private final Status status;
-
-    private final Attendee attendee;
+    @Builder
+    public JoinUserResult {}
 
     public enum Status {
         USER_JOINED,

@@ -32,9 +32,9 @@ public class CreateRoomEventHandler extends AbstractEventHandler<CreateRoomPaylo
 
         var createRoomResult = pitangaService.createRoom(user);
 
-        var room = roomToDao.mapTo(createRoomResult.getRoom());
+        var room = roomToDao.mapTo(createRoomResult.room());
 
-        var event = switch (createRoomResult.getStatus()) {
+        var event = switch (createRoomResult.status()) {
             case CREATED -> {
 
                 var roomCreatedPayload = RoomCreatedPayload.builder()

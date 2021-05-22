@@ -28,9 +28,9 @@ public class CreateUserEventHandler extends AbstractEventHandler<CreateUserPaylo
         var createUserResult = pitangaService.createUser(createUserPayload.getUser()
                 .getId());
 
-        var user = userToDao.mapTo(createUserResult.getUser());
+        var user = userToDao.mapTo(createUserResult.user());
 
-        var event = switch (createUserResult.getStatus()) {
+        var event = switch (createUserResult.status()) {
             case CREATED -> {
                 var userCreatedPayload = UserCreatedPayload.builder()
                         .user(user)

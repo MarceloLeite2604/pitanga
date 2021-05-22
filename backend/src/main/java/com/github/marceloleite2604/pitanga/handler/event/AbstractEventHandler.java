@@ -30,12 +30,12 @@ public abstract class AbstractEventHandler<T extends Payload> implements EventHa
                 return next.handle(incomingContext);
             }
         }
-        throw new IllegalArgumentException(String.format("Incoming event of type \"%s\" cannot be handled.", incomingContext.getEvent()
+        throw new IllegalArgumentException(String.format("Incoming event of type \"%s\" cannot be handled.", incomingContext.event()
                 .getType()));
     }
 
     private OutgoingContext mergeSessions(IncomingContext incomingContext, OutgoingContext outgoingContext) {
-        Optional.ofNullable(incomingContext.getSender())
+        Optional.ofNullable(incomingContext.sender())
                 .ifPresent(sender -> outgoingContext.getRecipients()
                         .add(sender)
                 );
@@ -43,7 +43,7 @@ public abstract class AbstractEventHandler<T extends Payload> implements EventHa
     }
 
     private boolean shouldHandle(IncomingContext incomingContext) {
-        return eventType.equals(incomingContext.getEvent()
+        return eventType.equals(incomingContext.event()
                 .getType());
     }
 
@@ -63,7 +63,7 @@ public abstract class AbstractEventHandler<T extends Payload> implements EventHa
             throw new IllegalStateException(message);
         }
 
-        Object payload = incomingContext.getEvent()
+        Object payload = incomingContext.event()
                 .getPayload();
 
         if (Objects.isNull(payload)) {

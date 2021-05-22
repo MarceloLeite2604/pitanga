@@ -2,15 +2,12 @@ package com.github.marceloleite2604.pitanga.service.result;
 
 import com.github.marceloleite2604.pitanga.model.Room;
 import lombok.Builder;
-import lombok.Getter;
 
-@Builder
-@Getter
-public class CreateRoomResult {
+public record CreateRoomResult(Status status,
+                               Room room) {
 
-    private final Status status;
-
-    private final Room room;
+    @Builder
+    public CreateRoomResult{}
 
     public enum Status {
         CREATED,
