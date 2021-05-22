@@ -6,6 +6,10 @@ import org.springframework.boot.context.properties.ConfigurationProperties;
 import org.springframework.stereotype.Component;
 import org.springframework.validation.annotation.Validated;
 
+import javax.validation.constraints.NotEmpty;
+import javax.validation.constraints.Positive;
+import java.util.Set;
+
 @Component
 @ConfigurationProperties(PropertiesPath.USER)
 @Getter
@@ -13,5 +17,9 @@ import org.springframework.validation.annotation.Validated;
 @Validated
 public class UserProperties {
 
+    @Positive
     private long maxUsers;
+
+    @NotEmpty
+    private Set<@NotEmpty String> icons;
 }

@@ -1,3 +1,4 @@
 export interface User {
-  id: String
-};
+  id: string,
+  icon: string
+}

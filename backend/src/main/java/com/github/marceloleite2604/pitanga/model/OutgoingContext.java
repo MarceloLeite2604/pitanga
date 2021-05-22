@@ -2,6 +2,7 @@ package com.github.marceloleite2604.pitanga.model;
 
 import com.github.marceloleite2604.pitanga.model.dao.UserDao;
 import com.github.marceloleite2604.pitanga.model.event.Event;
+import com.github.marceloleite2604.pitanga.model.event.Payload;
 import lombok.AccessLevel;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
@@ -18,5 +19,5 @@ public class OutgoingContext {
     @Builder.Default
     private final Set<UserDao> recipients = new HashSet<>();
 
-    private final Event<?> event;
+    private final Event<? extends Payload> event;
 }

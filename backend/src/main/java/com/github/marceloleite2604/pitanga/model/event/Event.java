@@ -5,7 +5,13 @@ import com.fasterxml.jackson.annotation.JsonInclude;
 import com.fasterxml.jackson.annotation.JsonSubTypes;
 import com.fasterxml.jackson.annotation.JsonTypeInfo;
 import com.github.marceloleite2604.pitanga.model.event.checkroomexists.CheckRoomExistsEvent;
+import com.github.marceloleite2604.pitanga.model.event.createroom.CreateRoomEvent;
+import com.github.marceloleite2604.pitanga.model.event.createuser.CreateUserEvent;
 import com.github.marceloleite2604.pitanga.model.event.joinuser.JoinUserEvent;
+import com.github.marceloleite2604.pitanga.model.event.roomcreated.RoomCreatedEvent;
+import com.github.marceloleite2604.pitanga.model.event.useralreadyinroom.UserAlreadyInRoomEvent;
+import com.github.marceloleite2604.pitanga.model.event.usercreated.UserCreatedEvent;
+import com.github.marceloleite2604.pitanga.model.event.userdropped.UserDroppedEvent;
 import com.github.marceloleite2604.pitanga.model.event.userjoined.UserJoinedEvent;
 import lombok.AllArgsConstructor;
 import lombok.Getter;
@@ -20,6 +26,7 @@ import lombok.NoArgsConstructor;
         @JsonSubTypes.Type(value = MaxUsersReachedEvent.class, name = EventType.Values.MAX_USERS_REACHED),
         @JsonSubTypes.Type(value = JoinUserEvent.class, name = EventType.Values.JOIN_USER),
         @JsonSubTypes.Type(value = UserJoinedEvent.class, name = EventType.Values.USER_JOINED),
+        @JsonSubTypes.Type(value = UserAlreadyInRoomEvent.class, name = EventType.Values.USER_ALREADY_IN_ROOM),
         @JsonSubTypes.Type(value = MaxRoomsUsersReachedEvent.class, name = EventType.Values.MAX_ROOM_USERS_REACHED),
         @JsonSubTypes.Type(value = CreateRoomEvent.class, name = EventType.Values.CREATE_ROOM),
         @JsonSubTypes.Type(value = RoomCreatedEvent.class, name = EventType.Values.ROOM_CREATED),
@@ -29,7 +36,7 @@ import lombok.NoArgsConstructor;
 })
 @NoArgsConstructor
 @JsonInclude(JsonInclude.Include.NON_NULL)
-public class Event<T> {
+public class Event<T extends Payload> {
 
     @JsonIgnore
     private EventType type;

@@ -11,8 +11,21 @@ export enum EventType {
   CreateRoom = 'create-room',
   RoomCreated = 'room-created',
   MaxRoomsReached = 'max-rooms-reached',
-  CheckRoomExists = 'check-room-exists'
-};
+  CheckRoomExists = 'check-room-exists',
+  UserDropped = 'user-dropped'
+}
+
+export interface RoomCreatedPayload {
+  room: Room
+}
+
+export interface UserCreatedPayoad {
+  user: User
+}
+
+export interface CreateRoomPayload {
+  user: User
+}
 
 export interface CheckRoomExistsPayload {
   room: Room,
@@ -27,7 +40,11 @@ export interface JoinUserPayload {
 export interface UserJoinedPayload {
   room: Room,
   user: User
-};
+}
+
+export interface UserDroppedPayload {
+  user: User
+}
 
 export interface Event<T> {
   type: EventType,

@@ -2,7 +2,7 @@ package com.github.marceloleite2604.pitanga.model.event;
 
 import lombok.Builder;
 
-public class MaxRoomsUsersReachedEvent extends Event<Void> {
+public class MaxRoomsUsersReachedEvent extends Event<EmptyPayload> {
 
     @Builder
     public MaxRoomsUsersReachedEvent() {

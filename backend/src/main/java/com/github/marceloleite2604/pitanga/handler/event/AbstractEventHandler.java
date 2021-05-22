@@ -3,12 +3,13 @@ package com.github.marceloleite2604.pitanga.handler.event;
 import com.github.marceloleite2604.pitanga.model.IncomingContext;
 import com.github.marceloleite2604.pitanga.model.OutgoingContext;
 import com.github.marceloleite2604.pitanga.model.event.EventType;
+import com.github.marceloleite2604.pitanga.model.event.Payload;
 import com.github.marceloleite2604.pitanga.service.PitangaService;
 
 import java.util.Objects;
 import java.util.Optional;
 
-public abstract class AbstractEventHandler<T> implements EventHandler {
+public abstract class AbstractEventHandler<T extends Payload> implements EventHandler {
 
     protected final PitangaService pitangaService;
     private final EventType eventType;

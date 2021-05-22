@@ -1,7 +1,6 @@
 package com.github.marceloleite2604.pitanga.service.result;
 
-import com.github.marceloleite2604.pitanga.model.Room;
-import com.github.marceloleite2604.pitanga.model.User;
+import com.github.marceloleite2604.pitanga.model.attendee.Attendee;
 import lombok.Builder;
 import lombok.Getter;
 
@@ -11,12 +10,11 @@ public class JoinUserResult {
 
     private final Status status;
 
-    private final User user;
-
-    private final Room room;
+    private final Attendee attendee;
 
     public enum Status {
         USER_JOINED,
+        ALREADY_IN_ROOM,
         MAX_ROOM_USERS_REACHED
     }
 }

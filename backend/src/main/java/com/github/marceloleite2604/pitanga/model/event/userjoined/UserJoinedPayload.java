@@ -1,15 +1,20 @@
 package com.github.marceloleite2604.pitanga.model.event.userjoined;
 
+import com.fasterxml.jackson.annotation.JsonInclude;
 import com.github.marceloleite2604.pitanga.model.dao.RoomDao;
-import com.github.marceloleite2604.pitanga.model.dao.UserDao;
+import com.github.marceloleite2604.pitanga.model.event.Payload;
+import lombok.AccessLevel;
+import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Getter;
+import lombok.NoArgsConstructor;
 
-@Builder
+@JsonInclude(JsonInclude.Include.NON_NULL)
 @Getter
-public class UserJoinedPayload {
-
-    private final UserDao user;
+@NoArgsConstructor(force = true)
+@Builder
+@AllArgsConstructor(access = AccessLevel.PRIVATE)
+public class UserJoinedPayload implements Payload {
 
     private final RoomDao room;
 }

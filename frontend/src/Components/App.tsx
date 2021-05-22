@@ -8,7 +8,11 @@ import {
   EventType,
   Event,
   CheckRoomExistsPayload,
-  UserJoinedPayload
+  UserJoinedPayload,
+  RoomCreatedPayload,
+  UserCreatedPayoad,
+  Attendee,
+  UserDroppedPayload
 } from '../Model';
 import { Home } from './Home';
 import { usePitangaWebSocket } from '../Hooks';
@@ -18,6 +22,7 @@ export function App() {
   const [connected, setConnected] = useState(false);
   const [room, setRoom] = useState<Room>();
   const [user, setUser] = useState<User>();
+  const [attendee, setAttendee] = useState<Attendee>();
   const pitangaWebSocket = usePitangaWebSocket();
   const history = useHistory();
   const [connectionSubscription, setConnectionSubscription] = useState<Subscription>();
@@ -27,13 +32,15 @@ export function App() {
     console.log(`Received event "${incomingEvent.type}"`);
     switch (incomingEvent.type) {
       case EventType.RoomCreated: {
-        const receivedRoom = incomingEvent.payload as Room;
-        setRoom(receivedRoom);
-        history.push(`/${receivedRoom.id}`);
+        const payload = incomingEvent.payload as RoomCreatedPayload;
+        setRoom(payload.room);
+        setAttendee(payload.room.attendees[0]);
+        history.push(`/${payload.room.id}`);
         break;
       }
       case EventType.UserCreated: {
-        setUser(incomingEvent.payload as User);
+        const payload = incomingEvent.payload as UserCreatedPayoad;
+        setUser(payload.user);
         break;
       }
       case EventType.CheckRoomExists: {
@@ -55,10 +62,23 @@ export function App() {
       case EventType.UserJoined: {
         const payload = incomingEvent.payload as UserJoinedPayload;
         if (room && room.id === payload.room.id) {
-          if (!room.users.includes(payload.user)) {
-            room.users.push(payload.user);
-            setRoom(room);
+          setRoom(payload.room);
+          if (!attendee) {
+            const roomAttendee = payload.room.attendees.find(att => att?.user.id === user?.id);
+            if (roomAttendee) {
+              setAttendee(roomAttendee);
+            }
           }
+        }
+        break;
+      }
+      case EventType.UserDropped: {
+        const payload = incomingEvent.payload as UserDroppedPayload;
+        debugger;
+        if (room) {
+          const remainingAttendees = room?.attendees.filter(att => att.user.id !== payload.user.id);
+          room.attendees = remainingAttendees;
+          setRoom(room);
         }
         break;
       }
@@ -68,8 +88,8 @@ export function App() {
     }
   }, [history, room]);
 
-  const connectionCallback = useCallback((connected: boolean) => {
-    setConnected(connected);
+  const connectionCallback = useCallback((conn: boolean) => {
+    setConnected(conn);
   }, []);
 
   useEffect(() => {
@@ -91,6 +111,7 @@ export function App() {
         <RoomPage
           connected={connected}
           user={user}
+          attendee={attendee}
           room={room}
           pitangaWebSocket={pitangaWebSocket} />
       </Route>

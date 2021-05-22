@@ -2,18 +2,22 @@ package com.github.marceloleite2604.pitanga.service;
 
 import com.github.marceloleite2604.pitanga.model.Room;
 import com.github.marceloleite2604.pitanga.model.User;
+import com.github.marceloleite2604.pitanga.model.attendee.Attendee;
+import com.github.marceloleite2604.pitanga.model.attendee.AttendeeId;
 import com.github.marceloleite2604.pitanga.properties.RoomProperties;
 import com.github.marceloleite2604.pitanga.properties.UserProperties;
+import com.github.marceloleite2604.pitanga.repository.AttendeeRepository;
 import com.github.marceloleite2604.pitanga.repository.RoomRepository;
 import com.github.marceloleite2604.pitanga.repository.UserRepository;
 import com.github.marceloleite2604.pitanga.service.result.CreateRoomResult;
 import com.github.marceloleite2604.pitanga.service.result.CreateUserResult;
-import com.github.marceloleite2604.pitanga.service.result.ExcludeUserBySessionIdResult;
 import com.github.marceloleite2604.pitanga.service.result.JoinUserResult;
+import com.github.marceloleite2604.pitanga.util.IconRetriever;
 import com.github.marceloleite2604.pitanga.util.RoomIdGenerator;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 
+import javax.persistence.EntityManager;
 import java.time.LocalDateTime;
 import java.util.HashSet;
 import java.util.Optional;
@@ -31,9 +35,15 @@ public class PitangaService {
 
     private final UserRepository userRepository;
 
+    private final AttendeeRepository attendeeRepository;
+
     private final RoomProperties roomProperties;
 
     private final UserProperties userProperties;
+
+    private final IconRetriever iconRetriever;
+
+    private final EntityManager entityManager;
 
     public CreateRoomResult createRoom(User user) {
         if (!userRepository.existsById(user.getId())) {
@@ -49,18 +59,33 @@ public class PitangaService {
         var room = Room.builder()
                 .id(roomIdGenerator.generate())
                 .lastUpdate(LocalDateTime.now())
-                .user(user)
                 .build();
 
-        room = roomRepository.save(room);
+//        var attendeeId = AttendeeId.builder()
+//                .userId(user.getId())
+//                .roomId(room.getId())
+//                .build();
+//
+//        var attendee = Attendee.builder()
+//                .id(attendeeId)
+//                .room(room)
+//                .user(user)
+//                .joinedAt(LocalDateTime.now())
+//                .icon(iconRetriever.retrieve(room))
+//                .build();
+//
+//        attendeeRepository.saveAndFlush(attendee);
 
-        user.setRoom(room);
+        var attendee = createAttendee(user, room);
 
-        userRepository.save(user);
+//        room = roomRepository.findById(room.getId())
+//                .orElseThrow(IllegalStateException::new);
+//
+//        entityManager.refresh(room);
 
         return CreateRoomResult.builder()
                 .status(CreateRoomResult.Status.CREATED)
-                .room(room)
+                .room(attendee.getRoom())
                 .build();
 
     }
@@ -91,42 +116,86 @@ public class PitangaService {
         var persistedRoom = roomRepository.findById(room.getId())
                 .orElseThrow(() -> new IllegalArgumentException(String.format("Could not find a room with id \"%d\"", room.getId())));
 
-        if (persistedRoom.getUsers()
+        var optionalAttendee = persistedRoom.getAttendees()
+                .stream()
+                .filter(attendee -> attendee.getUser()
+                        .equals(persistedUser))
+                .findFirst();
+        if (optionalAttendee.isPresent()) {
+            return JoinUserResult.builder()
+                    .status(JoinUserResult.Status.ALREADY_IN_ROOM)
+                    .attendee(optionalAttendee.get())
+//                    .user(persistedUser)
+//                    .room(persistedRoom)
+                    .build();
+        }
+
+        if (persistedRoom.getAttendees()
                 .size() >= roomProperties.getMaxUsers()) {
             return JoinUserResult.builder()
                     .status(JoinUserResult.Status.MAX_ROOM_USERS_REACHED)
                     .build();
         }
 
-        persistedRoom.getUsers()
-                .add(persistedUser);
-        persistedRoom = roomRepository.save(persistedRoom);
+        var attendee = createAttendee(persistedUser, persistedRoom);
 
-        persistedUser.setRoom(persistedRoom);
-        persistedUser = userRepository.save(persistedUser);
+//        room = roomRepository.findById(room.getId())
+//                .orElseThrow(IllegalStateException::new);
+//
+//        entityManager.refresh(room);
+
+//        persistedUser.setIcon(iconRetriever.retrieve(persistedRoom));
+//
+//        persistedRoom.getUsers()
+//                .add(persistedUser);
+//        persistedRoom = roomRepository.save(persistedRoom);
+//
+//        persistedUser.setRoom(persistedRoom);
+//        persistedUser = userRepository.save(persistedUser);
 
         return JoinUserResult.builder()
                 .status(JoinUserResult.Status.USER_JOINED)
-                .user(persistedUser)
-                .room(persistedRoom)
+                .attendee(attendee)
                 .build();
+    }
+
+    private Attendee createAttendee(User user, Room room) {
+        var attendeeId = AttendeeId.builder()
+                .roomId(room.getId())
+                .userId(user.getId())
+                .build();
+
+        var attendee = Attendee.builder()
+                .id(attendeeId)
+                .user(user)
+                .room(room)
+                .icon(iconRetriever.retrieve(room))
+                .joinedAt(LocalDateTime.now())
+                .build();
+
+        attendee = attendeeRepository.saveAndFlush(attendee);
+        entityManager.refresh(attendee);
+        return attendee;
     }
 
     public void deleteUser(User user) {
         userRepository.delete(user);
-    };
+    }
+
+    ;
 
     public Optional<Room> findById(long roomId) {
         return roomRepository.findById(roomId);
     }
 
-    public Set<String> retrieveSessionIdsFromUsersOnRoom(Room room) {
-        return room.getUsers()
-                .stream()
-                .map(User::getId)
-                .map(UUID::toString)
-                .collect(Collectors.toCollection(HashSet::new));
-    }
+//    public Set<String> retrieveSessionIdsFromUsersOnRoom(Room room) {
+//        return room.getAttendees()
+//                .stream()
+//                .map(Attendee::getUser)
+//                .map(User::getId)
+//                .map(UUID::toString)
+//                .collect(Collectors.toCollection(HashSet::new));
+//    }
 
     public Optional<User> retrieveUser(String id) {
         return userRepository.findById(UUID.fromString(id));

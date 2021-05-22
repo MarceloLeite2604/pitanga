@@ -6,9 +6,11 @@ import com.github.marceloleite2604.pitanga.handler.event.EventHandler;
 import com.github.marceloleite2604.pitanga.model.IncomingContext;
 import com.github.marceloleite2604.pitanga.model.OutgoingContext;
 import com.github.marceloleite2604.pitanga.model.dao.UserDao;
-import com.github.marceloleite2604.pitanga.model.event.CreateUserEvent;
+import com.github.marceloleite2604.pitanga.model.event.createuser.CreateUserEvent;
 import com.github.marceloleite2604.pitanga.model.event.Event;
-import com.github.marceloleite2604.pitanga.model.event.UserDroppedEvent;
+import com.github.marceloleite2604.pitanga.model.event.createuser.CreateUserPayload;
+import com.github.marceloleite2604.pitanga.model.event.userdropped.UserDroppedEvent;
+import com.github.marceloleite2604.pitanga.model.event.userdropped.UserDroppedPayload;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Component;
 import org.springframework.transaction.annotation.Transactional;
@@ -46,16 +48,20 @@ public class PitangaTextWebSocketHandler extends TextWebSocketHandler {
         super.afterConnectionEstablished(session);
         sessions.put(session.getId(), session);
 
-        var userDao = UserDao.builder()
+        var user = UserDao.builder()
                 .id(session.getId())
                 .build();
 
+        var createUserPayload = CreateUserPayload.builder()
+                .user(user)
+                .build();
+
         var createUserEvent = CreateUserEvent.builder()
-                .userDao(userDao)
+                .payload(createUserPayload)
                 .build();
 
         var incomingContext = IncomingContext.builder()
-                .sender(userDao)
+                .sender(user)
                 .event(createUserEvent)
                 .build();
 
@@ -69,16 +75,20 @@ public class PitangaTextWebSocketHandler extends TextWebSocketHandler {
         super.afterConnectionClosed(session, status);
         sessions.remove(session.getId());
 
-        var userDao = UserDao.builder()
+        var user = UserDao.builder()
                 .id(session.getId())
                 .build();
 
+        var userDroppedPayload = UserDroppedPayload.builder()
+                .user(user)
+                .build();
+
         var userDroppedEvent = UserDroppedEvent.builder()
-                .payload(userDao)
+                .payload(userDroppedPayload)
                 .build();
 
         var incomingContext = IncomingContext.builder()
-                .sender(userDao)
+                .sender(user)
                 .event(userDroppedEvent)
                 .build();
 

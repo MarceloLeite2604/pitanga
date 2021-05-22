@@ -12,7 +12,7 @@ import java.util.stream.Collectors;
 @RequiredArgsConstructor
 public class RoomToDao implements Mapper<Room, RoomDao> {
 
-    private final UserToDao userToDao;
+    private final AttendeeToDao attendeeToDao;
 
     @Override
     public RoomDao mapTo(Room room) {
@@ -21,14 +21,14 @@ public class RoomToDao implements Mapper<Room, RoomDao> {
             return null;
         }
 
-        var users = room.getUsers()
+        var attendees = room.getAttendees()
                 .stream()
-                .map(userToDao::mapTo)
+                .map(attendeeToDao::mapTo)
                 .collect(Collectors.toSet());
 
         return RoomDao.builder()
                 .id(room.getId())
-                .users(users)
+                .attendees(attendees)
                 .build();
     }
 
@@ -39,14 +39,14 @@ public class RoomToDao implements Mapper<Room, RoomDao> {
             return null;
         }
 
-        var users = roomDao.getUsers()
+        var attendees = roomDao.getAttendees()
                 .stream()
-                .map(userToDao::mapFrom)
+                .map(attendeeToDao::mapFrom)
                 .collect(Collectors.toSet());
 
         return Room.builder()
                 .id(roomDao.getId())
-                .users(users)
+                .attendees(attendees)
                 .build();
     }
 }

@@ -1,6 +1,6 @@
-import { User } from './User';
+import { Attendee } from './Attendee';
 
 export interface Room {
   id: number,
-  users: User[]
-};
+  attendees: Attendee[]
+}
