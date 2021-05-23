@@ -1,35 +1,33 @@
-import { FC, useCallback, useEffect, useState } from 'react';
+import { useCallback, useEffect, useState } from 'react';
 import { useParams } from 'react-router-dom';
 import { Subscription } from 'rxjs';
-import { PitangaWebSocket } from '../../Hooks';
 import {
   Room as RoomModel,
-  User,
+  Data,
   buildCheckRoomExists,
   EventType,
   CheckRoomExistsPayload,
-  buildJoinUserEvent,
-  Attendee
+  buildJoinUserEvent
 } from '../../Model';
 
-interface Props {
-  connected: boolean,
-  user?: User,
-  attendee?: Attendee
-  room?: RoomModel,
-  pitangaWebSocket: PitangaWebSocket
-}
+export const Room = (data: Data) => {
 
-export const Room: FC<Props> = ({ connected, user, attendee, room, pitangaWebSocket }) => {
+  const { connected, room, user, attendee, subjects } = data;
 
+  console.log('Rendering Room.');
   const [eventsSubscription, setEventsSubscription] = useState<Subscription>();
   const { roomId } = useParams<{ roomId: string }>();
+  const [, updateState] = useState<Object>();
+  useCallback(() => {
+    console.log('Forcing update');
+    updateState({});
+  }, [room]);
 
   const eventsCallback = useCallback(event => {
     if (event.type === EventType.CheckRoomExists) {
       const payload = event.payload as CheckRoomExistsPayload;
       if (user && payload.exists) {
-        pitangaWebSocket.$outgoingEvent.next(buildJoinUserEvent(user, payload.room));
+        subjects.$out.next(buildJoinUserEvent(user, payload.room));
       }
     }
   }, [user]);
@@ -37,9 +35,9 @@ export const Room: FC<Props> = ({ connected, user, attendee, room, pitangaWebSoc
   useEffect(() => {
     if (connected && user) {
       eventsSubscription?.unsubscribe();
-      setEventsSubscription(pitangaWebSocket.$incomingEvent.subscribe(eventsCallback));
+      setEventsSubscription(subjects.$in.subscribe(eventsCallback));
 
-      pitangaWebSocket.$outgoingEvent.next(buildCheckRoomExists({
+      subjects.$out.next(buildCheckRoomExists({
         id: parseInt(roomId)
       } as RoomModel));
       return () => eventsSubscription?.unsubscribe();
@@ -50,16 +48,16 @@ export const Room: FC<Props> = ({ connected, user, attendee, room, pitangaWebSoc
   if (room && user) {
     content = [<p key='1' >Welcome user {user?.id} to room #{room?.id}.</p>];
     if (attendee) {
-      content = [...content, <p key='2'>Your icon is ${attendee.icon}</p>];
+      content = [...content, <p key='2'>Your icon is {attendee.icon}</p>];
 
       if (room.attendees.length > 1) {
-        const attendeesElement = room.attendees.filter(att => att !== attendee).map(
+        const attendeesElement = room.attendees.filter(att => att.user.id !== attendee.user.id).map(
           (att, index) => <p key={4 + index}>User {att.user.id} with icon {att.icon}</p>
         );
         content = [...content, <p key='3'>Attendees in this room:</p>, ...attendeesElement];
       }
     }
-    
+
   } else {
     content = <p>Checking room...</p>;
   }

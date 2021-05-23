@@ -1,20 +1,15 @@
-import { FC, useState } from 'react';
-import { PitangaWebSocket } from '../../Hooks';
-import { buildCreateRoomEvent, User } from '../../Model';
+import { useState } from 'react';
+import { buildCreateRoomEvent, Data } from '../../Model';
 
-interface Props {
-  connected: boolean,
-  user?: User,
-  pitangaWebSocket: PitangaWebSocket
-}
+export const Home = (data: Data) => {
 
-export const Home: FC<Props> = ({ connected, user, pitangaWebSocket }) => {
+  const { connected, user, subjects } = data;
 
   // eslint-disable-next-line @typescript-eslint/no-unused-vars
   const [roomNumber, setRoomNumber] = useState<string>();
 
   const sendCreateRoomEvent = () => {
-    user && pitangaWebSocket.$outgoingEvent.next(buildCreateRoomEvent(user));
+    user && subjects.$out.next(buildCreateRoomEvent(user));
   };
 
   return (
