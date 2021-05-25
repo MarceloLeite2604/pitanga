@@ -1,8 +1,8 @@
 import { useEffect, useState } from 'react';
 import { Subject } from 'rxjs';
 import { w3cwebsocket as W3CWebSocket } from 'websocket';
-import { Event, WebSocketSubjects } from '../Model';
-import { useStatePartialUpdate } from './useStatePartialUpdate';
+import { Event, WebSocketSubjects } from '../../../Model';
+import { useStatePartialUpdate } from '../../../hooks';
 
 const SERVER_ADDRESS = 'ws://localhost:8080/pitanga';
 
@@ -28,14 +28,14 @@ function createClient(webSocketSubjects: WebSocketSubjects) {
   return client;
 }
 
-export function useWebSocketSubjects() {
+export const useWebSocketSubjects = () => {
 
   const [webSocketSubjects] = useStatePartialUpdate<WebSocketSubjects>({
     $connected: new Subject<boolean>(),
     $in: new Subject<Event>(),
     $out: new Subject<Event>()
   });
-  
+
   const [client] = useState(() => createClient(webSocketSubjects));
 
   useEffect(() => {
@@ -46,4 +46,4 @@ export function useWebSocketSubjects() {
   }, []);
 
   return webSocketSubjects;
-}
+};

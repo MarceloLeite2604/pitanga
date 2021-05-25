@@ -1,7 +1,15 @@
 import { useCallback } from 'react';
 import { useHistory } from 'react-router';
-import { CheckRoomExistsEvent, Event, EventType, RoomCreatedEvent, UserCreatedEvent, UserDroppedEvent, UserJoinedEvent } from '../Model';
-import { Data } from '../Model/Data';
+import {
+  CheckRoomExistsEvent,
+  Event,
+  EventType,
+  RoomCreatedEvent,
+  UserCreatedEvent,
+  UserDroppedEvent,
+  UserJoinedEvent,
+  Data
+} from '../../../Model';
 
 export const useWebSocketCallbacks: (
   data: Data,
