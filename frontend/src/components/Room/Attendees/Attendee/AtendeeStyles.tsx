@@ -5,8 +5,7 @@ export const useStyles = makeStyles(theme => createStyles({
     minHeight: '6rem',
     display: 'flex',
     flexDirection: 'column',
-    justifyContent: 'center',
-    height: '10vw'
+    justifyContent: 'center'
   },
   userAttendeeCard: {
     background: lighten(theme.palette.background.paper, 0.2)

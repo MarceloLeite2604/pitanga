@@ -18,7 +18,9 @@ export const Room: FC<Params> = ({ data }) => {
       {
         data.user &&
         data.room &&
-        <Attendees user={data.user} attendees={data.room.attendees} />
+        <Attendees
+          user={data.user}
+          attendees={data.room.attendees} />
       }
     </>
   );

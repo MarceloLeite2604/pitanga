@@ -1,7 +1,9 @@
 import { FC, useCallback, useState } from 'react';
 import { useHistory } from 'react-router';
-import { Button, TextField, Grid } from '@material-ui/core';
+import { Button, TextField, Grid, Typography } from '@material-ui/core';
 import { buildCreateRoomEvent, Data } from '../../Model';
+import { GridItem } from './GridItem';
+import { useStyles } from './HomeStyles';
 
 interface Params {
   data: Data
@@ -15,7 +17,7 @@ export const Home: FC<Params> = ({ data }) => {
   const history = useHistory();
   const joinRoom = useCallback(() => {
     history.push(`/${roomNumber}`);
-  }, [history]);
+  }, [history, roomNumber]);
 
   const sendCreateRoomEvent = () => {
     user && subjects.$out.next(buildCreateRoomEvent(user));
@@ -38,15 +40,19 @@ export const Home: FC<Params> = ({ data }) => {
     return true;
   }, []);
 
+  const classes = useStyles();
+
   const joinRoomButtonDisabled = !connected || !user || !validateRoomNumber(roomNumber);
 
   return (
     <Grid
       container
-      spacing={2}>
-      <Grid
-        item
-        xs={6}>
+      spacing={2}
+      alignItems='center'
+      style={{ flexGrow: 0 }}>
+      <GridItem
+        xs={6}
+        alignItems='flex-end'>
         <TextField
           id='roomNumber'
           label='Room number'
@@ -54,30 +60,27 @@ export const Home: FC<Params> = ({ data }) => {
             maxLength: '8'
           }}
           onChange={event => setRoomNumber(event.target.value)} />
-      </Grid>
-      <Grid
-        item
-        xs={6}>
+      </GridItem>
+      <GridItem
+        xs={6}
+        alignItems='flex-start'>
         <Button
           variant='contained'
           color='primary'
           disabled={joinRoomButtonDisabled}
-          onClick={joinRoom}>Join Room</Button>
-      </Grid>
-      <Grid
-        item
-        xs={12}>
-        <p>Or</p>
-      </Grid>
-      <Grid
-        item
-        xs={12}>
+          onClick={joinRoom}
+          className={classes.joinRooomButton}>Join Room</Button>
+      </GridItem>
+      <GridItem xs={12}>
+        <Typography>Or</Typography>
+      </GridItem>
+      <GridItem xs={12}>
         <Button
           variant='contained'
           color='primary'
           disabled={!connected || !user}
           onClick={sendCreateRoomEvent}>Create room</Button>
-      </Grid>
+      </GridItem>
     </Grid >
   );
 };

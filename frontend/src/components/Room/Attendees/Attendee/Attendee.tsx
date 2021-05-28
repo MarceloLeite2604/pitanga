@@ -12,9 +12,12 @@ export const Attendee = ({ user, attendee }: Props) => {
   const classes = useStyles();
 
   return (
-    <Card className={`${classes.attendeeCard} ${user.id === attendee.user.id && classes.userAttendeeCard}`} >
+    <Card
+      className={`${classes.attendeeCard} ${user.id === attendee.user.id && classes.userAttendeeCard}`} >
       <CardContent>
-        <Typography align='center' className={classes.iconTypography} >
+        <Typography
+          align='center'
+          className={classes.iconTypography} >
           {attendee.icon}
         </Typography>
       </CardContent>
