@@ -1,6 +1,5 @@
 import { Switch, Route } from 'react-router-dom';
-
-import { Home, Room } from '..';
+import { Container, Title, Home, Room } from './components';
 import { useSubscriptions, useData } from './hooks';
 
 export function App() {
@@ -9,12 +8,16 @@ export function App() {
   useSubscriptions(data, setData);
 
   return (
-    <Switch>
-      <Route path='/:roomId'>
-        <Room data={data} />
-      </Route>
-      <Route path='/'>
-        <Home data={data} />
-      </Route>
-    </Switch>);
+    <Container>
+      <Title />
+      <Switch>
+        <Route path='/:roomId'>
+          <Room data={data} />
+        </Route>
+        <Route path='/'>
+          <Home data={data} />
+        </Route>
+      </Switch>
+    </Container>
+  );
 }
