@@ -8,7 +8,9 @@ import {
   UserCreatedEvent,
   UserDroppedEvent,
   UserJoinedEvent,
-  Data
+  AttendeeVotedEvent,
+  Data,
+  removeUserFromAttendees
 } from '../../../Model';
 
 export const useWebSocketCallbacks: (
@@ -76,6 +78,18 @@ export const useWebSocketCallbacks: (
     }
   }, [room]);
 
+  const attendeeVotedCallback = useCallback((event: AttendeeVotedEvent) => {
+    if (room?.attendees) {
+      const attendees = [event.payload.attendee, ...removeUserFromAttendees(event.payload.attendee.user, room?.attendees)];
+      setData({
+        room: {
+          ...room,
+          attendees
+        }
+      });
+    }
+  }, [room]);
+
   const eventsCallback = useCallback((event: Event) => {
     console.log(`Received event "${event.type}"`);
     switch (event.type) {
@@ -101,6 +115,10 @@ export const useWebSocketCallbacks: (
       }
       case EventType.UserDropped: {
         userDroppedEventCallback(event);
+        break;
+      }
+      case EventType.AttendeeVoted: {
+        attendeeVotedCallback(event);
         break;
       }
       default: {

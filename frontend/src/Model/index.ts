@@ -5,3 +5,4 @@ export * from './Attendee';
 export * from './Data';
 export * from './ChartEventProps';
 export * from './ChartPoint';
+export * from './Vote';

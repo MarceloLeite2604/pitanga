@@ -22,7 +22,7 @@ export const Room: FC<Params> = ({ data }) => {
       <Grid
         item
         xs={12}>
-        <EffortValueChart />
+        <EffortValueChart data={data} />
       </Grid>
       <Grid
         item

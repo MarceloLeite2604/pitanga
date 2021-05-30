@@ -1,14 +1,23 @@
 import { Grid, Slider as MuiSlider, Typography } from '@material-ui/core';
 import { FC } from 'react';
+import { useUpdateState } from '../../../../../../../../hooks';
 import { useStyles } from './SliderStyles';
 
 interface Props {
   label: string,
-  value: number
+  value: number,
+  hide?: boolean
 }
 
-export const Slider: FC<Props> = ({ label, value }) => {
+export const Slider: FC<Props> = ({ label, value, hide }) => {
   const styles = useStyles();
+
+  useUpdateState([value, hide]);
+
+  if (hide) {
+    return <></>;
+  }
+
   return <Grid
     container
     alignItems='center'
@@ -26,6 +35,7 @@ export const Slider: FC<Props> = ({ label, value }) => {
       item
       xs={7}>
       <MuiSlider
+        key={`${label}-${value}-${String(hide)}`}
         disabled
         marks
         min={0}

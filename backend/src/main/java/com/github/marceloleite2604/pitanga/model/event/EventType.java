@@ -1,6 +1,8 @@
 package com.github.marceloleite2604.pitanga.model.event;
 
 import com.fasterxml.jackson.annotation.JsonValue;
+import com.github.marceloleite2604.pitanga.model.event.attendeevoted.AttendeeVotedEvent;
+import com.github.marceloleite2604.pitanga.model.event.attendeevoted.AttendeeVotedPayload;
 import com.github.marceloleite2604.pitanga.model.event.checkroomexists.CheckRoomExistsEvent;
 import com.github.marceloleite2604.pitanga.model.event.checkroomexists.CheckRoomExistsPayload;
 import com.github.marceloleite2604.pitanga.model.event.createroom.CreateRoomEvent;
@@ -35,7 +37,8 @@ public enum EventType {
     ROOM_CREATED(Values.ROOM_CREATED, RoomCreatedEvent.class, RoomCreatedPayload.class),
     MAX_ROOMS_REACHED(Values.MAX_ROOMS_REACHED, MaxRoomsReachedEvent.class),
     CHECK_ROOM_EXISTS(Values.CHECK_ROOM_EXISTS, CheckRoomExistsEvent.class, CheckRoomExistsPayload.class),
-    USER_DROPPED(Values.USER_DROPPED, UserDroppedEvent.class, UserDroppedPayload.class);
+    USER_DROPPED(Values.USER_DROPPED, UserDroppedEvent.class, UserDroppedPayload.class),
+    ATTENDEE_VOTED(Values.ATTENDEE_VOTED, AttendeeVotedEvent.class, AttendeeVotedPayload.class);
 
     @JsonValue
     private final String value;
@@ -73,5 +76,6 @@ public enum EventType {
         public static final String MAX_ROOMS_REACHED = "max-rooms-reached";
         public static final String CHECK_ROOM_EXISTS = "check-room-exists";
         public static final String USER_DROPPED = "user-dropped";
+        public static final String ATTENDEE_VOTED = "attendee-voted";
     }
 }

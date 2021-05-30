@@ -2,6 +2,7 @@ package com.github.marceloleite2604.pitanga.service;
 
 import com.github.marceloleite2604.pitanga.model.Room;
 import com.github.marceloleite2604.pitanga.model.User;
+import com.github.marceloleite2604.pitanga.model.Vote;
 import com.github.marceloleite2604.pitanga.model.attendee.Attendee;
 import com.github.marceloleite2604.pitanga.model.attendee.AttendeeId;
 import com.github.marceloleite2604.pitanga.properties.RoomProperties;
@@ -9,6 +10,7 @@ import com.github.marceloleite2604.pitanga.properties.UserProperties;
 import com.github.marceloleite2604.pitanga.repository.AttendeeRepository;
 import com.github.marceloleite2604.pitanga.repository.RoomRepository;
 import com.github.marceloleite2604.pitanga.repository.UserRepository;
+import com.github.marceloleite2604.pitanga.repository.VoteRepository;
 import com.github.marceloleite2604.pitanga.service.result.CreateRoomResult;
 import com.github.marceloleite2604.pitanga.service.result.CreateUserResult;
 import com.github.marceloleite2604.pitanga.service.result.JoinUserResult;
@@ -31,6 +33,8 @@ public class PitangaService {
     private final RoomRepository roomRepository;
 
     private final UserRepository userRepository;
+
+    private final VoteRepository voteRepository;
 
     private final AttendeeRepository attendeeRepository;
 
@@ -102,8 +106,6 @@ public class PitangaService {
             return JoinUserResult.builder()
                     .status(JoinUserResult.Status.ALREADY_IN_ROOM)
                     .attendee(optionalAttendee.get())
-//                    .user(persistedUser)
-//                    .room(persistedRoom)
                     .build();
         }
 
@@ -145,11 +147,19 @@ public class PitangaService {
         userRepository.delete(user);
     }
 
-    public Optional<Room> findById(long roomId) {
+    public Optional<Room> findRoomById(long roomId) {
         return roomRepository.findById(roomId);
     }
 
     public Optional<User> retrieveUser(String id) {
         return userRepository.findById(UUID.fromString(id));
+    }
+
+    public Optional<Attendee> findAttendeeByUserId(UUID userId) {
+        return attendeeRepository.findByUserId(userId);
+    }
+
+    public Vote persistVote(Vote vote) {
+        return voteRepository.save(vote);
     }
 }

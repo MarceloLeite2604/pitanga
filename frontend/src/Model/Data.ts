@@ -12,5 +12,5 @@ export interface Data {
   room?: Room,
   user?: User,
   attendee?: Attendee,
-  subjects: WebSocketSubjects
+  subjects: WebSocketSubjects,
 }

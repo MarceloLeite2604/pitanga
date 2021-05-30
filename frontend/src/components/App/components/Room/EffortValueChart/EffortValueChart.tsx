@@ -1,4 +1,4 @@
-import { useCallback, useState } from 'react';
+import { FC } from 'react';
 import {
   CartesianGrid,
   LabelList,
@@ -10,25 +10,23 @@ import {
   XAxis,
   YAxis
 } from 'recharts';
-import { ChartEventProps, ChartPoint, roundChartPoint } from '../../../../../Model';
-import { useOnMouseMoveCallback } from './hooks';
+import { Data } from '../../../../../Model';
+import { useOnClickCallback, useOnMouseMoveCallback, usePoints } from './hooks';
 import { axisTicks, domainLimits, mediumPoint } from './constants';
 import { TooltipRenderer, useStyles, VotesLabel } from './components';
+import { useUpdateState } from '../../../../../hooks';
+
+interface Props {
+  data: Data
+}
 
 /* Recharts does not allow custom component creation... ¯\_(ツ)_/¯ */
-export const EffortValueChart = () => {
-  const [points, setPoints] = useState<ChartPoint[]>([
-    { value: 0, effort: 0, label: '⏰' },
-    { value: 1, effort: 1, label: '🎀' }
-  ]);
+export const EffortValueChart: FC<Props> = ({ data }) => {
+
+  const points = usePoints(data);
   const [suggestedPoint, onMouseMoveCallback] = useOnMouseMoveCallback();
-
-  const onClickCallback = useCallback((props: ChartEventProps) => {
-    const { xValue, yValue } = props;
-    const point = roundChartPoint(xValue, yValue, points[0].label);
-    setPoints(previousState => [point, ...previousState.slice(1)]);
-  }, [setPoints]);
-
+  const onClickCallback = useOnClickCallback(data);
+  useUpdateState([data.attendee?.vote]);
   const styles = useStyles();
 
   return (

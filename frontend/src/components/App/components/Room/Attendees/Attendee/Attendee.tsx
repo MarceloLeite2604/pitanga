@@ -33,8 +33,14 @@ export const Attendee = ({ user, attendee }: Props) => {
             container
             item
             xs={10}>
-            <Slider label='Effort' value={4} />
-            <Slider label='Value' value={2} />
+            <Slider
+              label='Effort'
+              hide={!attendee.vote}
+              value={attendee.vote?.effort || 0} />
+            <Slider
+              label='Value'
+              hide={!attendee.vote}
+              value={attendee.vote?.value || 0} />
           </Grid>
         </Grid>
       </CardContent>

@@ -7,7 +7,7 @@ import { Attendee } from './Attendee';
 interface Props {
   attendees: AttendeeModel[],
   user: User
-};
+}
 
 export const Attendees: FC<Props> = ({ attendees, user }) => {
 

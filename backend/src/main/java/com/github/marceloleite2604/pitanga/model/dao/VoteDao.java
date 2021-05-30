@@ -4,6 +4,7 @@ import com.fasterxml.jackson.annotation.JsonInclude;
 import lombok.AccessLevel;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
+import lombok.EqualsAndHashCode;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 
@@ -12,15 +13,12 @@ import lombok.NoArgsConstructor;
 @NoArgsConstructor
 @AllArgsConstructor(access = AccessLevel.PRIVATE)
 @Getter
-public class AttendeeDao {
+@EqualsAndHashCode(onlyExplicitlyIncluded = true)
+public class VoteDao {
 
-    private UserDao user;
+    private AttendeeDao attendee;
 
-    private RoomDao room;
+    private int effort;
 
-    private VoteDao vote;
-
-    private String icon;
-
-    private long joinedAt;
+    private int value;
 }

@@ -11,3 +11,4 @@ export * from './RoomCreated';
 export * from './UserCreatedEvent';
 export * from './UserDroppedEvent';
 export * from './UserJoinedEvent';
+export * from './AttendeeVoted';

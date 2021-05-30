@@ -9,5 +9,6 @@ export enum EventType {
   RoomCreated = 'room-created',
   MaxRoomsReached = 'max-rooms-reached',
   CheckRoomExists = 'check-room-exists',
-  UserDropped = 'user-dropped'
+  UserDropped = 'user-dropped',
+  AttendeeVoted = 'attendee-voted'
 }

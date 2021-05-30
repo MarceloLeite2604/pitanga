@@ -22,7 +22,7 @@ public class CheckRoomExistsEventHandler extends AbstractEventHandler<CheckRoomE
     @Override
     protected OutgoingContext doHandle(IncomingContext incomingContext) {
         var checkRoomExistsPayload = retrievePayload(incomingContext);
-        var optionalRoom = pitangaService.findById(checkRoomExistsPayload.getRoom()
+        var optionalRoom = pitangaService.findRoomById(checkRoomExistsPayload.getRoom()
                 .getId());
 
         var room = roomToDao.mapTo(optionalRoom.orElse(null));

@@ -14,10 +14,13 @@ public class AttendeeToDao implements Mapper<Attendee, AttendeeDao> {
 
     private final UserToDao userToDao;
 
+    private final VoteToDao voteToDao;
+
     @Override
     public AttendeeDao mapTo(Attendee attendee) {
         return AttendeeDao.builder()
                 .user(userToDao.mapTo(attendee.getUser()))
+                .vote(voteToDao.mapTo(attendee.getVote()))
                 .icon(attendee.getIcon())
                 .joinedAt(attendee.getJoinedAt()
                         .toEpochSecond(ZoneOffset.UTC))
@@ -29,6 +32,8 @@ public class AttendeeToDao implements Mapper<Attendee, AttendeeDao> {
 
         var user = userToDao.mapFrom(attendeeDao.getUser());
 
+        var vote = voteToDao.mapFrom(attendeeDao.getVote());
+
         var id = AttendeeId.builder()
                 .userId(user.getId())
                 .build();
@@ -37,6 +42,7 @@ public class AttendeeToDao implements Mapper<Attendee, AttendeeDao> {
                 .id(id)
                 .icon(attendeeDao.getIcon())
                 .user(user)
+                .vote(vote)
                 .build();
     }
 }
