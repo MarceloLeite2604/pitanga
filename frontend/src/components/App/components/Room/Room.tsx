@@ -3,8 +3,8 @@ import { FC } from 'react';
 import { useUpdateState } from '../../../../hooks';
 import { Data } from '../../../../Model';
 import { Attendees } from './Attendees';
-import { EffortValueChart } from './EffortValueChart/EffortValueChart';
-import { useEventsCallback } from './hooks/useEventsCallback';
+import { EffortValueChart } from './EffortValueChart';
+import { useEventsCallback } from './hooks';
 
 interface Params {
   data: Data
@@ -33,7 +33,7 @@ export const Room: FC<Params> = ({ data }) => {
             data.room &&
             <Attendees
               user={data.user}
-              attendees={data.room.attendees} />
+              room={data.room} />
           }
         </>
       </Grid>

@@ -8,6 +8,7 @@ import lombok.Builder;
 import lombok.EqualsAndHashCode;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
+import lombok.Setter;
 import lombok.Singular;
 
 import javax.persistence.Entity;
@@ -34,4 +35,7 @@ public class Room {
 
     @JsonIgnore
     private LocalDateTime lastUpdate;
+
+    @Setter
+    private VotingStatus votingStatus;
 }

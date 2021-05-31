@@ -1,15 +1,23 @@
-import { Attendee as AttendeeModel, User } from '../../../../../../Model';
+import { Attendee as AttendeeModel, Room, User, VotingStatus } from '../../../../../../Model';
 import { Card, CardContent, Grid, Typography } from '@material-ui/core';
 import { useStyles, Slider } from './components';
+import { FC, useMemo } from 'react';
 
 interface Props {
   user: User,
+  room: Room,
   attendee: AttendeeModel
 }
 
-export const Attendee = ({ user, attendee }: Props) => {
+export const Attendee: FC<Props> = ({ user, room, attendee }) => {
 
   const styles = useStyles();
+
+  const hideSlider = useMemo(() =>
+    (attendee.user.id !== user.id &&
+      room.votingStatus === VotingStatus.Open) ||
+    !attendee.vote,
+  [attendee, room.votingStatus]);
 
   return (
     <Card
@@ -35,11 +43,11 @@ export const Attendee = ({ user, attendee }: Props) => {
             xs={10}>
             <Slider
               label='Effort'
-              hide={!attendee.vote}
+              hide={hideSlider}
               value={attendee.vote?.effort || 0} />
             <Slider
               label='Value'
-              hide={!attendee.vote}
+              hide={hideSlider}
               value={attendee.vote?.value || 0} />
           </Grid>
         </Grid>

@@ -1,8 +1,10 @@
 import { Attendee } from '..';
+import { VotingStatus } from '../VotingStatus';
 import { EventType } from './EventType';
 
 export interface AttendeeVotedPayload {
-  attendee: Attendee
+  attendee: Attendee,
+  votingStatus: VotingStatus
 }
 
 export interface AttendeeVotedEvent {

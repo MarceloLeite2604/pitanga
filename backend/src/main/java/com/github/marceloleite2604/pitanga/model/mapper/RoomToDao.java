@@ -29,6 +29,7 @@ public class RoomToDao implements Mapper<Room, RoomDao> {
         return RoomDao.builder()
                 .id(room.getId())
                 .attendees(attendees)
+                .votingStatus(room.getVotingStatus())
                 .build();
     }
 
@@ -44,9 +45,12 @@ public class RoomToDao implements Mapper<Room, RoomDao> {
                 .map(attendeeToDao::mapFrom)
                 .collect(Collectors.toSet());
 
+        var votingStatus = roomDao.getVotingStatus();
+
         return Room.builder()
                 .id(roomDao.getId())
                 .attendees(attendees)
+                .votingStatus(votingStatus)
                 .build();
     }
 }

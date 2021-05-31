@@ -3,6 +3,7 @@ package com.github.marceloleite2604.pitanga.service;
 import com.github.marceloleite2604.pitanga.model.Room;
 import com.github.marceloleite2604.pitanga.model.User;
 import com.github.marceloleite2604.pitanga.model.Vote;
+import com.github.marceloleite2604.pitanga.model.VotingStatus;
 import com.github.marceloleite2604.pitanga.model.attendee.Attendee;
 import com.github.marceloleite2604.pitanga.model.attendee.AttendeeId;
 import com.github.marceloleite2604.pitanga.properties.RoomProperties;
@@ -21,6 +22,7 @@ import org.springframework.stereotype.Service;
 
 import javax.persistence.EntityManager;
 import java.time.LocalDateTime;
+import java.util.Objects;
 import java.util.Optional;
 import java.util.UUID;
 
@@ -60,6 +62,7 @@ public class PitangaService {
         var room = Room.builder()
                 .id(roomIdGenerator.generate())
                 .lastUpdate(LocalDateTime.now())
+                .votingStatus(VotingStatus.OPEN)
                 .build();
 
         var attendee = createAttendee(user, room);
@@ -91,11 +94,9 @@ public class PitangaService {
     }
 
     public JoinUserResult joinUserIntoRoom(User user, Room room) {
-        var persistedUser = userRepository.findById(user.getId())
-                .orElseThrow(() -> new IllegalArgumentException(String.format("Could not find a user with id \"%s\"", user.getId())));
+        var persistedUser = findMandatoryUserById(user.getId());
 
-        var persistedRoom = roomRepository.findById(room.getId())
-                .orElseThrow(() -> new IllegalArgumentException(String.format("Could not find a room with id \"%d\"", room.getId())));
+        var persistedRoom = findMandatoryRoomById(room.getId());
 
         var optionalAttendee = persistedRoom.getAttendees()
                 .stream()
@@ -155,11 +156,51 @@ public class PitangaService {
         return userRepository.findById(UUID.fromString(id));
     }
 
-    public Optional<Attendee> findAttendeeByUserId(UUID userId) {
-        return attendeeRepository.findByUserId(userId);
+    private void updateVotingStatusForRoom(Room room) {
+        var hasMissingVotes = attendeeRepository.findAllByRoomId(room.getId())
+                .stream()
+                .anyMatch(attendee -> Objects.isNull(attendee.getVote()));
+
+        var votingStatus = hasMissingVotes ? VotingStatus.OPEN : VotingStatus.CLOSED;
+        room.setVotingStatus(votingStatus);
+
+        roomRepository.saveAndFlush(room);
     }
 
-    public Vote persistVote(Vote vote) {
-        return voteRepository.save(vote);
+    public Attendee updateVoteForAttendee(Attendee attendee) {
+        var persistedAttendee = findMandatoryAttendeeByUserId(attendee.getUser()
+                .getId());
+
+        var persistedVote = Optional.ofNullable(persistedAttendee.getVote())
+                .orElse(Vote.builder()
+                        .attendee(persistedAttendee)
+                        .id(persistedAttendee.getId())
+                        .build());
+
+        persistedVote.setEffort(attendee.getVote().getEffort());
+        persistedVote.setValue(attendee.getVote().getValue());
+
+        voteRepository.saveAndFlush(persistedVote);
+        entityManager.refresh(persistedAttendee);
+
+        updateVotingStatusForRoom(persistedAttendee.getRoom());
+        entityManager.refresh(persistedAttendee);
+
+        return persistedAttendee;
+    }
+
+    public User findMandatoryUserById(UUID id) {
+        return userRepository.findById(id)
+                .orElseThrow(() -> new IllegalArgumentException(String.format("Could not find a user with id \"%s\"", id)));
+    }
+
+    public Room findMandatoryRoomById(long id) {
+        return roomRepository.findById(id)
+                .orElseThrow(() -> new IllegalArgumentException(String.format("Could not find a room with id \"%d\"", id)));
+    }
+
+    public Attendee findMandatoryAttendeeByUserId(UUID userId) {
+        return attendeeRepository.findByUserId(userId)
+                .orElseThrow(() -> new IllegalArgumentException(String.format("Could not find an attendee associated with user \"%s\"", userId)));
     }
 }

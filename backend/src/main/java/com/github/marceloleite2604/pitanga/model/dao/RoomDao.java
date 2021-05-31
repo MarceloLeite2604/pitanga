@@ -1,5 +1,6 @@
 package com.github.marceloleite2604.pitanga.model.dao;
 
+import com.github.marceloleite2604.pitanga.model.VotingStatus;
 import lombok.AccessLevel;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
@@ -22,4 +23,6 @@ public class RoomDao {
 
     @Singular
     private Set<AttendeeDao> attendees;
+
+    private VotingStatus votingStatus;
 }

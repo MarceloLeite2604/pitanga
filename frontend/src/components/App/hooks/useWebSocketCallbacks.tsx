@@ -84,6 +84,7 @@ export const useWebSocketCallbacks: (
       setData({
         room: {
           ...room,
+          votingStatus: event.payload.votingStatus,
           attendees
         }
       });
@@ -130,7 +131,8 @@ export const useWebSocketCallbacks: (
     checkRoomExistsEventCallback,
     maxUsersReachedEventCallback,
     userJoinedEventCallback,
-    userDroppedEventCallback]);
+    userDroppedEventCallback,
+    attendeeVotedCallback]);
 
   const connectionCallback = useCallback((conn: boolean) => {
     setData({ connected: conn });
