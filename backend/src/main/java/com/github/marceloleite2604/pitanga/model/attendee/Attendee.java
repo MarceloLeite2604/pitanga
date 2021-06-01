@@ -9,6 +9,7 @@ import lombok.Builder;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
+import lombok.ToString;
 
 import javax.persistence.CascadeType;
 import javax.persistence.EmbeddedId;
@@ -28,9 +29,11 @@ import java.time.LocalDateTime;
 @Setter
 @AllArgsConstructor(access = AccessLevel.PRIVATE)
 @NoArgsConstructor
+@ToString(onlyExplicitlyIncluded = true)
 public class Attendee {
 
     @EmbeddedId
+    @ToString.Include
     private AttendeeId id;
 
     @ManyToOne(fetch = FetchType.LAZY, cascade = CascadeType.ALL)
@@ -45,6 +48,6 @@ public class Attendee {
 
     private LocalDateTime joinedAt;
 
-    @OneToOne(mappedBy="attendee", cascade = CascadeType.ALL)
+    @OneToOne(mappedBy="attendee")
     private Vote vote;
 }

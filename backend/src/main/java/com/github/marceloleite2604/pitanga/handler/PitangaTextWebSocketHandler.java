@@ -29,7 +29,6 @@ import java.util.Set;
 
 @Component
 @Slf4j
-@Transactional
 public class PitangaTextWebSocketHandler extends TextWebSocketHandler {
 
     private final ObjectMapper objectMapper;

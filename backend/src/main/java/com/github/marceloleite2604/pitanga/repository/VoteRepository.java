@@ -5,4 +5,6 @@ import com.github.marceloleite2604.pitanga.model.attendee.AttendeeId;
 import org.springframework.data.jpa.repository.JpaRepository;
 
 public interface VoteRepository extends JpaRepository<Vote, AttendeeId> {
+
+    long deleteByIdRoomId(long roomId);
 }

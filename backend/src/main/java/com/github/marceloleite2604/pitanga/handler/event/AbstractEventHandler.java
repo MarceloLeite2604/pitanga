@@ -2,22 +2,31 @@ package com.github.marceloleite2604.pitanga.handler.event;
 
 import com.github.marceloleite2604.pitanga.model.IncomingContext;
 import com.github.marceloleite2604.pitanga.model.OutgoingContext;
+import com.github.marceloleite2604.pitanga.model.Room;
+import com.github.marceloleite2604.pitanga.model.attendee.Attendee;
+import com.github.marceloleite2604.pitanga.model.dao.UserDao;
 import com.github.marceloleite2604.pitanga.model.event.EventType;
 import com.github.marceloleite2604.pitanga.model.event.Payload;
+import com.github.marceloleite2604.pitanga.model.mapper.UserToDao;
 import com.github.marceloleite2604.pitanga.service.PitangaService;
 
+import java.util.HashSet;
 import java.util.Objects;
 import java.util.Optional;
+import java.util.Set;
+import java.util.stream.Collectors;
 
 public abstract class AbstractEventHandler<T extends Payload> implements EventHandler {
 
     protected final PitangaService pitangaService;
     private final EventType eventType;
     private EventHandler next;
+    protected final UserToDao userToDao;
 
-    protected AbstractEventHandler(PitangaService pitangaService, EventType eventType) {
+    protected AbstractEventHandler(PitangaService pitangaService, EventType eventType, UserToDao userToDao) {
         this.pitangaService = pitangaService;
         this.eventType = eventType;
+        this.userToDao = userToDao;
     }
 
     @Override
@@ -81,5 +90,17 @@ public abstract class AbstractEventHandler<T extends Payload> implements EventHa
         }
 
         return (T) payload;
+    }
+
+    protected Set<UserDao> elaborateRecipients(Attendee attendee) {
+        return elaborateRecipients(attendee.getRoom());
+    }
+
+    protected Set<UserDao> elaborateRecipients(Room room) {
+        return room.getAttendees()
+                .stream()
+                .map(Attendee::getUser)
+                .map(userToDao::mapTo)
+                .collect(Collectors.toCollection(HashSet::new));
     }
 }

@@ -10,6 +10,7 @@ import lombok.EqualsAndHashCode;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
+import lombok.ToString;
 
 import javax.persistence.CascadeType;
 import javax.persistence.EmbeddedId;
@@ -26,12 +27,14 @@ import javax.persistence.OneToOne;
 @NoArgsConstructor
 @AllArgsConstructor(access = AccessLevel.PRIVATE)
 @EqualsAndHashCode(onlyExplicitlyIncluded = true)
+@ToString(onlyExplicitlyIncluded = true)
 public class Vote {
 
     @EmbeddedId
+    @ToString.Include
     private AttendeeId id;
 
-    @OneToOne(cascade = CascadeType.ALL)
+    @OneToOne
     @JoinColumn(name = "room_id", referencedColumnName = "room_id")
     @JoinColumn(name = "user_id", referencedColumnName = "user_id")
     @MapsId

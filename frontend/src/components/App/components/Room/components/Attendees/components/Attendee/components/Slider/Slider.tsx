@@ -1,7 +1,7 @@
 import { Grid, Slider as MuiSlider, Typography } from '@material-ui/core';
 import { FC } from 'react';
-import { useUpdateState } from '../../../../../../../../hooks';
-import { useStyles } from './SliderStyles';
+import { useUpdateState } from '../../../../../../../../../../hooks';
+import { useStyles } from './hooks';
 
 interface Props {
   label: string,
@@ -33,7 +33,8 @@ export const Slider: FC<Props> = ({ label, value, hide }) => {
     </Grid>
     <Grid
       item
-      xs={7}>
+      xs={7}
+      className={styles.muiSliderGridItem}>
       <MuiSlider
         key={`${label}-${value}-${String(hide)}`}
         disabled

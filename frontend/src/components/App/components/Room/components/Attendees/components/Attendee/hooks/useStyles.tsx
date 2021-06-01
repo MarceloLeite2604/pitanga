@@ -8,6 +8,7 @@ export const useStyles = makeStyles(theme => createStyles({
   },
   attendeeCardContent: {
     padding: '4px',
+    minHeight: '48px',
     '&:last-child': {
       paddingBottom: '4px'
     }

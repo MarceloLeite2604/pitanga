@@ -5,7 +5,7 @@ import {
   ChartEventProps,
   createVote,
   Data
-} from '../../../../../../Model';
+} from '../../../../../../../Model';
 
 export const useOnClickCallback = (data: Data) => {
   return useCallback((props: ChartEventProps) => {

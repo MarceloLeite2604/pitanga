@@ -10,11 +10,11 @@ import {
   XAxis,
   YAxis
 } from 'recharts';
-import { Data } from '../../../../../Model';
-import { useOnClickCallback, useOnMouseMoveCallback, usePoints } from './hooks';
+import { Data } from '../../../../../../Model';
+import { useOnClickCallback, useOnMouseMoveCallback, usePoints, useStyles } from './hooks';
 import { axisTicks, domainLimits, mediumPoint } from './constants';
-import { TooltipRenderer, useStyles, VotesLabel } from './components';
-import { useUpdateState } from '../../../../../hooks';
+import { TooltipRenderer, VotesLabel } from './components';
+import { useUpdateState } from '../../../../../../hooks';
 
 interface Props {
   data: Data

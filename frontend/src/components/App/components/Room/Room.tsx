@@ -2,8 +2,7 @@ import { Grid } from '@material-ui/core';
 import { FC } from 'react';
 import { useUpdateState } from '../../../../hooks';
 import { Data } from '../../../../Model';
-import { Attendees } from './Attendees';
-import { EffortValueChart } from './EffortValueChart';
+import { Attendees, EffortValueChart, Controls } from './components';
 import { useEventsCallback } from './hooks';
 
 interface Params {
@@ -18,15 +17,16 @@ export const Room: FC<Params> = ({ data }) => {
   return (
     <Grid
       container
-      direction='row'>
+      direction='row'
+      spacing={1}>
       <Grid
         item
-        xs={12}>
+        xs={9}>
         <EffortValueChart data={data} />
       </Grid>
       <Grid
         item
-        xs={12}>
+        xs={3}>
         <>
           {
             data.user &&
@@ -36,6 +36,11 @@ export const Room: FC<Params> = ({ data }) => {
               room={data.room} />
           }
         </>
+      </Grid>
+      <Grid
+        item
+        xs={12}>
+        <Controls data={data} />
       </Grid>
     </Grid>
   );

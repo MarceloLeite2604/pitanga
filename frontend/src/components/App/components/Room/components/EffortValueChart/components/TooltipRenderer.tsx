@@ -1,7 +1,7 @@
 import { FC } from 'react';
 import { TooltipProps } from 'recharts';
 import { NameType, ValueType } from 'recharts/types/component/DefaultTooltipContent';
-import { ChartPoint } from '../../../../../../Model';
+import { ChartPoint } from '../../../../../../../Model';
 
 interface ExtraProps {
   points: ChartPoint[]

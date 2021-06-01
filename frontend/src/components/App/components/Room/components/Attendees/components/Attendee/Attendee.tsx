@@ -1,7 +1,9 @@
-import { Attendee as AttendeeModel, Room, User, VotingStatus } from '../../../../../../Model';
+import { Attendee as AttendeeModel, Room, User, VotingStatus } from '../../../../../../../../Model';
 import { Card, CardContent, Grid, Typography } from '@material-ui/core';
-import { useStyles, Slider } from './components';
+import { Slider } from './components';
+import { useStyles } from './hooks';
 import { FC, useMemo } from 'react';
+import { useUpdateState } from '../../../../../../../../hooks';
 
 interface Props {
   user: User,
@@ -12,6 +14,8 @@ interface Props {
 export const Attendee: FC<Props> = ({ user, room, attendee }) => {
 
   const styles = useStyles();
+
+  useUpdateState([user, room, attendee]);
 
   const hideSlider = useMemo(() =>
     (attendee.user.id !== user.id &&

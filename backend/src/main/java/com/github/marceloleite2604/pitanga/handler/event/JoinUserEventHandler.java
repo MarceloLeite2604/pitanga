@@ -2,7 +2,6 @@ package com.github.marceloleite2604.pitanga.handler.event;
 
 import com.github.marceloleite2604.pitanga.model.IncomingContext;
 import com.github.marceloleite2604.pitanga.model.OutgoingContext;
-import com.github.marceloleite2604.pitanga.model.attendee.Attendee;
 import com.github.marceloleite2604.pitanga.model.event.EventType;
 import com.github.marceloleite2604.pitanga.model.event.MaxRoomsUsersReachedEvent;
 import com.github.marceloleite2604.pitanga.model.event.joinuser.JoinUserPayload;
@@ -17,19 +16,15 @@ import org.springframework.stereotype.Component;
 
 import java.util.Collections;
 import java.util.HashSet;
-import java.util.stream.Collectors;
 
 @Component
 public class JoinUserEventHandler extends AbstractEventHandler<JoinUserPayload> {
 
     private final RoomToDao roomToDao;
 
-    private final UserToDao userToDao;
-
     public JoinUserEventHandler(PitangaService pitangaService, RoomToDao roomToDao, UserToDao userToDao) {
-        super(pitangaService, EventType.JOIN_USER);
+        super(pitangaService, EventType.JOIN_USER, userToDao);
         this.roomToDao = roomToDao;
-        this.userToDao = userToDao;
     }
 
     @Override
@@ -73,11 +68,7 @@ public class JoinUserEventHandler extends AbstractEventHandler<JoinUserPayload> 
         };
 
         var recipients = switch (joinUserResult.status()) {
-            case USER_JOINED -> room.getAttendees()
-                    .stream()
-                    .map(Attendee::getUser)
-                    .map(userToDao::mapTo)
-                    .collect(Collectors.toSet());
+            case USER_JOINED -> elaborateRecipients(room);
             case MAX_ROOM_USERS_REACHED, ALREADY_IN_ROOM -> new HashSet<>(Collections.singleton(userDao));
         };
 

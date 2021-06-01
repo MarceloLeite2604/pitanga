@@ -1,5 +1,5 @@
 import { useMemo } from 'react';
-import { createChartPoint, Data, retrieveAttendeeForUser, VotingStatus } from '../../../../../../Model';
+import { createChartPoint, Data, retrieveAttendeeForUser, VotingStatus } from '../../../../../../../Model';
 
 export const usePoints = (data: Data) => {
   return useMemo(() => {

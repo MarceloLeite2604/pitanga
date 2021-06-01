@@ -9,6 +9,7 @@ import com.github.marceloleite2604.pitanga.model.event.checkroomexists.CheckRoom
 import com.github.marceloleite2604.pitanga.model.event.createroom.CreateRoomEvent;
 import com.github.marceloleite2604.pitanga.model.event.createuser.CreateUserEvent;
 import com.github.marceloleite2604.pitanga.model.event.joinuser.JoinUserEvent;
+import com.github.marceloleite2604.pitanga.model.event.resetroom.ResetRoomEvent;
 import com.github.marceloleite2604.pitanga.model.event.roomcreated.RoomCreatedEvent;
 import com.github.marceloleite2604.pitanga.model.event.useralreadyinroom.UserAlreadyInRoomEvent;
 import com.github.marceloleite2604.pitanga.model.event.usercreated.UserCreatedEvent;
@@ -34,7 +35,9 @@ import lombok.NoArgsConstructor;
         @JsonSubTypes.Type(value = MaxRoomsReachedEvent.class, name = EventType.Values.MAX_ROOMS_REACHED),
         @JsonSubTypes.Type(value = CheckRoomExistsEvent.class, name = EventType.Values.CHECK_ROOM_EXISTS),
         @JsonSubTypes.Type(value = UserDroppedEvent.class, name = EventType.Values.USER_DROPPED),
-        @JsonSubTypes.Type(value = AttendeeVotedEvent.class, name = EventType.Values.ATTENDEE_VOTED)
+        @JsonSubTypes.Type(value = AttendeeVotedEvent.class, name = EventType.Values.ATTENDEE_VOTED),
+        @JsonSubTypes.Type(value = RevealVotesEvent.class, name = EventType.Values.REVEAL_VOTES),
+        @JsonSubTypes.Type(value = ResetRoomEvent.class, name = EventType.Values.RESET_ROOM)
 })
 @NoArgsConstructor
 @JsonInclude(JsonInclude.Include.NON_NULL)

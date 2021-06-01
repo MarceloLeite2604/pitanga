@@ -14,11 +14,8 @@ import org.springframework.stereotype.Component;
 @Component
 public class CreateUserEventHandler extends AbstractEventHandler<CreateUserPayload> {
 
-    private final UserToDao userToDao;
-
     public CreateUserEventHandler(PitangaService pitangaService, UserToDao userToDao) {
-        super(pitangaService, EventType.CREATE_USER);
-        this.userToDao = userToDao;
+        super(pitangaService, EventType.CREATE_USER, userToDao);
     }
 
     @Override

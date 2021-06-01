@@ -18,7 +18,10 @@ import com.github.marceloleite2604.pitanga.service.result.JoinUserResult;
 import com.github.marceloleite2604.pitanga.util.IconRetriever;
 import com.github.marceloleite2604.pitanga.util.RoomIdGenerator;
 import lombok.RequiredArgsConstructor;
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Propagation;
+import org.springframework.transaction.annotation.Transactional;
 
 import javax.persistence.EntityManager;
 import java.time.LocalDateTime;
@@ -28,6 +31,8 @@ import java.util.UUID;
 
 @Service
 @RequiredArgsConstructor
+@Slf4j
+@Transactional
 public class PitangaService {
 
     private final RoomIdGenerator roomIdGenerator;
@@ -162,6 +167,11 @@ public class PitangaService {
                 .anyMatch(attendee -> Objects.isNull(attendee.getVote()));
 
         var votingStatus = hasMissingVotes ? VotingStatus.OPEN : VotingStatus.CLOSED;
+
+        updateVotingStatusForRoom(room, votingStatus);
+    }
+
+    public void updateVotingStatusForRoom(Room room, VotingStatus votingStatus) {
         room.setVotingStatus(votingStatus);
 
         roomRepository.saveAndFlush(room);
@@ -177,8 +187,10 @@ public class PitangaService {
                         .id(persistedAttendee.getId())
                         .build());
 
-        persistedVote.setEffort(attendee.getVote().getEffort());
-        persistedVote.setValue(attendee.getVote().getValue());
+        persistedVote.setEffort(attendee.getVote()
+                .getEffort());
+        persistedVote.setValue(attendee.getVote()
+                .getValue());
 
         voteRepository.saveAndFlush(persistedVote);
         entityManager.refresh(persistedAttendee);
@@ -189,12 +201,12 @@ public class PitangaService {
         return persistedAttendee;
     }
 
-    public User findMandatoryUserById(UUID id) {
+    private User findMandatoryUserById(UUID id) {
         return userRepository.findById(id)
                 .orElseThrow(() -> new IllegalArgumentException(String.format("Could not find a user with id \"%s\"", id)));
     }
 
-    public Room findMandatoryRoomById(long id) {
+    private Room findMandatoryRoomById(long id) {
         return roomRepository.findById(id)
                 .orElseThrow(() -> new IllegalArgumentException(String.format("Could not find a room with id \"%d\"", id)));
     }
@@ -202,5 +214,21 @@ public class PitangaService {
     public Attendee findMandatoryAttendeeByUserId(UUID userId) {
         return attendeeRepository.findByUserId(userId)
                 .orElseThrow(() -> new IllegalArgumentException(String.format("Could not find an attendee associated with user \"%s\"", userId)));
+    }
+
+    public void closeVotingForRoomWithUser(UUID userId) {
+        var attendee = findMandatoryAttendeeByUserId(userId);
+        updateVotingStatusForRoom(attendee.getRoom(), VotingStatus.CLOSED);
+        entityManager.refresh(attendee);
+    }
+
+    @Transactional(propagation = Propagation.REQUIRES_NEW)
+    public void resetRoomWithUser(UUID userId) {
+        var attendee = findMandatoryAttendeeByUserId(userId);
+        voteRepository.deleteByIdRoomId(attendee.getVote()
+                .getId()
+                .getRoomId());
+        updateVotingStatusForRoom(attendee.getRoom(), VotingStatus.OPEN);
+        entityManager.refresh(attendee);
     }
 }

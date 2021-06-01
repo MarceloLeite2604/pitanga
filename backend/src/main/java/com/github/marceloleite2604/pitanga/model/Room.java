@@ -10,6 +10,7 @@ import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
 import lombok.Singular;
+import lombok.ToString;
 
 import javax.persistence.Entity;
 import javax.persistence.Id;
@@ -23,10 +24,12 @@ import java.util.Set;
 @NoArgsConstructor
 @AllArgsConstructor(access = AccessLevel.PRIVATE)
 @EqualsAndHashCode(onlyExplicitlyIncluded = true)
+@ToString(onlyExplicitlyIncluded = true)
 public class Room {
 
     @Id
     @EqualsAndHashCode.Include
+    @ToString.Include
     private Long id;
 
     @Singular

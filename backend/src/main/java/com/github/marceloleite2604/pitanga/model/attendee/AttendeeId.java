@@ -7,6 +7,7 @@ import lombok.EqualsAndHashCode;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
+import lombok.ToString;
 
 import javax.persistence.Column;
 import javax.persistence.Embeddable;
@@ -20,6 +21,7 @@ import java.util.UUID;
 @AllArgsConstructor(access = AccessLevel.PRIVATE)
 @Getter
 @Setter
+@ToString
 public class AttendeeId implements Serializable {
 
     private Long roomId;

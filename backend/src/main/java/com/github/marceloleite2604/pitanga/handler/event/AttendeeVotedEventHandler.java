@@ -2,8 +2,6 @@ package com.github.marceloleite2604.pitanga.handler.event;
 
 import com.github.marceloleite2604.pitanga.model.IncomingContext;
 import com.github.marceloleite2604.pitanga.model.OutgoingContext;
-import com.github.marceloleite2604.pitanga.model.attendee.Attendee;
-import com.github.marceloleite2604.pitanga.model.dao.UserDao;
 import com.github.marceloleite2604.pitanga.model.event.EventType;
 import com.github.marceloleite2604.pitanga.model.event.attendeevoted.AttendeeVotedEvent;
 import com.github.marceloleite2604.pitanga.model.event.attendeevoted.AttendeeVotedPayload;
@@ -14,21 +12,15 @@ import com.github.marceloleite2604.pitanga.service.PitangaService;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Component;
 
-import java.util.HashSet;
-import java.util.Set;
-import java.util.stream.Collectors;
-
 @Component
 @Slf4j
 public class AttendeeVotedEventHandler extends AbstractEventHandler<AttendeeVotedPayload> {
 
-    private final UserToDao userToDao;
     private final AttendeeToDao attendeeToDao;
     private final RoomToDao roomToDao;
 
     public AttendeeVotedEventHandler(PitangaService pitangaService, UserToDao userToDao, AttendeeToDao attendeeToDao, RoomToDao roomToDao) {
-        super(pitangaService, EventType.ATTENDEE_VOTED);
-        this.userToDao = userToDao;
+        super(pitangaService, EventType.ATTENDEE_VOTED, userToDao);
         this.attendeeToDao = attendeeToDao;
         this.roomToDao = roomToDao;
     }
@@ -43,12 +35,7 @@ public class AttendeeVotedEventHandler extends AbstractEventHandler<AttendeeVote
 
         attendee = pitangaService.updateVoteForAttendee(attendee);
 
-        Set<UserDao> recipients = attendee.getRoom()
-                .getAttendees()
-                .stream()
-                .map(Attendee::getUser)
-                .map(userToDao::mapTo)
-                .collect(Collectors.toCollection(HashSet::new));
+        var recipients = elaborateRecipients(attendee);
 
         attendeeDao = attendeeToDao.mapTo(attendee);
         var roomDao = roomToDao.mapTo(attendee.getRoom());

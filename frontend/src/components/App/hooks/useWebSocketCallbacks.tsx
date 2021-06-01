@@ -10,7 +10,9 @@ import {
   UserJoinedEvent,
   AttendeeVotedEvent,
   Data,
-  removeUserFromAttendees
+  removeUserFromAttendees,
+  VotingStatus,
+  ResetRoomEvent
 } from '../../../Model';
 
 export const useWebSocketCallbacks: (
@@ -91,6 +93,23 @@ export const useWebSocketCallbacks: (
     }
   }, [room]);
 
+  const revealVotesCallback = useCallback(() => {
+    if (room) {
+      setData({
+        room: {
+          ...room,
+          votingStatus: VotingStatus.Closed
+        }
+      });
+    }
+  }, [room]);
+
+  const resetRoomCallback = useCallback((event: ResetRoomEvent) => {
+    setData({
+      room: event.payload.room
+    });
+  }, []);
+
   const eventsCallback = useCallback((event: Event) => {
     console.log(`Received event "${event.type}"`);
     switch (event.type) {
@@ -122,6 +141,14 @@ export const useWebSocketCallbacks: (
         attendeeVotedCallback(event);
         break;
       }
+      case EventType.RevealVotes: {
+        revealVotesCallback();
+        break;
+      }
+      case EventType.ResetRoom: {
+        resetRoomCallback(event);
+        break;
+      }
       default: {
         console.log(`[ERROR] Don't know how to handle "${event.type}" event.`);
       }
@@ -132,7 +159,9 @@ export const useWebSocketCallbacks: (
     maxUsersReachedEventCallback,
     userJoinedEventCallback,
     userDroppedEventCallback,
-    attendeeVotedCallback]);
+    attendeeVotedCallback,
+    revealVotesCallback,
+    resetRoomCallback]);
 
   const connectionCallback = useCallback((conn: boolean) => {
     setData({ connected: conn });

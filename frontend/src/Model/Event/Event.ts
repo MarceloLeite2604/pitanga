@@ -10,7 +10,9 @@ import {
   UserCreatedEvent,
   UserDroppedEvent,
   UserJoinedEvent,
-  AttendeeVotedEvent
+  AttendeeVotedEvent,
+  ResetRoomEvent,
+  RevealVotesEvent
 } from '.';
 
 export type Event = CheckRoomExistsEvent |
@@ -24,4 +26,6 @@ RoomCreatedEvent |
 UserCreatedEvent |
 UserDroppedEvent |
 UserJoinedEvent |
-AttendeeVotedEvent;
+AttendeeVotedEvent |
+ResetRoomEvent |
+RevealVotesEvent;

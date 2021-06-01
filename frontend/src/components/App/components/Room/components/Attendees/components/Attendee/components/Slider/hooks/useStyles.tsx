@@ -6,5 +6,8 @@ export const useStyles = makeStyles(createStyles({
   },
   typography: {
     fontSize: '0.8rem'
+  },
+  muiSliderGridItem: {
+    padding: '4px 0px'
   }
 }));

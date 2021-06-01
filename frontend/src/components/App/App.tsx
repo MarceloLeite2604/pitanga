@@ -6,8 +6,6 @@ export function App() {
 
   const [data, setData] = useData();
   useSubscriptions(data, setData);
-
-  console.log(`Attendee is ${JSON.stringify(data.attendee)}`);
   
   return (
     <Container>

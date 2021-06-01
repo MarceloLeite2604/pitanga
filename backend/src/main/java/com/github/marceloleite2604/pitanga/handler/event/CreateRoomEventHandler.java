@@ -17,12 +17,9 @@ public class CreateRoomEventHandler extends AbstractEventHandler<CreateRoomPaylo
 
     private final RoomToDao roomToDao;
 
-    private final UserToDao userToDao;
-
     public CreateRoomEventHandler(PitangaService pitangaService, RoomToDao roomToDao, UserToDao userToDao) {
-        super(pitangaService, EventType.CREATE_ROOM);
+        super(pitangaService, EventType.CREATE_ROOM, userToDao);
         this.roomToDao = roomToDao;
-        this.userToDao = userToDao;
     }
 
     @Override

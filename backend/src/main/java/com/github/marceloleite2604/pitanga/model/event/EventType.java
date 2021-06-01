@@ -11,6 +11,8 @@ import com.github.marceloleite2604.pitanga.model.event.createuser.CreateUserEven
 import com.github.marceloleite2604.pitanga.model.event.createuser.CreateUserPayload;
 import com.github.marceloleite2604.pitanga.model.event.joinuser.JoinUserEvent;
 import com.github.marceloleite2604.pitanga.model.event.joinuser.JoinUserPayload;
+import com.github.marceloleite2604.pitanga.model.event.resetroom.ResetRoomEvent;
+import com.github.marceloleite2604.pitanga.model.event.resetroom.ResetRoomPayload;
 import com.github.marceloleite2604.pitanga.model.event.roomcreated.RoomCreatedEvent;
 import com.github.marceloleite2604.pitanga.model.event.roomcreated.RoomCreatedPayload;
 import com.github.marceloleite2604.pitanga.model.event.useralreadyinroom.UserAlreadyInRoomEvent;
@@ -38,8 +40,9 @@ public enum EventType {
     MAX_ROOMS_REACHED(Values.MAX_ROOMS_REACHED, MaxRoomsReachedEvent.class),
     CHECK_ROOM_EXISTS(Values.CHECK_ROOM_EXISTS, CheckRoomExistsEvent.class, CheckRoomExistsPayload.class),
     USER_DROPPED(Values.USER_DROPPED, UserDroppedEvent.class, UserDroppedPayload.class),
-    ATTENDEE_VOTED(Values.ATTENDEE_VOTED, AttendeeVotedEvent.class, AttendeeVotedPayload.class);
-
+    ATTENDEE_VOTED(Values.ATTENDEE_VOTED, AttendeeVotedEvent.class, AttendeeVotedPayload.class),
+    REVEAL_VOTES(Values.REVEAL_VOTES, RevealVotesEvent.class, EmptyPayload.class),
+    RESET_ROOM(Values.RESET_ROOM, ResetRoomEvent.class, ResetRoomPayload.class);
     @JsonValue
     private final String value;
 
@@ -77,5 +80,7 @@ public enum EventType {
         public static final String CHECK_ROOM_EXISTS = "check-room-exists";
         public static final String USER_DROPPED = "user-dropped";
         public static final String ATTENDEE_VOTED = "attendee-voted";
+        public static final String REVEAL_VOTES = "reveal-votes";
+        public static final String RESET_ROOM = "reset-room";
     }
 }

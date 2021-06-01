@@ -15,7 +15,7 @@ export const Container: FC = ({ children }) => {
     className={styles.container} >
     <BoxMargin />
     <Grid item
-      md={6}
+      md={10}
       xs={12}>
       {children}
     </Grid>

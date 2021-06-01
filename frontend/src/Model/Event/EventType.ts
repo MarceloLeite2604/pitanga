@@ -10,5 +10,7 @@ export enum EventType {
   MaxRoomsReached = 'max-rooms-reached',
   CheckRoomExists = 'check-room-exists',
   UserDropped = 'user-dropped',
-  AttendeeVoted = 'attendee-voted'
+  AttendeeVoted = 'attendee-voted',
+  ResetRoom = 'reset-room',
+  RevealVotes = 'reveal-votes'
 }

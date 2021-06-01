@@ -1,8 +1,8 @@
-import { useUpdateState } from '../../../../../hooks';
-import { sortByJoinedAtWithCurrentUserFirst, User, Room } from '../../../../../Model';
+import { useUpdateState } from '../../../../../../hooks';
+import { sortByJoinedAtWithCurrentUserFirst, User, Room } from '../../../../../../Model';
 import { Grid } from '@material-ui/core';
 import { FC } from 'react';
-import { Attendee } from './Attendee';
+import { Attendee } from './components';
 
 interface Props {
   room: Room,
@@ -11,7 +11,7 @@ interface Props {
 
 export const Attendees: FC<Props> = ({ room, user }) => {
 
-  useUpdateState([room.attendees, user]);
+  useUpdateState([room, user]);
 
   return (
     <Grid
@@ -25,7 +25,6 @@ export const Attendees: FC<Props> = ({ room, user }) => {
             <Grid
               item
               key={`attendee-grid-${index}`}
-              md={6}
               xs={12}>
               <Attendee
                 user={user}

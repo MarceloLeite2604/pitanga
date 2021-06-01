@@ -6,6 +6,7 @@ import com.github.marceloleite2604.pitanga.model.event.EventType;
 import com.github.marceloleite2604.pitanga.model.event.checkroomexists.CheckRoomExistsEvent;
 import com.github.marceloleite2604.pitanga.model.event.checkroomexists.CheckRoomExistsPayload;
 import com.github.marceloleite2604.pitanga.model.mapper.RoomToDao;
+import com.github.marceloleite2604.pitanga.model.mapper.UserToDao;
 import com.github.marceloleite2604.pitanga.service.PitangaService;
 import org.springframework.stereotype.Component;
 
@@ -14,8 +15,8 @@ public class CheckRoomExistsEventHandler extends AbstractEventHandler<CheckRoomE
 
     private final RoomToDao roomToDao;
 
-    public CheckRoomExistsEventHandler(PitangaService pitangaService, RoomToDao roomToDao) {
-        super(pitangaService, EventType.CHECK_ROOM_EXISTS);
+    public CheckRoomExistsEventHandler(PitangaService pitangaService, UserToDao userToDao, RoomToDao roomToDao) {
+        super(pitangaService, EventType.CHECK_ROOM_EXISTS, userToDao);
         this.roomToDao = roomToDao;
     }
 
