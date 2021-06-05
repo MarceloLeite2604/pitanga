@@ -3,17 +3,16 @@ package com.github.marceloleite2604.pitanga.handler;
 import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.github.marceloleite2604.pitanga.handler.event.EventHandler;
-import com.github.marceloleite2604.pitanga.model.IncomingContext;
-import com.github.marceloleite2604.pitanga.model.OutgoingContext;
-import com.github.marceloleite2604.pitanga.model.dao.UserDao;
-import com.github.marceloleite2604.pitanga.model.event.createuser.CreateUserEvent;
-import com.github.marceloleite2604.pitanga.model.event.Event;
-import com.github.marceloleite2604.pitanga.model.event.createuser.CreateUserPayload;
-import com.github.marceloleite2604.pitanga.model.event.userdropped.UserDroppedEvent;
-import com.github.marceloleite2604.pitanga.model.event.userdropped.UserDroppedPayload;
+import com.github.marceloleite2604.pitanga.dto.IncomingContext;
+import com.github.marceloleite2604.pitanga.dto.OutgoingContext;
+import com.github.marceloleite2604.pitanga.dto.UserDto;
+import com.github.marceloleite2604.pitanga.dto.event.createuser.CreateUserEvent;
+import com.github.marceloleite2604.pitanga.dto.event.Event;
+import com.github.marceloleite2604.pitanga.dto.event.createuser.CreateUserPayload;
+import com.github.marceloleite2604.pitanga.dto.event.userdropped.UserDroppedEvent;
+import com.github.marceloleite2604.pitanga.dto.event.userdropped.UserDroppedPayload;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Component;
-import org.springframework.transaction.annotation.Transactional;
 import org.springframework.util.CollectionUtils;
 import org.springframework.web.socket.CloseStatus;
 import org.springframework.web.socket.TextMessage;
@@ -47,7 +46,7 @@ public class PitangaTextWebSocketHandler extends TextWebSocketHandler {
         super.afterConnectionEstablished(session);
         sessions.put(session.getId(), session);
 
-        var user = UserDao.builder()
+        var user = UserDto.builder()
                 .id(session.getId())
                 .build();
 
@@ -74,7 +73,7 @@ public class PitangaTextWebSocketHandler extends TextWebSocketHandler {
         super.afterConnectionClosed(session, status);
         sessions.remove(session.getId());
 
-        var user = UserDao.builder()
+        var user = UserDto.builder()
                 .id(session.getId())
                 .build();
 
@@ -133,7 +132,7 @@ public class PitangaTextWebSocketHandler extends TextWebSocketHandler {
     private IncomingContext createContext(WebSocketSession session, TextMessage incomingTextMessage) {
         var event = retrieveEvent(incomingTextMessage);
 
-        var userDao = UserDao.builder()
+        var userDao = UserDto.builder()
                 .id(session.getId())
                 .build();
 

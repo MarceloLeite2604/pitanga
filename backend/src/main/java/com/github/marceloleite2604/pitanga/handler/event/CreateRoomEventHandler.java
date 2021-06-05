@@ -1,35 +1,35 @@
 package com.github.marceloleite2604.pitanga.handler.event;
 
-import com.github.marceloleite2604.pitanga.model.IncomingContext;
-import com.github.marceloleite2604.pitanga.model.OutgoingContext;
-import com.github.marceloleite2604.pitanga.model.event.EventType;
-import com.github.marceloleite2604.pitanga.model.event.MaxRoomsReachedEvent;
-import com.github.marceloleite2604.pitanga.model.event.createroom.CreateRoomPayload;
-import com.github.marceloleite2604.pitanga.model.event.roomcreated.RoomCreatedEvent;
-import com.github.marceloleite2604.pitanga.model.event.roomcreated.RoomCreatedPayload;
-import com.github.marceloleite2604.pitanga.model.mapper.RoomToDao;
-import com.github.marceloleite2604.pitanga.model.mapper.UserToDao;
+import com.github.marceloleite2604.pitanga.dto.IncomingContext;
+import com.github.marceloleite2604.pitanga.dto.OutgoingContext;
+import com.github.marceloleite2604.pitanga.dto.event.EventType;
+import com.github.marceloleite2604.pitanga.dto.event.MaxRoomsReachedEvent;
+import com.github.marceloleite2604.pitanga.dto.event.createroom.CreateRoomPayload;
+import com.github.marceloleite2604.pitanga.dto.event.roomcreated.RoomCreatedEvent;
+import com.github.marceloleite2604.pitanga.dto.event.roomcreated.RoomCreatedPayload;
+import com.github.marceloleite2604.pitanga.mapper.RoomToDto;
+import com.github.marceloleite2604.pitanga.mapper.UserToDto;
 import com.github.marceloleite2604.pitanga.service.PitangaService;
 import org.springframework.stereotype.Component;
 
 @Component
 public class CreateRoomEventHandler extends AbstractEventHandler<CreateRoomPayload> {
 
-    private final RoomToDao roomToDao;
+    private final RoomToDto roomToDto;
 
-    public CreateRoomEventHandler(PitangaService pitangaService, RoomToDao roomToDao, UserToDao userToDao) {
-        super(pitangaService, EventType.CREATE_ROOM, userToDao);
-        this.roomToDao = roomToDao;
+    public CreateRoomEventHandler(PitangaService pitangaService, RoomToDto roomToDto, UserToDto userToDto) {
+        super(pitangaService, EventType.CREATE_ROOM, userToDto);
+        this.roomToDto = roomToDto;
     }
 
     @Override
     protected OutgoingContext doHandle(IncomingContext incomingContext) {
         var createRoomPayload = retrievePayload(incomingContext);
-        var user = userToDao.mapFrom(createRoomPayload.getUser());
+        var user = userToDto.mapFrom(createRoomPayload.getUser());
 
         var createRoomResult = pitangaService.createRoom(user);
 
-        var room = roomToDao.mapTo(createRoomResult.room());
+        var room = roomToDto.mapTo(createRoomResult.room());
 
         var event = switch (createRoomResult.status()) {
             case CREATED -> {

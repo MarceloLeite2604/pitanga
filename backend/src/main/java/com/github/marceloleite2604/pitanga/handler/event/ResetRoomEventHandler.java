@@ -1,13 +1,13 @@
 package com.github.marceloleite2604.pitanga.handler.event;
 
-import com.github.marceloleite2604.pitanga.model.IncomingContext;
-import com.github.marceloleite2604.pitanga.model.OutgoingContext;
-import com.github.marceloleite2604.pitanga.model.event.EmptyPayload;
-import com.github.marceloleite2604.pitanga.model.event.EventType;
-import com.github.marceloleite2604.pitanga.model.event.resetroom.ResetRoomEvent;
-import com.github.marceloleite2604.pitanga.model.event.resetroom.ResetRoomPayload;
-import com.github.marceloleite2604.pitanga.model.mapper.RoomToDao;
-import com.github.marceloleite2604.pitanga.model.mapper.UserToDao;
+import com.github.marceloleite2604.pitanga.dto.IncomingContext;
+import com.github.marceloleite2604.pitanga.dto.OutgoingContext;
+import com.github.marceloleite2604.pitanga.dto.event.EmptyPayload;
+import com.github.marceloleite2604.pitanga.dto.event.EventType;
+import com.github.marceloleite2604.pitanga.dto.event.resetroom.ResetRoomEvent;
+import com.github.marceloleite2604.pitanga.dto.event.resetroom.ResetRoomPayload;
+import com.github.marceloleite2604.pitanga.mapper.RoomToDto;
+import com.github.marceloleite2604.pitanga.mapper.UserToDto;
 import com.github.marceloleite2604.pitanga.service.PitangaService;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Component;
@@ -18,11 +18,11 @@ import java.util.UUID;
 @Slf4j
 public class ResetRoomEventHandler extends AbstractEventHandler<EmptyPayload> {
 
-    private final RoomToDao roomToDao;
+    private final RoomToDto roomToDto;
 
-    public ResetRoomEventHandler(PitangaService pitangaService, UserToDao userToDao, RoomToDao roomToDao) {
-        super(pitangaService, EventType.RESET_ROOM, userToDao);
-        this.roomToDao = roomToDao;
+    public ResetRoomEventHandler(PitangaService pitangaService, UserToDto userToDto, RoomToDto roomToDto) {
+        super(pitangaService, EventType.RESET_ROOM, userToDto);
+        this.roomToDto = roomToDto;
     }
 
     @Override
@@ -33,7 +33,7 @@ public class ResetRoomEventHandler extends AbstractEventHandler<EmptyPayload> {
         pitangaService.resetRoomWithUser(userId);
 
         var attendee = pitangaService.findMandatoryAttendeeByUserId(userId);
-        var roomDao = roomToDao.mapTo(attendee.getRoom());
+        var roomDao = roomToDto.mapTo(attendee.getRoom());
 
         var recipients = elaborateRecipients(attendee);
 

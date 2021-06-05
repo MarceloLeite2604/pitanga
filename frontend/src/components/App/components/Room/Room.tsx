@@ -1,7 +1,7 @@
 import { Grid } from '@material-ui/core';
-import { FC } from 'react';
+import { FC, useMemo } from 'react';
 import { useUpdateState } from '../../../../hooks';
-import { Data } from '../../../../Model';
+import { Data, retrieveAttendeeForUser } from '../../../../Model';
 import { Attendees, EffortValueChart, Controls } from './components';
 import { useEventsCallback } from './hooks';
 
@@ -13,6 +13,16 @@ export const Room: FC<Params> = ({ data }) => {
 
   useUpdateState([data.room]);
   useEventsCallback(data);
+
+  const roomOwner = useMemo(() => {
+    console.log('Retrieving room owner.');
+    if (data.room?.attendees && data.user) {
+      const userAttendee = retrieveAttendeeForUser(data.room?.attendees, data.user);
+      console.log(`Attendee is ${JSON.stringify(userAttendee)}.`);
+      return userAttendee?.roomOwner || false;
+    }
+    return false;
+  }, [data]);
 
   return (
     <Grid
@@ -40,7 +50,7 @@ export const Room: FC<Params> = ({ data }) => {
       <Grid
         item
         xs={12}>
-        <Controls data={data} />
+        {roomOwner && <Controls data={data} />}
       </Grid>
     </Grid>
   );

@@ -70,7 +70,7 @@ public class PitangaService {
                 .votingStatus(VotingStatus.OPEN)
                 .build();
 
-        var attendee = createAttendee(user, room);
+        var attendee = createAttendee(user, room, true);
 
         return CreateRoomResult.builder()
                 .status(CreateRoomResult.Status.CREATED)
@@ -131,6 +131,10 @@ public class PitangaService {
     }
 
     private Attendee createAttendee(User user, Room room) {
+        return createAttendee(user, room, false);
+    }
+
+    private Attendee createAttendee(User user, Room room, boolean roomOwner) {
         var attendeeId = AttendeeId.builder()
                 .roomId(room.getId())
                 .userId(user.getId())
@@ -140,6 +144,7 @@ public class PitangaService {
                 .id(attendeeId)
                 .user(user)
                 .room(room)
+                .roomOwner(roomOwner)
                 .icon(iconRetriever.retrieve(room))
                 .joinedAt(LocalDateTime.now())
                 .build();

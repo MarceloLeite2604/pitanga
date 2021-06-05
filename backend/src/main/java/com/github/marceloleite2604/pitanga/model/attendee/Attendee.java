@@ -15,12 +15,9 @@ import javax.persistence.CascadeType;
 import javax.persistence.EmbeddedId;
 import javax.persistence.Entity;
 import javax.persistence.FetchType;
-import javax.persistence.JoinColumn;
-import javax.persistence.JoinColumns;
 import javax.persistence.ManyToOne;
 import javax.persistence.MapsId;
 import javax.persistence.OneToOne;
-import javax.persistence.PrimaryKeyJoinColumn;
 import java.time.LocalDateTime;
 
 @Entity
@@ -48,6 +45,8 @@ public class Attendee {
 
     private LocalDateTime joinedAt;
 
-    @OneToOne(mappedBy="attendee")
+    private boolean roomOwner;
+
+    @OneToOne(mappedBy = "attendee")
     private Vote vote;
 }

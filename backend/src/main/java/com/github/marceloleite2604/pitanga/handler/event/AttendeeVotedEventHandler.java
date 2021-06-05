@@ -1,13 +1,13 @@
 package com.github.marceloleite2604.pitanga.handler.event;
 
-import com.github.marceloleite2604.pitanga.model.IncomingContext;
-import com.github.marceloleite2604.pitanga.model.OutgoingContext;
-import com.github.marceloleite2604.pitanga.model.event.EventType;
-import com.github.marceloleite2604.pitanga.model.event.attendeevoted.AttendeeVotedEvent;
-import com.github.marceloleite2604.pitanga.model.event.attendeevoted.AttendeeVotedPayload;
-import com.github.marceloleite2604.pitanga.model.mapper.AttendeeToDao;
-import com.github.marceloleite2604.pitanga.model.mapper.RoomToDao;
-import com.github.marceloleite2604.pitanga.model.mapper.UserToDao;
+import com.github.marceloleite2604.pitanga.dto.IncomingContext;
+import com.github.marceloleite2604.pitanga.dto.OutgoingContext;
+import com.github.marceloleite2604.pitanga.dto.event.EventType;
+import com.github.marceloleite2604.pitanga.dto.event.attendeevoted.AttendeeVotedEvent;
+import com.github.marceloleite2604.pitanga.dto.event.attendeevoted.AttendeeVotedPayload;
+import com.github.marceloleite2604.pitanga.mapper.AttendeeToDto;
+import com.github.marceloleite2604.pitanga.mapper.RoomToDto;
+import com.github.marceloleite2604.pitanga.mapper.UserToDto;
 import com.github.marceloleite2604.pitanga.service.PitangaService;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Component;
@@ -16,13 +16,13 @@ import org.springframework.stereotype.Component;
 @Slf4j
 public class AttendeeVotedEventHandler extends AbstractEventHandler<AttendeeVotedPayload> {
 
-    private final AttendeeToDao attendeeToDao;
-    private final RoomToDao roomToDao;
+    private final AttendeeToDto attendeeToDto;
+    private final RoomToDto roomToDto;
 
-    public AttendeeVotedEventHandler(PitangaService pitangaService, UserToDao userToDao, AttendeeToDao attendeeToDao, RoomToDao roomToDao) {
-        super(pitangaService, EventType.ATTENDEE_VOTED, userToDao);
-        this.attendeeToDao = attendeeToDao;
-        this.roomToDao = roomToDao;
+    public AttendeeVotedEventHandler(PitangaService pitangaService, UserToDto userToDto, AttendeeToDto attendeeToDto, RoomToDto roomToDto) {
+        super(pitangaService, EventType.ATTENDEE_VOTED, userToDto);
+        this.attendeeToDto = attendeeToDto;
+        this.roomToDto = roomToDto;
     }
 
     @Override
@@ -31,14 +31,14 @@ public class AttendeeVotedEventHandler extends AbstractEventHandler<AttendeeVote
 
         var attendeeDao = incomingAttendeeVotedPayload.getAttendee();
 
-        var attendee = attendeeToDao.mapFrom(attendeeDao);
+        var attendee = attendeeToDto.mapFrom(attendeeDao);
 
         attendee = pitangaService.updateVoteForAttendee(attendee);
 
         var recipients = elaborateRecipients(attendee);
 
-        attendeeDao = attendeeToDao.mapTo(attendee);
-        var roomDao = roomToDao.mapTo(attendee.getRoom());
+        attendeeDao = attendeeToDto.mapTo(attendee);
+        var roomDao = roomToDto.mapTo(attendee.getRoom());
 
         var outgoingAttendeeVotedPayload = AttendeeVotedPayload.builder()
                 .attendee(attendeeDao)

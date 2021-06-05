@@ -10,7 +10,10 @@ export const usePoints = (data: Data) => {
           return [createChartPoint(attendee)];
         }
       } else {
-        return data.room.attendees.map(attendee => createChartPoint(attendee));
+        return data.room
+          .attendees
+          .filter(attendee => attendee.vote)
+          .map(attendee => createChartPoint(attendee));
       }
     }
     return [];

@@ -6,6 +6,7 @@ export interface Attendee {
   user: User,
   icon: string,
   joinedAt: number,
+  roomOwner: boolean
   vote?: Vote
 }
 

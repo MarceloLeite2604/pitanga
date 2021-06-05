@@ -1,11 +1,11 @@
 package com.github.marceloleite2604.pitanga.handler.event;
 
-import com.github.marceloleite2604.pitanga.model.IncomingContext;
-import com.github.marceloleite2604.pitanga.model.OutgoingContext;
-import com.github.marceloleite2604.pitanga.model.dao.UserDao;
-import com.github.marceloleite2604.pitanga.model.event.EmptyPayload;
-import com.github.marceloleite2604.pitanga.model.event.EventType;
-import com.github.marceloleite2604.pitanga.model.mapper.UserToDao;
+import com.github.marceloleite2604.pitanga.dto.IncomingContext;
+import com.github.marceloleite2604.pitanga.dto.OutgoingContext;
+import com.github.marceloleite2604.pitanga.dto.UserDto;
+import com.github.marceloleite2604.pitanga.dto.event.EmptyPayload;
+import com.github.marceloleite2604.pitanga.dto.event.EventType;
+import com.github.marceloleite2604.pitanga.mapper.UserToDto;
 import com.github.marceloleite2604.pitanga.service.PitangaService;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Component;
@@ -17,8 +17,8 @@ import java.util.UUID;
 @Slf4j
 public class RevealVotesEventHandler extends AbstractEventHandler<EmptyPayload> {
 
-    public RevealVotesEventHandler(PitangaService pitangaService, UserToDao userToDao) {
-        super(pitangaService, EventType.REVEAL_VOTES, userToDao);
+    public RevealVotesEventHandler(PitangaService pitangaService, UserToDto userToDto) {
+        super(pitangaService, EventType.REVEAL_VOTES, userToDto);
     }
 
     @Override
@@ -29,7 +29,7 @@ public class RevealVotesEventHandler extends AbstractEventHandler<EmptyPayload> 
         pitangaService.closeVotingForRoomWithUser(userId);
 
         var attendee = pitangaService.findMandatoryAttendeeByUserId(userId);
-        Set<UserDao> recipients = elaborateRecipients(attendee);
+        Set<UserDto> recipients = elaborateRecipients(attendee);
 
         return OutgoingContext.builder()
                 .event(incomingContext.event())

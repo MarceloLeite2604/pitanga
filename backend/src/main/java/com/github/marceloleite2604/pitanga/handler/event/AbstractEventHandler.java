@@ -1,13 +1,13 @@
 package com.github.marceloleite2604.pitanga.handler.event;
 
-import com.github.marceloleite2604.pitanga.model.IncomingContext;
-import com.github.marceloleite2604.pitanga.model.OutgoingContext;
+import com.github.marceloleite2604.pitanga.dto.IncomingContext;
+import com.github.marceloleite2604.pitanga.dto.OutgoingContext;
 import com.github.marceloleite2604.pitanga.model.Room;
 import com.github.marceloleite2604.pitanga.model.attendee.Attendee;
-import com.github.marceloleite2604.pitanga.model.dao.UserDao;
-import com.github.marceloleite2604.pitanga.model.event.EventType;
-import com.github.marceloleite2604.pitanga.model.event.Payload;
-import com.github.marceloleite2604.pitanga.model.mapper.UserToDao;
+import com.github.marceloleite2604.pitanga.dto.UserDto;
+import com.github.marceloleite2604.pitanga.dto.event.EventType;
+import com.github.marceloleite2604.pitanga.dto.event.Payload;
+import com.github.marceloleite2604.pitanga.mapper.UserToDto;
 import com.github.marceloleite2604.pitanga.service.PitangaService;
 
 import java.util.HashSet;
@@ -21,12 +21,12 @@ public abstract class AbstractEventHandler<T extends Payload> implements EventHa
     protected final PitangaService pitangaService;
     private final EventType eventType;
     private EventHandler next;
-    protected final UserToDao userToDao;
+    protected final UserToDto userToDto;
 
-    protected AbstractEventHandler(PitangaService pitangaService, EventType eventType, UserToDao userToDao) {
+    protected AbstractEventHandler(PitangaService pitangaService, EventType eventType, UserToDto userToDto) {
         this.pitangaService = pitangaService;
         this.eventType = eventType;
-        this.userToDao = userToDao;
+        this.userToDto = userToDto;
     }
 
     @Override
@@ -92,15 +92,15 @@ public abstract class AbstractEventHandler<T extends Payload> implements EventHa
         return (T) payload;
     }
 
-    protected Set<UserDao> elaborateRecipients(Attendee attendee) {
+    protected Set<UserDto> elaborateRecipients(Attendee attendee) {
         return elaborateRecipients(attendee.getRoom());
     }
 
-    protected Set<UserDao> elaborateRecipients(Room room) {
+    protected Set<UserDto> elaborateRecipients(Room room) {
         return room.getAttendees()
                 .stream()
                 .map(Attendee::getUser)
-                .map(userToDao::mapTo)
+                .map(userToDto::mapTo)
                 .collect(Collectors.toCollection(HashSet::new));
     }
 }
