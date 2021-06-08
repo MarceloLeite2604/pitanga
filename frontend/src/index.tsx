@@ -1,7 +1,8 @@
 import { render } from 'react-dom';
 import { BrowserRouter } from 'react-router-dom';
-import { App, ThemeController } from './components';
 import '@fontsource/roboto';
+import { ThemeController } from './theme-controller';
+import { App } from './app';
 
 render(
   <BrowserRouter>

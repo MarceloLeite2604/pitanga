@@ -230,9 +230,10 @@ public class PitangaService {
     @Transactional(propagation = Propagation.REQUIRES_NEW)
     public void resetRoomWithUser(UUID userId) {
         var attendee = findMandatoryAttendeeByUserId(userId);
-        voteRepository.deleteByIdRoomId(attendee.getVote()
-                .getId()
-                .getRoomId());
+        Optional.ofNullable(attendee.getVote())
+                .map(Vote::getId)
+                .map(AttendeeId::getRoomId)
+                .ifPresent(voteRepository::deleteByIdRoomId);
         updateVotingStatusForRoom(attendee.getRoom(), VotingStatus.OPEN);
         entityManager.refresh(attendee);
     }
