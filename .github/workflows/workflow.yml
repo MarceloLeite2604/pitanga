@@ -36,4 +36,11 @@ jobs:
       - name: Build and push back end container
         env: 
           HEROKU_API_KEY: ${{ secrets.HEROKU_API_KEY }}
-        run: cd backend && heroku container:push -a ${{ secrets.HEROKU_APP_NAME }} worker 
+        run: cd backend && heroku container:push -a ${{ secrets.HEROKU_APP_NAME }} worker
+        
+      - name: Release containers
+        env: 
+          HEROKU_API_KEY: ${{ secrets.HEROKU_API_KEY }}
+        run: heroku container:release -a ${{ secrets.HEROKU_APP_NAME }} web worker
+        
+      
