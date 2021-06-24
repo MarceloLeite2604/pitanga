@@ -4,8 +4,10 @@ import { Subscription } from 'rxjs';
 import {
   buildCheckRoomExists,
   buildJoinUserEvent,
+  CheckRoomExistsPayload,
   Data,
   Event,
+  EventType,
   Room
 } from '../../../shared/model';
 
@@ -15,10 +17,10 @@ export const useEventsCallback = (data: Data) => {
   const { roomId } = useParams<{ roomId: string }>();
 
   const { connected, user, subjects } = data;
-  const eventsCallback = useCallback((event: Event<any, any>) => {
-    if (event.type === 'check') {
-      const payload = event.payload;
-      if (user && payload.exists) {
+  const eventsCallback = useCallback((event: Event) => {
+    if (event.type === EventType.CheckRoomExists) {
+      const payload = event.payload as CheckRoomExistsPayload;
+      if (user && payload && payload.exists) {
         subjects.$out.next(buildJoinUserEvent(user, payload.room));
       }
     }

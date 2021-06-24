@@ -1,4 +1,5 @@
 import { Button, Grid } from '@material-ui/core';
+import { useMemo } from 'react';
 import { Data, VotingStatus } from '../../../shared/model';
 import { useButtonsCallback } from './hooks';
 
@@ -9,6 +10,17 @@ interface Props {
 export const Controls = ({ data }: Props) => {
 
   const { onResetButtonClick, onRevealButtonClick } = useButtonsCallback(data);
+
+  const noVotes = useMemo(() => {
+    if (!data.room?.attendees) {
+      return false;
+    }
+
+    return data.room
+      .attendees
+      .filter(attendee => attendee.vote)
+      .length === 0;
+  }, [data.room?.attendees]);
 
   return (
     <Grid
@@ -21,16 +33,19 @@ export const Controls = ({ data }: Props) => {
         xs={2}>
         <Button
           variant='contained'
-          onClick={onResetButtonClick}>Reset</Button>
+          onClick={onResetButtonClick}>
+          Reset
+        </Button>
       </Grid>
       <Grid
         item
         xs={2}>
         <Button
           variant='contained'
-          disabled={data.room?.votingStatus === VotingStatus.Closed}
-          onClick={onRevealButtonClick}
-        >Reveal</Button>
+          disabled={noVotes || data.room?.votingStatus === VotingStatus.Closed}
+          onClick={onRevealButtonClick}>
+          Reveal
+        </Button>
       </Grid>
     </Grid>
   );

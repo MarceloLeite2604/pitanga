@@ -4,12 +4,16 @@ import {
   buildAttendeeVotedEvent,
   ChartEventProps,
   createVote,
-  Data
+  Data,
+  VotingStatus
 } from '../../../../shared/model';
 
 export const useOnClickCallback = (data: Data) => {
   return useCallback((props: ChartEventProps) => {
-    if (props && data.user && data.room?.attendees) {
+    if (props &&
+      data.user &&
+      data.room?.attendees &&
+      data.room.votingStatus === VotingStatus.Open) {
       const { xValue, yValue } = props;
       const vote = createVote(xValue, yValue);
       const attendee = { ...data.attendee, vote } as Attendee;

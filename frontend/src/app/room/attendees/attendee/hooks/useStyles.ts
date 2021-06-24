@@ -13,7 +13,13 @@ export const useStyles = makeStyles(theme => createStyles({
       paddingBottom: '4px'
     }
   },
-  userAttendeeCard: {
+  currentUser: {
+    background: theme.palette.primary.dark
+  },
+  currentUserVoted: {
+    background: lighten(theme.palette.primary.dark, 0.2)
+  },
+  otherUserVoted: {
     background: lighten(theme.palette.background.paper, 0.2)
   },
   iconTypography: {

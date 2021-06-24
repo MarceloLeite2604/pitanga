@@ -9,8 +9,9 @@ import {
   XAxis,
   YAxis
 } from 'recharts';
-import { Data } from '../../../shared/model';
+import { Data, VotingStatus } from '../../../shared/model';
 import {
+  useCreateMeanPoint,
   useOnClickCallback,
   useOnMouseMoveCallback,
   usePoints,
@@ -20,6 +21,7 @@ import { axisTicks, domainLimits, mediumPoint } from './constants';
 import { useUpdateState } from '../../../shared/hooks';
 import { TooltipRenderer } from './TooltipRenderer';
 import { VotesLabel } from './VotesLabel';
+import { useTheme } from '@material-ui/core';
 
 interface Props {
   data: Data
@@ -28,20 +30,20 @@ interface Props {
 /* Recharts does not allow custom component creation... ¯\_(ツ)_/¯ */
 export const EffortValueChart = ({ data }: Props) => {
 
+  const theme = useTheme();
   const points = usePoints(data);
   const [suggestedPoint, onMouseMoveCallback] = useOnMouseMoveCallback();
   const onClickCallback = useOnClickCallback(data);
   useUpdateState([data.attendee?.vote]);
   const styles = useStyles();
+  const createMeanPoint = useCreateMeanPoint();
 
   return (
     <ResponsiveContainer
       aspect={1.6}
-      height='100%'
+      width='100%'
       className={styles.responsiveContainer}>
       <ScatterChart
-        width={400}
-        height={400}
         margin={{
           top: 40,
           bottom: 40,
@@ -57,7 +59,8 @@ export const EffortValueChart = ({ data }: Props) => {
           axisLine={false}
           hide={false}
           ticks={axisTicks}
-          domain={domainLimits} />
+          domain={domainLimits}
+          stroke={theme.palette.primary.dark} />
         <YAxis
           dataKey='effort'
           type='number'
@@ -65,24 +68,30 @@ export const EffortValueChart = ({ data }: Props) => {
           hide={false}
           ticks={axisTicks}
           domain={domainLimits}
-        />
+          stroke={theme.palette.primary.dark} />
         <ReferenceLine
           x={mediumPoint}
-          stroke='black'
+          stroke={theme.palette.primary.dark}
+          strokeWidth={2}
           label={{
             position: 'insideBottomLeft',
-            value: 'Effort'
+            value: 'Effort',
+            fill: theme.palette.primary.dark
           }}
         />;
         <ReferenceLine
           y={mediumPoint}
-          stroke='black'
+          stroke={theme.palette.primary.dark}
+          strokeWidth={2}
           label={{
             position: 'insideBottomLeft',
-            value: 'Value'
+            value: 'Value',
+            fill: theme.palette.primary.dark
           }}
         />
-        <CartesianGrid strokeDasharray='3 3' />
+        <CartesianGrid
+          strokeDasharray='2 4'
+          stroke={theme.palette.grey[400]} />
         <Scatter
           data={points}
           isAnimationActive={false}
@@ -91,18 +100,31 @@ export const EffortValueChart = ({ data }: Props) => {
           fill="#fff">
           <LabelList
             dataKey='label'
-            fontSize='10rem'
+            fontSize='4rem'
             content={<VotesLabel />}
           />
         </Scatter>
-        {suggestedPoint && <Scatter
-          data={[suggestedPoint]}
-          shape='cross'
-          strokeWidth={10}
-          strokeOpacity={0.5}
-          fillOpacity={0.5}
-          fill="#f00">
-        </Scatter>}
+        {data.room?.votingStatus === VotingStatus.Open &&
+          suggestedPoint &&
+          <Scatter
+            data={[suggestedPoint]}
+            shape='cross'
+            rotate={200}
+            strokeWidth={12}
+            strokeOpacity={0.5}
+            fillOpacity={1}
+            fill={theme.palette.secondary.dark}>
+          </Scatter>}
+        {data.room?.votingStatus === VotingStatus.Closed &&
+          <Scatter
+            data={createMeanPoint(points)}
+            shape='cross'
+            rotate={200}
+            strokeWidth={12}
+            strokeOpacity={0.5}
+            fillOpacity={1}
+            fill={theme.palette.primary.dark}>
+          </Scatter>}
         <Tooltip content={<TooltipRenderer points={points} />} />
       </ScatterChart>
     </ResponsiveContainer>

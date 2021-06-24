@@ -1,7 +1,7 @@
 import { useEffect, useState } from 'react';
 import { Subject } from 'rxjs';
 import { w3cwebsocket as W3CWebSocket } from 'websocket';
-import { Event, WebSocketSubjects } from '../../shared/model';
+import { Event, WebSocketSubjects, Toast } from '../../shared/model';
 
 const SERVER_ADDRESS = 'ws://localhost:8080/pitanga';
 
@@ -32,7 +32,8 @@ export const useWebSocketSubjects = () => {
   const [webSocketSubjects] = useState<WebSocketSubjects>({
     $connected: new Subject<boolean>(),
     $in: new Subject<Event>(),
-    $out: new Subject<Event>()
+    $out: new Subject<Event>(),
+    $toast: new Subject<Toast>()
   });
 
   const [client] = useState(() => createClient(webSocketSubjects));

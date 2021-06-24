@@ -14,7 +14,8 @@ export const Container: FC = ({ children }) => {
     spacing={0}
     className={styles.container} >
     <BoxMargin />
-    <Grid item
+    <Grid
+      item
       md={10}
       xs={12}>
       {children}

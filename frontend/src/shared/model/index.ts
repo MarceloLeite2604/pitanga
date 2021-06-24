@@ -7,3 +7,4 @@ export * from './ChartEventProps';
 export * from './ChartPoint';
 export * from './Vote';
 export * from './VotingStatus';
+export * from './Toast';

@@ -23,9 +23,17 @@ export const Attendee = ({ user, room, attendee }: Props) => {
     !attendee.vote,
   [attendee, room.votingStatus]);
 
+  let cardClassName = styles.attendeeCard;
+
+  if (user.id === attendee.user.id) {
+    cardClassName += ` ${attendee.vote ? styles.currentUserVoted : styles.currentUser}`;
+  } else if (attendee.vote) {
+    cardClassName += ` ${styles.otherUserVoted}`;
+  }
+
   return (
     <Card
-      className={`${styles.attendeeCard} ${user.id === attendee.user.id && styles.userAttendeeCard}`} >
+      className={cardClassName} >
       <CardContent className={styles.attendeeCardContent}>
         <Grid
           container>

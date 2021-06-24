@@ -17,10 +17,8 @@ export const Room = ({ data }: Params) => {
   useEventsCallback(data);
 
   const roomOwner = useMemo(() => {
-    console.log('Retrieving room owner.');
     if (data.room?.attendees && data.user) {
       const userAttendee = retrieveAttendeeForUser(data.room?.attendees, data.user);
-      console.log(`Attendee is ${JSON.stringify(userAttendee)}.`);
       return userAttendee?.roomOwner || false;
     }
     return false;
