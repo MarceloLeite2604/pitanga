@@ -1,6 +1,7 @@
 server:
   port: ${PORT:8080}
 spring:
+  profiles.active: ${SPRING_PROFILES}
   jpa:
     show-sql: true
     open-in-view: false
