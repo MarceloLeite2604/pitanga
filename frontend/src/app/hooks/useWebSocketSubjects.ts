@@ -5,6 +5,7 @@ import configuration from '../../config';
 import { Event, WebSocketSubjects, Toast } from '../../shared/model';
 
 function createClient(webSocketSubjects: WebSocketSubjects) {
+  console.log(`Connecting with ${configuration.backendUri}.`);
   const client = new W3CWebSocket(configuration.backendUri);
   client.onopen = () => {
     webSocketSubjects.$connected.next(true);
