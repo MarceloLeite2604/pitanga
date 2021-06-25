@@ -3,7 +3,7 @@ const local = {
 };
 
 const production = {
-  backendUri: 'ws://marceloleite2604-pitanga.herokuapp.com:8080/pitanga'
+  backendUri: 'ws://marceloleite2604-pitanga.herokuapp.com/pitanga'
 };
 
 const config = process.env.REACT_APP_STAGE === 'production' ? production : local;
