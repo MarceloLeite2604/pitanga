@@ -7,40 +7,40 @@ on:
   workflow_dispatch:
 
 jobs:
-  build:
+  build-back-end:
     runs-on: ubuntu-latest
 
     steps:
       - uses: actions/checkout@v2
+      
       - uses: actions/setup-java@v2
         with:
           distribution: 'adopt'
           java-version: '16'
-      
+          
+      - name: Build back end executable
+        run: make build-backend
+
+      - name: Build, push and release back end container
+        env: 
+          HEROKU_API_KEY: ${{ secrets.HEROKU_API_KEY }}
+        run: |
+          cd backend
+          heroku container:login
+          heroku container:push -a ${{ secrets.HEROKU_APP_NAME }} web
+          heroku container:release -a ${{ secrets.HEROKU_APP_NAME }} web
+          
+  build-front-end:
+    runs-on: ubuntu-latest
+
+    steps:
+      - uses: actions/checkout@v2
+        
       - name: Build front end
         run: make build-frontend
         
-      - name: Build back end
-        run: make build-backend
-
-      - name: Login to Heroku Container Registry
-        env: 
-          HEROKU_API_KEY: ${{ secrets.HEROKU_API_KEY }}
-        run: heroku container:login
-        
-      - name: Build and push front end container
-        env: 
-          HEROKU_API_KEY: ${{ secrets.HEROKU_API_KEY }}
-        run: cd frontend && heroku container:push -a ${{ secrets.HEROKU_APP_NAME }} web 
-        
-      - name: Build and push back end container
-        env: 
-          HEROKU_API_KEY: ${{ secrets.HEROKU_API_KEY }}
-        run: cd backend && heroku container:push -a ${{ secrets.HEROKU_APP_NAME }} worker
-        
-      - name: Release containers
-        env: 
-          HEROKU_API_KEY: ${{ secrets.HEROKU_API_KEY }}
-        run: heroku container:release -a ${{ secrets.HEROKU_APP_NAME }} web worker
-        
-      
+      - name: Deploy front end on GitHub pages
+        uses: JamesIves/github-pages-deploy-action@4.1.4
+        with:
+          branch: gh-pages
+          folder: frontend/build
