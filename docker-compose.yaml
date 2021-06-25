@@ -3,10 +3,13 @@ services:
   frontend:
     build: frontend/.
     environment: 
-      - NGINX_PORT=${FE_PORT}
+      - PORT=${FE_PORT}
     ports:
       - 3000:${FE_PORT}
   backend:
     build: backend/.
+    environment:
+      - SPRING_PROFILES=local
+      - PORT=${BE_PORT}
     ports:
-      - 8080:8080
+      - 8080:${BE_PORT}
