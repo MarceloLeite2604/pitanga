@@ -3,9 +3,9 @@ services:
   frontend:
     build: frontend/.
     environment: 
-      - NGINX_PORT=${PORT}
+      - NGINX_PORT=${FE_PORT}
     ports:
-      - 3000:${PORT}
+      - 3000:${FE_PORT}
   backend:
     build: backend/.
     ports:

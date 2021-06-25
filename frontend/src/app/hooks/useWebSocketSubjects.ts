@@ -1,12 +1,11 @@
 import { useEffect, useState } from 'react';
 import { Subject } from 'rxjs';
 import { w3cwebsocket as W3CWebSocket } from 'websocket';
+import configuration from '../../config';
 import { Event, WebSocketSubjects, Toast } from '../../shared/model';
 
-const SERVER_ADDRESS = 'ws://localhost:8080/pitanga';
-
 function createClient(webSocketSubjects: WebSocketSubjects) {
-  const client = new W3CWebSocket(SERVER_ADDRESS);
+  const client = new W3CWebSocket(configuration.backendUri);
   client.onopen = () => {
     webSocketSubjects.$connected.next(true);
   };

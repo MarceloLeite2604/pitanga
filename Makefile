@@ -10,7 +10,7 @@ clean-frontend: install-frontend
 	@yarn --cwd frontend clean
 
 build-frontend: install-frontend
-	@yarn --cwd frontend build
+	@yarn --cwd frontend build:prod
 
 clean-backend:
 	@cd backend && ./mvnw clean

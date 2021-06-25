@@ -18,8 +18,9 @@
     "websocket": "^1.0.34"
   },
   "scripts": {
-    "start": "react-scripts start",
-    "build": "react-scripts build",
+    "start": "cross-env REACT_APP_STAGE=local react-scripts start",
+    "build:local": "cross-env REACT_APP_STAGE=local react-scripts build",
+    "build:prod": "cross-env REACT_APP_STAGE=production react-scripts build",
     "clean": "rimraf build"
   },
   "eslintConfig": {
@@ -48,6 +49,8 @@
     "@types/websocket": "^1.0.2",
     "@typescript-eslint/eslint-plugin": "^4.23.0",
     "@typescript-eslint/parser": "^4.23.0",
+    "copyfiles": "^2.4.1",
+    "cross-env": "^7.0.3",
     "eslint": "^7.2.0",
     "eslint-config-standard": "^16.0.2",
     "eslint-plugin-import": "^2.22.1",
