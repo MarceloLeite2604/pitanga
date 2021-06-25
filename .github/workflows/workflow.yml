@@ -8,6 +8,7 @@ on:
 
 jobs:
   build-back-end:
+    name: Build back end
     runs-on: ubuntu-latest
 
     steps:
@@ -31,6 +32,7 @@ jobs:
           heroku container:release -a ${{ secrets.HEROKU_APP_NAME }} web
           
   build-front-end:
+    name: Build front end
     runs-on: ubuntu-latest
 
     steps:
