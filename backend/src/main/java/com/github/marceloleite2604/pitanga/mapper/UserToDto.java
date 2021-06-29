@@ -1,21 +1,16 @@
 package com.github.marceloleite2604.pitanga.mapper;
 
-import com.github.marceloleite2604.pitanga.model.User;
 import com.github.marceloleite2604.pitanga.dto.UserDto;
+import com.github.marceloleite2604.pitanga.model.User;
 import org.springframework.stereotype.Component;
 
-import java.util.Objects;
 import java.util.UUID;
 
 @Component
-public class UserToDto implements Mapper<User, UserDto> {
+public class UserToDto extends AbstractMapper<User, UserDto> {
 
     @Override
-    public UserDto mapTo(User user) {
-
-        if (Objects.isNull(user)) {
-            return null;
-        }
+    public UserDto doMapTo(User user) {
 
         return UserDto.builder()
                 .id(user.getId()
@@ -24,11 +19,7 @@ public class UserToDto implements Mapper<User, UserDto> {
     }
 
     @Override
-    public User mapFrom(UserDto userDao) {
-
-        if (Objects.isNull(userDao)) {
-            return null;
-        }
+    public User doMapFrom(UserDto userDao) {
 
         return User.builder()
                 .id(UUID.fromString(userDao.getId()))

@@ -6,7 +6,9 @@ import com.github.marceloleite2604.pitanga.dto.UserDto;
 import com.github.marceloleite2604.pitanga.dto.event.EventType;
 import com.github.marceloleite2604.pitanga.dto.event.userdropped.UserDroppedEvent;
 import com.github.marceloleite2604.pitanga.dto.event.userdropped.UserDroppedPayload;
+import com.github.marceloleite2604.pitanga.mapper.AttendeeToDto;
 import com.github.marceloleite2604.pitanga.mapper.UserToDto;
+import com.github.marceloleite2604.pitanga.model.attendee.Attendee;
 import com.github.marceloleite2604.pitanga.service.PitangaService;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Component;
@@ -19,14 +21,18 @@ import java.util.Set;
 @Slf4j
 public class UserDroppedEventHandler extends AbstractEventHandler<UserDroppedPayload> {
 
-    public UserDroppedEventHandler(PitangaService pitangaService, UserToDto userToDto) {
+    private final AttendeeToDto attendeeToDto;
+
+    public UserDroppedEventHandler(PitangaService pitangaService, UserToDto userToDto, AttendeeToDto attendeeToDto) {
         super(pitangaService, EventType.USER_DROPPED, userToDto);
+        this.attendeeToDto = attendeeToDto;
     }
 
     @Override
     protected OutgoingContext doHandle(IncomingContext incomingContext) {
-        var userDroppedPayload = retrievePayload(incomingContext);
-        var optionalUser = pitangaService.retrieveUser(userDroppedPayload.getUser()
+        var incomingUserDroppedPayload = retrievePayload(incomingContext);
+        var userDto = incomingUserDroppedPayload.getUser();
+        var optionalUser = pitangaService.retrieveUser(userDto
                 .getId());
 
         UserDroppedEvent userDroppedEvent = null;
@@ -35,14 +41,28 @@ public class UserDroppedEventHandler extends AbstractEventHandler<UserDroppedPay
 
         if (optionalUser.isPresent()) {
             var user = optionalUser.get();
+
+            Attendee newRoomOwner = null;
+            if (user.getAttendee()
+                    .isRoomOwner()) {
+                var room = user.getAttendee()
+                        .getRoom();
+                newRoomOwner = pitangaService.changeRoomOwner(room);
+            }
+
+            pitangaService.deleteUser(user);
+
+            var outgoingUserDroppedPayload = UserDroppedPayload.builder()
+                    .user(userDto)
+                    .newRoomOwner(attendeeToDto.mapTo(newRoomOwner))
+                    .build();
+
             recipients = Optional.ofNullable(user.getAttendee())
                     .map(this::elaborateRecipients)
                     .orElseGet(HashSet::new);
 
-            pitangaService.deleteUser(user);
-
             userDroppedEvent = UserDroppedEvent.builder()
-                    .payload(userDroppedPayload)
+                    .payload(outgoingUserDroppedPayload)
                     .build();
         }
 

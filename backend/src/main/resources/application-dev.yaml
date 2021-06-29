@@ -1,0 +1,19 @@
+server:
+  port: ${PORT:8080}
+spring:
+  jpa:
+    show-sql: true
+    properties:
+      hibernate.format_sql: true
+  h2:
+    console:
+      enabled: true
+logging:
+  level:
+    root: INFO
+    org.springframework.transaction.interceptor: INFO # TRACE
+pitanga:
+  web-socket:
+    allowed-origins:
+      - http://localhost:3000
+

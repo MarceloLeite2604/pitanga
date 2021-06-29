@@ -1,26 +1,17 @@
 server:
   port: ${PORT:8080}
 spring:
-  profiles.active: ${SPRING_PROFILES}
+  profiles:
+    active: ${SPRING_PROFILES}
   jpa:
-    show-sql: true
     open-in-view: false
-  properties:
-    hibernate:
-      format_sql: true
-  h2:
-    console:
-      enabled: true
+    show-sql: false
   datasource:
     url: jdbc:h2:mem:testdb
-    driverClassName: org.h2.Driver
+    driver-class-name: org.h2.Driver
     username: sa
     password: password
     database-platform: org.hibernate.dialect.H2Dialect
-logging:
-  level:
-    root: INFO
-    org.springframework.transaction.interceptor: INFO # TRACE
 pitanga:
   room:
     min-id: 10000000
@@ -31,7 +22,10 @@ pitanga:
     paths:
       - pitanga
     allowed-origins:
-      - http://localhost:3000
+      - http://pitanga.figtreelake.com
+      - https://pitanga.figtreelake.com
+      - http://marceloleite2604.github.io
+      - https://marceloleite2604.github.io
   user:
     max-users: 4
     icons:

@@ -25,6 +25,7 @@ import org.springframework.transaction.annotation.Transactional;
 
 import javax.persistence.EntityManager;
 import java.time.LocalDateTime;
+import java.util.Comparator;
 import java.util.Objects;
 import java.util.Optional;
 import java.util.UUID;
@@ -236,5 +237,31 @@ public class PitangaService {
                 .ifPresent(voteRepository::deleteByIdRoomId);
         updateVotingStatusForRoom(attendee.getRoom(), VotingStatus.OPEN);
         entityManager.refresh(attendee);
+    }
+
+    public Attendee changeRoomOwner(Room room) {
+
+        var owner = retrieveOwner(room);
+        owner.setRoomOwner(false);
+
+        var optionalNewOwner = room.getAttendees()
+                .stream()
+                .filter(attendee -> !owner.equals(attendee))
+                .min(Comparator.comparing(Attendee::getJoinedAt));
+
+        optionalNewOwner.ifPresent(attendee -> {
+                    attendee.setRoomOwner(true);
+                    attendeeRepository.saveAndFlush(attendee);
+                });
+
+        return optionalNewOwner.orElse(null);
+    }
+
+    private Attendee retrieveOwner(Room room) {
+        return room.getAttendees()
+                .stream()
+                .filter(Attendee::isRoomOwner)
+                .findFirst()
+                .orElseThrow(() -> new IllegalStateException(String.format("Cannot find owner of room %d.", room.getId())));
     }
 }

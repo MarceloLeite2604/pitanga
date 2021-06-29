@@ -8,7 +8,7 @@ import { useCheckRoomExistsCallback } from './useCheckRoomExistsCallback';
 import { useMaxUsersReachedCallback } from './useMaxUsersReachedCallback';
 import { useResetRoomCallback } from './useResetRoomCallback';
 import { useRevealVotesCallback } from './useRevealVotesCallback';
-import { useUserDroppedCallback } from './useUserDroppedCallbac';
+import { useUserDroppedCallback } from './useUserDroppedCallback';
 import { useUserJoinedCallback } from './useUserJoinedCallback';
 
 type EventsCallbacks = { [key in EventType]?: EventCallback<any> };

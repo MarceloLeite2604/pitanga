@@ -1,9 +1,10 @@
-import { User } from '..';
+import { User, Attendee } from '..';
 import { Event } from './Event';
 import { EventType } from './EventType';
 
 export interface UserDroppedPayload {
-  user: User
+  user: User,
+  newRoomOwner?: Attendee
 }
 
 export interface UserDroppedEvent extends Event<EventType.UserDropped, UserDroppedPayload>{ }

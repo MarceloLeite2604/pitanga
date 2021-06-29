@@ -6,6 +6,7 @@ import org.springframework.boot.context.properties.ConfigurationProperties;
 import org.springframework.stereotype.Component;
 import org.springframework.validation.annotation.Validated;
 
+import javax.validation.constraints.AssertTrue;
 import javax.validation.constraints.NotEmpty;
 import javax.validation.constraints.Positive;
 import java.util.Set;
@@ -22,4 +23,9 @@ public class UserProperties {
 
     @NotEmpty
     private Set<@NotEmpty String> icons;
+
+    @AssertTrue(message = "The amount of icons informed must be greater than or equal the maximum amount of users.")
+    private boolean isTheAmountOfIconsGreaterThanOrEqualMaximumAmountOfUsers() {
+        return icons.size() >= maxUsers;
+    }
 }

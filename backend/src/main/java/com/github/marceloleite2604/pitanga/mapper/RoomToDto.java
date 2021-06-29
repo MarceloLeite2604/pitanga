@@ -10,16 +10,12 @@ import java.util.stream.Collectors;
 
 @Component
 @RequiredArgsConstructor
-public class RoomToDto implements Mapper<Room, RoomDto> {
+public class RoomToDto extends AbstractMapper<Room, RoomDto> {
 
     private final AttendeeToDto attendeeToDto;
 
     @Override
-    public RoomDto mapTo(Room room) {
-
-        if (Objects.isNull(room)) {
-            return null;
-        }
+    public RoomDto doMapTo(Room room) {
 
         var attendees = room.getAttendees()
                 .stream()
@@ -34,11 +30,7 @@ public class RoomToDto implements Mapper<Room, RoomDto> {
     }
 
     @Override
-    public Room mapFrom(RoomDto roomDto) {
-
-        if (Objects.isNull(roomDto)) {
-            return null;
-        }
+    public Room doMapFrom(RoomDto roomDto) {
 
         var attendees = roomDto.getAttendees()
                 .stream()

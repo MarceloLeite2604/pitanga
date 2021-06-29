@@ -1,19 +1,13 @@
 package com.github.marceloleite2604.pitanga.mapper;
 
-import com.github.marceloleite2604.pitanga.model.Vote;
 import com.github.marceloleite2604.pitanga.dto.VoteDto;
+import com.github.marceloleite2604.pitanga.model.Vote;
 import org.springframework.stereotype.Component;
 
-import java.util.Objects;
-
 @Component
-public class VoteToDto implements Mapper<Vote, VoteDto> {
+public class VoteToDto extends AbstractMapper<Vote, VoteDto> {
     @Override
-    public VoteDto mapTo(Vote vote) {
-
-        if (Objects.isNull(vote)) {
-            return null;
-        }
+    public VoteDto doMapTo(Vote vote) {
 
         return VoteDto.builder()
                 .effort(vote.getEffort())
@@ -22,11 +16,7 @@ public class VoteToDto implements Mapper<Vote, VoteDto> {
     }
 
     @Override
-    public Vote mapFrom(VoteDto voteDto) {
-
-        if (Objects.isNull(voteDto)) {
-            return null;
-        }
+    public Vote doMapFrom(VoteDto voteDto) {
 
         return Vote.builder()
                 .effort(voteDto.getEffort())

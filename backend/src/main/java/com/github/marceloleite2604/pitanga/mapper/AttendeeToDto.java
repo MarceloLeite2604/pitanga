@@ -10,14 +10,14 @@ import java.time.ZoneOffset;
 
 @Component
 @RequiredArgsConstructor
-public class AttendeeToDto implements Mapper<Attendee, AttendeeDto> {
+public class AttendeeToDto extends AbstractMapper<Attendee, AttendeeDto> {
 
     private final UserToDto userToDto;
 
     private final VoteToDto voteToDto;
 
     @Override
-    public AttendeeDto mapTo(Attendee attendee) {
+    public AttendeeDto doMapTo(Attendee attendee) {
         return AttendeeDto.builder()
                 .user(userToDto.mapTo(attendee.getUser()))
                 .vote(voteToDto.mapTo(attendee.getVote()))
@@ -29,7 +29,7 @@ public class AttendeeToDto implements Mapper<Attendee, AttendeeDto> {
     }
 
     @Override
-    public Attendee mapFrom(AttendeeDto attendeeDto) {
+    public Attendee doMapFrom(AttendeeDto attendeeDto) {
 
         var user = userToDto.mapFrom(attendeeDto.getUser());
 
