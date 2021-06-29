@@ -4,9 +4,13 @@ import { w3cwebsocket as W3CWebSocket } from 'websocket';
 import configuration from '../../config';
 import { Event, WebSocketSubjects, Toast } from '../../shared/model';
 
+function elaborateWebsocketUri() {
+  const schema = location.protocol === 'https:' ? 'wss:' : 'ws:';
+  return `${schema}//${configuration.host}:${configuration.port}${configuration.path}`;
+}
+
 function createClient(webSocketSubjects: WebSocketSubjects) {
-  console.log(`Connecting with ${configuration.backendUri}.`);
-  const client = new W3CWebSocket(configuration.backendUri);
+  const client = new W3CWebSocket(elaborateWebsocketUri());
   client.onopen = () => {
     webSocketSubjects.$connected.next(true);
   };

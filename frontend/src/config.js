@@ -1,9 +1,13 @@
 const local = {
-  backendUri: 'ws://localhost:8080/pitanga'
+  host: 'localhost',
+  port: 8080,
+  path: '/pitanga'
 };
 
 const production = {
-  backendUri: 'ws://marceloleite2604-pitanga.herokuapp.com/pitanga'
+  host: 'marceloleite2604-pitanga.herokuapp.com',
+  port: 80,
+  path: '/pitanga'
 };
 
 const config = process.env.REACT_APP_STAGE === 'production' ? production : local;
