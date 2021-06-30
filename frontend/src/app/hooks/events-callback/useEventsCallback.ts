@@ -10,6 +10,7 @@ import { useResetRoomCallback } from './useResetRoomCallback';
 import { useRevealVotesCallback } from './useRevealVotesCallback';
 import { useUserDroppedCallback } from './useUserDroppedCallback';
 import { useUserJoinedCallback } from './useUserJoinedCallback';
+import { useAttendeeLeftRoomCallback } from './useAttendeeLeftRoomCallback';
 
 type EventsCallbacks = { [key in EventType]?: EventCallback<any> };
 
@@ -23,6 +24,7 @@ export const useEventsCallback = (params: CallbackHookParams) => {
   const userDroppedCallback = useUserDroppedCallback(params);
   const revealVotesCallback = useRevealVotesCallback(params);
   const resetRoomCallback = useResetRoomCallback(params);
+  const attendeeLeftRoomEventCallback = useAttendeeLeftRoomCallback(params);
 
   const callbacks = useMemo(() => {
     return {
@@ -34,7 +36,8 @@ export const useEventsCallback = (params: CallbackHookParams) => {
       [EventType.RevealVotes]: revealVotesCallback,
       [EventType.UserDropped]: userDroppedCallback,
       [EventType.UserJoined]: userJoinedCallback,
-      [EventType.MaxUsersReached]: maxUsersReachedCallback
+      [EventType.MaxUsersReached]: maxUsersReachedCallback,
+      [EventType.AttendeeLeftRoom]: attendeeLeftRoomEventCallback
     } as EventsCallbacks;
   }, [attendeeVotedCallback,
     roomCreatedCallback,
@@ -44,7 +47,8 @@ export const useEventsCallback = (params: CallbackHookParams) => {
     userJoinedCallback,
     userDroppedCallback,
     revealVotesCallback,
-    resetRoomCallback
+    resetRoomCallback,
+    attendeeLeftRoomEventCallback
   ]);
 
   return useCallback((event: Event) => {

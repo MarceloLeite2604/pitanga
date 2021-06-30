@@ -12,21 +12,6 @@ export enum EventType {
   UserDropped = 'user-dropped',
   AttendeeVoted = 'attendee-voted',
   ResetRoom = 'reset-room',
-  RevealVotes = 'reveal-votes'
+  RevealVotes = 'reveal-votes',
+  AttendeeLeftRoom = 'attendee-left-room'
 }
-
-// export type EventType =
-//   'create-user' |
-//   'user-created' |
-//   'max-users-reached' |
-//   'join-user' |
-//   'user-joined' |
-//   'max-room-users-reached' |
-//   'create-room' |
-//   'room-created' |
-//   'max-rooms-reached' |
-//   'check-room-exists' |
-//   'user-dropped' |
-//   'attendee-voted' |
-//   'reset-room' |
-//   'reveal-votes';

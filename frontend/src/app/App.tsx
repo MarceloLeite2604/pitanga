@@ -2,7 +2,7 @@ import { Grid } from '@material-ui/core';
 import { Switch, Route } from 'react-router-dom';
 import { Container } from './container';
 import { Home } from './home';
-import { useSubscriptions, useDataState } from './hooks';
+import { useSubscriptions, useDataState, useCheckAttendeeLeftRoomCallback } from './hooks';
 import { Room } from './room';
 import { Title } from './Title';
 
@@ -10,6 +10,7 @@ export function App() {
 
   const dataState = useDataState();
   useSubscriptions(dataState);
+  useCheckAttendeeLeftRoomCallback(dataState);
   const [data] = dataState;
 
   return (
@@ -31,7 +32,8 @@ export function App() {
               <Room data={data} />
             </Route>
             <Route path='/'>
-              <Home data={data} />
+              <Home
+                data={data} />
             </Route>
           </Switch>
         </Grid>

@@ -24,6 +24,14 @@ export const sortByJoinedAtWithCurrentUserFirst = (attendees: Attendee[], user: 
   });
 };
 
+export const removeAttendeeFromAttendees = (attendee: Attendee, attendees: Attendee[]) => {
+  if (attendees.length === 0 || !attendee) {
+    return attendees;
+  }
+
+  return attendees.filter(att => att.user.id !== attendee.user.id);
+};
+
 export const removeUserFromAttendees = (user: User, attendees: Attendee[]) => {
   if (attendees.length === 0 || !user) {
     return attendees;

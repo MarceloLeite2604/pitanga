@@ -17,7 +17,7 @@ export const Home = ({ data }: Params) => {
   const history = useHistory();
   
   const joinRoom = useCallback(() => {
-    history.push(`#/${roomNumber}`);
+    history.push(`${roomNumber}`);
   }, [history, roomNumber]);
 
   const sendCreateRoomEvent = () => {

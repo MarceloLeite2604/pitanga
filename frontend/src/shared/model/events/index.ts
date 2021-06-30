@@ -14,3 +14,4 @@ export * from './UserJoined';
 export * from './AttendeeVoted';
 export * from './RevealVotes';
 export * from './ResetRoom';
+export * from './AttendeeLeftRoom';
