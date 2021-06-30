@@ -55,9 +55,7 @@ public class PitangaService {
     private final EntityManager entityManager;
 
     public CreateRoomResult createRoom(User user) {
-        if (!userRepository.existsById(user.getId())) {
-            throw new IllegalArgumentException("User \"%s\" does not exist on service.");
-        }
+        var persistedUser = findMandatoryUserById(user.getId());
 
         if (roomRepository.count() >= roomProperties.getMaxRooms()) {
             return CreateRoomResult.builder()
@@ -71,7 +69,7 @@ public class PitangaService {
                 .votingStatus(VotingStatus.OPEN)
                 .build();
 
-        var attendee = createAttendee(user, room, true);
+        var attendee = createAttendee(persistedUser, room, true);
 
         return CreateRoomResult.builder()
                 .status(CreateRoomResult.Status.CREATED)
@@ -157,6 +155,7 @@ public class PitangaService {
 
     public void deleteUser(User user) {
         userRepository.delete(user);
+        attendeeRepository.deleteByUserId(user.getId());
     }
 
     public Optional<Room> findRoomById(long roomId) {

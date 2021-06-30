@@ -13,4 +13,6 @@ public interface AttendeeRepository extends JpaRepository<Attendee, AttendeeId> 
     Optional<Attendee> findByUserId(UUID userId);
 
     Set<Attendee> findAllByRoomId(Long id);
+
+    void deleteByUserId(UUID userId);
 }
