@@ -216,6 +216,11 @@ public class PitangaService {
                 .orElseThrow(() -> new IllegalArgumentException(String.format("Could not find a room with id \"%d\"", id)));
     }
 
+    public Attendee findMandatoryAttendeeById(AttendeeId id) {
+        return attendeeRepository.findById(id)
+                .orElseThrow(() -> new IllegalArgumentException(String.format("Could not find an attendee with user id \"%s\" and room id \"%d\".", id.getUserId(), id.getRoomId())));
+    }
+
     public Attendee findMandatoryAttendeeByUserId(UUID userId) {
         return attendeeRepository.findByUserId(userId)
                 .orElseThrow(() -> new IllegalArgumentException(String.format("Could not find an attendee associated with user \"%s\"", userId)));
@@ -249,9 +254,9 @@ public class PitangaService {
                 .min(Comparator.comparing(Attendee::getJoinedAt));
 
         optionalNewOwner.ifPresent(attendee -> {
-                    attendee.setRoomOwner(true);
-                    attendeeRepository.saveAndFlush(attendee);
-                });
+            attendee.setRoomOwner(true);
+            attendeeRepository.saveAndFlush(attendee);
+        });
 
         return optionalNewOwner.orElse(null);
     }
@@ -262,5 +267,9 @@ public class PitangaService {
                 .filter(Attendee::isRoomOwner)
                 .findFirst()
                 .orElseThrow(() -> new IllegalStateException(String.format("Cannot find owner of room %d.", room.getId())));
+    }
+
+    public void deleteAttendee(Attendee attendee) {
+        attendeeRepository.delete(attendee);
     }
 }

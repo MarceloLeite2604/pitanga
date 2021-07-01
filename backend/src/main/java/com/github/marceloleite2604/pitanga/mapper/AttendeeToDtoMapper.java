@@ -10,17 +10,17 @@ import java.time.ZoneOffset;
 
 @Component
 @RequiredArgsConstructor
-public class AttendeeToDto extends AbstractMapper<Attendee, AttendeeDto> {
+public class AttendeeToDtoMapper extends AbstractMapper<Attendee, AttendeeDto> {
 
-    private final UserToDto userToDto;
+    private final UserToDtoMapper userToDtoMapper;
 
-    private final VoteToDto voteToDto;
+    private final VoteToDtoMapper voteToDtoMapper;
 
     @Override
     public AttendeeDto doMapTo(Attendee attendee) {
         return AttendeeDto.builder()
-                .user(userToDto.mapTo(attendee.getUser()))
-                .vote(voteToDto.mapTo(attendee.getVote()))
+                .user(userToDtoMapper.mapTo(attendee.getUser()))
+                .vote(voteToDtoMapper.mapTo(attendee.getVote()))
                 .icon(attendee.getIcon())
                 .joinedAt(attendee.getJoinedAt()
                         .toEpochSecond(ZoneOffset.UTC))
@@ -31,9 +31,9 @@ public class AttendeeToDto extends AbstractMapper<Attendee, AttendeeDto> {
     @Override
     public Attendee doMapFrom(AttendeeDto attendeeDto) {
 
-        var user = userToDto.mapFrom(attendeeDto.getUser());
+        var user = userToDtoMapper.mapFrom(attendeeDto.getUser());
 
-        var vote = voteToDto.mapFrom(attendeeDto.getVote());
+        var vote = voteToDtoMapper.mapFrom(attendeeDto.getVote());
 
         var id = AttendeeId.builder()
                 .userId(user.getId())

@@ -7,7 +7,7 @@ import com.github.marceloleite2604.pitanga.model.attendee.Attendee;
 import com.github.marceloleite2604.pitanga.dto.UserDto;
 import com.github.marceloleite2604.pitanga.dto.event.EventType;
 import com.github.marceloleite2604.pitanga.dto.event.Payload;
-import com.github.marceloleite2604.pitanga.mapper.UserToDto;
+import com.github.marceloleite2604.pitanga.mapper.UserToDtoMapper;
 import com.github.marceloleite2604.pitanga.service.PitangaService;
 
 import java.util.HashSet;
@@ -21,12 +21,12 @@ public abstract class AbstractEventHandler<T extends Payload> implements EventHa
     protected final PitangaService pitangaService;
     private final EventType eventType;
     private EventHandler next;
-    protected final UserToDto userToDto;
+    protected final UserToDtoMapper userToDtoMapper;
 
-    protected AbstractEventHandler(PitangaService pitangaService, EventType eventType, UserToDto userToDto) {
+    protected AbstractEventHandler(PitangaService pitangaService, EventType eventType, UserToDtoMapper userToDtoMapper) {
         this.pitangaService = pitangaService;
         this.eventType = eventType;
-        this.userToDto = userToDto;
+        this.userToDtoMapper = userToDtoMapper;
     }
 
     @Override
@@ -100,7 +100,7 @@ public abstract class AbstractEventHandler<T extends Payload> implements EventHa
         return room.getAttendees()
                 .stream()
                 .map(Attendee::getUser)
-                .map(userToDto::mapTo)
+                .map(userToDtoMapper::mapTo)
                 .collect(Collectors.toCollection(HashSet::new));
     }
 }

@@ -5,7 +5,7 @@ import com.github.marceloleite2604.pitanga.dto.OutgoingContext;
 import com.github.marceloleite2604.pitanga.dto.UserDto;
 import com.github.marceloleite2604.pitanga.dto.event.EmptyPayload;
 import com.github.marceloleite2604.pitanga.dto.event.EventType;
-import com.github.marceloleite2604.pitanga.mapper.UserToDto;
+import com.github.marceloleite2604.pitanga.mapper.UserToDtoMapper;
 import com.github.marceloleite2604.pitanga.service.PitangaService;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Component;
@@ -17,8 +17,8 @@ import java.util.UUID;
 @Slf4j
 public class RevealVotesEventHandler extends AbstractEventHandler<EmptyPayload> {
 
-    public RevealVotesEventHandler(PitangaService pitangaService, UserToDto userToDto) {
-        super(pitangaService, EventType.REVEAL_VOTES, userToDto);
+    public RevealVotesEventHandler(PitangaService pitangaService, UserToDtoMapper userToDtoMapper) {
+        super(pitangaService, EventType.REVEAL_VOTES, userToDtoMapper);
     }
 
     @Override

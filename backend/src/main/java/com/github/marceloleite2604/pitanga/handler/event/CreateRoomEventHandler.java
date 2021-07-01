@@ -7,29 +7,29 @@ import com.github.marceloleite2604.pitanga.dto.event.MaxRoomsReachedEvent;
 import com.github.marceloleite2604.pitanga.dto.event.createroom.CreateRoomPayload;
 import com.github.marceloleite2604.pitanga.dto.event.roomcreated.RoomCreatedEvent;
 import com.github.marceloleite2604.pitanga.dto.event.roomcreated.RoomCreatedPayload;
-import com.github.marceloleite2604.pitanga.mapper.RoomToDto;
-import com.github.marceloleite2604.pitanga.mapper.UserToDto;
+import com.github.marceloleite2604.pitanga.mapper.RoomToDtoMapper;
+import com.github.marceloleite2604.pitanga.mapper.UserToDtoMapper;
 import com.github.marceloleite2604.pitanga.service.PitangaService;
 import org.springframework.stereotype.Component;
 
 @Component
 public class CreateRoomEventHandler extends AbstractEventHandler<CreateRoomPayload> {
 
-    private final RoomToDto roomToDto;
+    private final RoomToDtoMapper roomToDtoMapper;
 
-    public CreateRoomEventHandler(PitangaService pitangaService, RoomToDto roomToDto, UserToDto userToDto) {
-        super(pitangaService, EventType.CREATE_ROOM, userToDto);
-        this.roomToDto = roomToDto;
+    public CreateRoomEventHandler(PitangaService pitangaService, RoomToDtoMapper roomToDtoMapper, UserToDtoMapper userToDtoMapper) {
+        super(pitangaService, EventType.CREATE_ROOM, userToDtoMapper);
+        this.roomToDtoMapper = roomToDtoMapper;
     }
 
     @Override
     protected OutgoingContext doHandle(IncomingContext incomingContext) {
         var createRoomPayload = retrievePayload(incomingContext);
-        var user = userToDto.mapFrom(createRoomPayload.getUser());
+        var user = userToDtoMapper.mapFrom(createRoomPayload.getUser());
 
         var createRoomResult = pitangaService.createRoom(user);
 
-        var room = roomToDto.mapTo(createRoomResult.room());
+        var room = roomToDtoMapper.mapTo(createRoomResult.room());
 
         var event = switch (createRoomResult.status()) {
             case CREATED -> {

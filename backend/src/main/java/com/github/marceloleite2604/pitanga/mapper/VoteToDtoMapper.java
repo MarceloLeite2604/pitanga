@@ -5,7 +5,7 @@ import com.github.marceloleite2604.pitanga.model.Vote;
 import org.springframework.stereotype.Component;
 
 @Component
-public class VoteToDto extends AbstractMapper<Vote, VoteDto> {
+public class VoteToDtoMapper extends AbstractMapper<Vote, VoteDto> {
     @Override
     public VoteDto doMapTo(Vote vote) {
 

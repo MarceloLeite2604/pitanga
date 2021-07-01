@@ -6,8 +6,8 @@ import com.github.marceloleite2604.pitanga.dto.event.EmptyPayload;
 import com.github.marceloleite2604.pitanga.dto.event.EventType;
 import com.github.marceloleite2604.pitanga.dto.event.resetroom.ResetRoomEvent;
 import com.github.marceloleite2604.pitanga.dto.event.resetroom.ResetRoomPayload;
-import com.github.marceloleite2604.pitanga.mapper.RoomToDto;
-import com.github.marceloleite2604.pitanga.mapper.UserToDto;
+import com.github.marceloleite2604.pitanga.mapper.RoomToDtoMapper;
+import com.github.marceloleite2604.pitanga.mapper.UserToDtoMapper;
 import com.github.marceloleite2604.pitanga.service.PitangaService;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Component;
@@ -18,11 +18,11 @@ import java.util.UUID;
 @Slf4j
 public class ResetRoomEventHandler extends AbstractEventHandler<EmptyPayload> {
 
-    private final RoomToDto roomToDto;
+    private final RoomToDtoMapper roomToDtoMapper;
 
-    public ResetRoomEventHandler(PitangaService pitangaService, UserToDto userToDto, RoomToDto roomToDto) {
-        super(pitangaService, EventType.RESET_ROOM, userToDto);
-        this.roomToDto = roomToDto;
+    public ResetRoomEventHandler(PitangaService pitangaService, UserToDtoMapper userToDtoMapper, RoomToDtoMapper roomToDtoMapper) {
+        super(pitangaService, EventType.RESET_ROOM, userToDtoMapper);
+        this.roomToDtoMapper = roomToDtoMapper;
     }
 
     @Override
@@ -33,7 +33,7 @@ public class ResetRoomEventHandler extends AbstractEventHandler<EmptyPayload> {
         pitangaService.resetRoomWithUser(userId);
 
         var attendee = pitangaService.findMandatoryAttendeeByUserId(userId);
-        var roomDao = roomToDto.mapTo(attendee.getRoom());
+        var roomDao = roomToDtoMapper.mapTo(attendee.getRoom());
 
         var recipients = elaborateRecipients(attendee);
 

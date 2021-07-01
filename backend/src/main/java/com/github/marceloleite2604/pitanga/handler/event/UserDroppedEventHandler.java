@@ -6,8 +6,8 @@ import com.github.marceloleite2604.pitanga.dto.UserDto;
 import com.github.marceloleite2604.pitanga.dto.event.EventType;
 import com.github.marceloleite2604.pitanga.dto.event.userdropped.UserDroppedEvent;
 import com.github.marceloleite2604.pitanga.dto.event.userdropped.UserDroppedPayload;
-import com.github.marceloleite2604.pitanga.mapper.AttendeeToDto;
-import com.github.marceloleite2604.pitanga.mapper.UserToDto;
+import com.github.marceloleite2604.pitanga.mapper.AttendeeToDtoMapper;
+import com.github.marceloleite2604.pitanga.mapper.UserToDtoMapper;
 import com.github.marceloleite2604.pitanga.model.attendee.Attendee;
 import com.github.marceloleite2604.pitanga.service.PitangaService;
 import lombok.extern.slf4j.Slf4j;
@@ -21,11 +21,11 @@ import java.util.Set;
 @Slf4j
 public class UserDroppedEventHandler extends AbstractEventHandler<UserDroppedPayload> {
 
-    private final AttendeeToDto attendeeToDto;
+    private final AttendeeToDtoMapper attendeeToDtoMapper;
 
-    public UserDroppedEventHandler(PitangaService pitangaService, UserToDto userToDto, AttendeeToDto attendeeToDto) {
-        super(pitangaService, EventType.USER_DROPPED, userToDto);
-        this.attendeeToDto = attendeeToDto;
+    public UserDroppedEventHandler(PitangaService pitangaService, UserToDtoMapper userToDtoMapper, AttendeeToDtoMapper attendeeToDtoMapper) {
+        super(pitangaService, EventType.USER_DROPPED, userToDtoMapper);
+        this.attendeeToDtoMapper = attendeeToDtoMapper;
     }
 
     @Override
@@ -54,7 +54,7 @@ public class UserDroppedEventHandler extends AbstractEventHandler<UserDroppedPay
 
             var outgoingUserDroppedPayload = UserDroppedPayload.builder()
                     .user(userDto)
-                    .newRoomOwner(attendeeToDto.mapTo(newRoomOwner))
+                    .newRoomOwner(attendeeToDtoMapper.mapTo(newRoomOwner))
                     .build();
 
             recipients = Optional.ofNullable(user.getAttendee())

@@ -5,21 +5,20 @@ import com.github.marceloleite2604.pitanga.dto.RoomDto;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Component;
 
-import java.util.Objects;
 import java.util.stream.Collectors;
 
 @Component
 @RequiredArgsConstructor
-public class RoomToDto extends AbstractMapper<Room, RoomDto> {
+public class RoomToDtoMapper extends AbstractMapper<Room, RoomDto> {
 
-    private final AttendeeToDto attendeeToDto;
+    private final AttendeeToDtoMapper attendeeToDtoMapper;
 
     @Override
     public RoomDto doMapTo(Room room) {
 
         var attendees = room.getAttendees()
                 .stream()
-                .map(attendeeToDto::mapTo)
+                .map(attendeeToDtoMapper::mapTo)
                 .collect(Collectors.toSet());
 
         return RoomDto.builder()
@@ -34,7 +33,7 @@ public class RoomToDto extends AbstractMapper<Room, RoomDto> {
 
         var attendees = roomDto.getAttendees()
                 .stream()
-                .map(attendeeToDto::mapFrom)
+                .map(attendeeToDtoMapper::mapFrom)
                 .collect(Collectors.toSet());
 
         var votingStatus = roomDto.getVotingStatus();

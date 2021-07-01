@@ -15,6 +15,7 @@ import com.github.marceloleite2604.pitanga.dto.event.userjoined.UserJoinedEvent;
 import com.github.marceloleite2604.pitanga.dto.event.attendeevoted.AttendeeVotedEvent;
 import com.github.marceloleite2604.pitanga.dto.event.useralreadyinroom.UserAlreadyInRoomEvent;
 import com.github.marceloleite2604.pitanga.dto.event.userdropped.UserDroppedEvent;
+import com.github.marceloleite2604.pitanga.dto.event.attendeeleftroom.AttendeeLeftRoomEvent;
 import lombok.AllArgsConstructor;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
@@ -37,7 +38,8 @@ import lombok.NoArgsConstructor;
         @JsonSubTypes.Type(value = UserDroppedEvent.class, name = EventType.Values.USER_DROPPED),
         @JsonSubTypes.Type(value = AttendeeVotedEvent.class, name = EventType.Values.ATTENDEE_VOTED),
         @JsonSubTypes.Type(value = RevealVotesEvent.class, name = EventType.Values.REVEAL_VOTES),
-        @JsonSubTypes.Type(value = ResetRoomEvent.class, name = EventType.Values.RESET_ROOM)
+        @JsonSubTypes.Type(value = ResetRoomEvent.class, name = EventType.Values.RESET_ROOM),
+        @JsonSubTypes.Type(value = AttendeeLeftRoomEvent.class, name = EventType.Values.ATTENDEE_LEFT_ROOM)
 })
 @NoArgsConstructor
 @JsonInclude(JsonInclude.Include.NON_NULL)

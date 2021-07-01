@@ -9,8 +9,8 @@ import com.github.marceloleite2604.pitanga.dto.event.useralreadyinroom.UserAlrea
 import com.github.marceloleite2604.pitanga.dto.event.useralreadyinroom.UserAlreadyInRoomPayload;
 import com.github.marceloleite2604.pitanga.dto.event.userjoined.UserJoinedEvent;
 import com.github.marceloleite2604.pitanga.dto.event.userjoined.UserJoinedPayload;
-import com.github.marceloleite2604.pitanga.mapper.RoomToDto;
-import com.github.marceloleite2604.pitanga.mapper.UserToDto;
+import com.github.marceloleite2604.pitanga.mapper.RoomToDtoMapper;
+import com.github.marceloleite2604.pitanga.mapper.UserToDtoMapper;
 import com.github.marceloleite2604.pitanga.service.PitangaService;
 import org.springframework.stereotype.Component;
 
@@ -20,26 +20,26 @@ import java.util.HashSet;
 @Component
 public class JoinUserEventHandler extends AbstractEventHandler<JoinUserPayload> {
 
-    private final RoomToDto roomToDto;
+    private final RoomToDtoMapper roomToDtoMapper;
 
-    public JoinUserEventHandler(PitangaService pitangaService, RoomToDto roomToDto, UserToDto userToDto) {
-        super(pitangaService, EventType.JOIN_USER, userToDto);
-        this.roomToDto = roomToDto;
+    public JoinUserEventHandler(PitangaService pitangaService, RoomToDtoMapper roomToDtoMapper, UserToDtoMapper userToDtoMapper) {
+        super(pitangaService, EventType.JOIN_USER, userToDtoMapper);
+        this.roomToDtoMapper = roomToDtoMapper;
     }
 
     @Override
     protected OutgoingContext doHandle(IncomingContext incomingContext) {
         var joinUserPayload = retrievePayload(incomingContext);
 
-        var room = roomToDto.mapFrom(joinUserPayload.getRoom());
-        var user = userToDto.mapFrom(joinUserPayload.getUser());
+        var room = roomToDtoMapper.mapFrom(joinUserPayload.getRoom());
+        var user = userToDtoMapper.mapFrom(joinUserPayload.getUser());
 
         var joinUserResult = pitangaService.joinUserIntoRoom(user, room);
 
         var attendee = joinUserResult.attendee();
 
-        var roomDao = roomToDto.mapTo(attendee.getRoom());
-        var userDao = userToDto.mapTo(attendee.getUser());
+        var roomDao = roomToDtoMapper.mapTo(attendee.getRoom());
+        var userDao = userToDtoMapper.mapTo(attendee.getUser());
 
         var event = switch (joinUserResult.status()) {
             case USER_JOINED -> {

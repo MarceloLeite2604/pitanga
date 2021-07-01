@@ -7,15 +7,15 @@ import com.github.marceloleite2604.pitanga.dto.event.MaxUsersReachedEvent;
 import com.github.marceloleite2604.pitanga.dto.event.createuser.CreateUserPayload;
 import com.github.marceloleite2604.pitanga.dto.event.usercreated.UserCreatedEvent;
 import com.github.marceloleite2604.pitanga.dto.event.usercreated.UserCreatedPayload;
-import com.github.marceloleite2604.pitanga.mapper.UserToDto;
+import com.github.marceloleite2604.pitanga.mapper.UserToDtoMapper;
 import com.github.marceloleite2604.pitanga.service.PitangaService;
 import org.springframework.stereotype.Component;
 
 @Component
 public class CreateUserEventHandler extends AbstractEventHandler<CreateUserPayload> {
 
-    public CreateUserEventHandler(PitangaService pitangaService, UserToDto userToDto) {
-        super(pitangaService, EventType.CREATE_USER, userToDto);
+    public CreateUserEventHandler(PitangaService pitangaService, UserToDtoMapper userToDtoMapper) {
+        super(pitangaService, EventType.CREATE_USER, userToDtoMapper);
     }
 
     @Override
@@ -25,7 +25,7 @@ public class CreateUserEventHandler extends AbstractEventHandler<CreateUserPaylo
         var createUserResult = pitangaService.createUser(createUserPayload.getUser()
                 .getId());
 
-        var user = userToDto.mapTo(createUserResult.user());
+        var user = userToDtoMapper.mapTo(createUserResult.user());
 
         var event = switch (createUserResult.status()) {
             case CREATED -> {

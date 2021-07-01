@@ -5,9 +5,9 @@ import com.github.marceloleite2604.pitanga.dto.OutgoingContext;
 import com.github.marceloleite2604.pitanga.dto.event.EventType;
 import com.github.marceloleite2604.pitanga.dto.event.attendeevoted.AttendeeVotedEvent;
 import com.github.marceloleite2604.pitanga.dto.event.attendeevoted.AttendeeVotedPayload;
-import com.github.marceloleite2604.pitanga.mapper.AttendeeToDto;
-import com.github.marceloleite2604.pitanga.mapper.RoomToDto;
-import com.github.marceloleite2604.pitanga.mapper.UserToDto;
+import com.github.marceloleite2604.pitanga.mapper.AttendeeToDtoMapper;
+import com.github.marceloleite2604.pitanga.mapper.RoomToDtoMapper;
+import com.github.marceloleite2604.pitanga.mapper.UserToDtoMapper;
 import com.github.marceloleite2604.pitanga.service.PitangaService;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Component;
@@ -16,13 +16,13 @@ import org.springframework.stereotype.Component;
 @Slf4j
 public class AttendeeVotedEventHandler extends AbstractEventHandler<AttendeeVotedPayload> {
 
-    private final AttendeeToDto attendeeToDto;
-    private final RoomToDto roomToDto;
+    private final AttendeeToDtoMapper attendeeToDtoMapper;
+    private final RoomToDtoMapper roomToDtoMapper;
 
-    public AttendeeVotedEventHandler(PitangaService pitangaService, UserToDto userToDto, AttendeeToDto attendeeToDto, RoomToDto roomToDto) {
-        super(pitangaService, EventType.ATTENDEE_VOTED, userToDto);
-        this.attendeeToDto = attendeeToDto;
-        this.roomToDto = roomToDto;
+    public AttendeeVotedEventHandler(PitangaService pitangaService, UserToDtoMapper userToDtoMapper, AttendeeToDtoMapper attendeeToDtoMapper, RoomToDtoMapper roomToDtoMapper) {
+        super(pitangaService, EventType.ATTENDEE_VOTED, userToDtoMapper);
+        this.attendeeToDtoMapper = attendeeToDtoMapper;
+        this.roomToDtoMapper = roomToDtoMapper;
     }
 
     @Override
@@ -31,14 +31,14 @@ public class AttendeeVotedEventHandler extends AbstractEventHandler<AttendeeVote
 
         var attendeeDao = incomingAttendeeVotedPayload.getAttendee();
 
-        var attendee = attendeeToDto.mapFrom(attendeeDao);
+        var attendee = attendeeToDtoMapper.mapFrom(attendeeDao);
 
         attendee = pitangaService.updateVoteForAttendee(attendee);
 
         var recipients = elaborateRecipients(attendee);
 
-        attendeeDao = attendeeToDto.mapTo(attendee);
-        var roomDao = roomToDto.mapTo(attendee.getRoom());
+        attendeeDao = attendeeToDtoMapper.mapTo(attendee);
+        var roomDao = roomToDtoMapper.mapTo(attendee.getRoom());
 
         var outgoingAttendeeVotedPayload = AttendeeVotedPayload.builder()
                 .attendee(attendeeDao)

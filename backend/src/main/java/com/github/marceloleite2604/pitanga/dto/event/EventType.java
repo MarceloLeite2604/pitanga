@@ -23,6 +23,8 @@ import com.github.marceloleite2604.pitanga.dto.event.useralreadyinroom.UserAlrea
 import com.github.marceloleite2604.pitanga.dto.event.usercreated.UserCreatedPayload;
 import com.github.marceloleite2604.pitanga.dto.event.userdropped.UserDroppedEvent;
 import com.github.marceloleite2604.pitanga.dto.event.userdropped.UserDroppedPayload;
+import com.github.marceloleite2604.pitanga.dto.event.attendeeleftroom.AttendeeLeftRoomEvent;
+import com.github.marceloleite2604.pitanga.dto.event.attendeeleftroom.AttendeeLeftRoomPayload;
 import lombok.Getter;
 import lombok.experimental.UtilityClass;
 
@@ -42,7 +44,9 @@ public enum EventType {
     USER_DROPPED(Values.USER_DROPPED, UserDroppedEvent.class, UserDroppedPayload.class),
     ATTENDEE_VOTED(Values.ATTENDEE_VOTED, AttendeeVotedEvent.class, AttendeeVotedPayload.class),
     REVEAL_VOTES(Values.REVEAL_VOTES, RevealVotesEvent.class, EmptyPayload.class),
-    RESET_ROOM(Values.RESET_ROOM, ResetRoomEvent.class, ResetRoomPayload.class);
+    RESET_ROOM(Values.RESET_ROOM, ResetRoomEvent.class, ResetRoomPayload.class),
+    ATTENDEE_LEFT_ROOM(Values.ATTENDEE_LEFT_ROOM, AttendeeLeftRoomEvent.class, AttendeeLeftRoomPayload.class);
+
     @JsonValue
     private final String value;
 
@@ -82,5 +86,6 @@ public enum EventType {
         public static final String ATTENDEE_VOTED = "attendee-voted";
         public static final String REVEAL_VOTES = "reveal-votes";
         public static final String RESET_ROOM = "reset-room";
+        public static final String ATTENDEE_LEFT_ROOM = "attendee-left-room";
     }
 }

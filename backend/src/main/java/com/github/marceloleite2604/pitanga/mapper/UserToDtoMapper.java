@@ -7,7 +7,7 @@ import org.springframework.stereotype.Component;
 import java.util.UUID;
 
 @Component
-public class UserToDto extends AbstractMapper<User, UserDto> {
+public class UserToDtoMapper extends AbstractMapper<User, UserDto> {
 
     @Override
     public UserDto doMapTo(User user) {
