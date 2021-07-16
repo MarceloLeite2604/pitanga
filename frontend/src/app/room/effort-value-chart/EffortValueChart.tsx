@@ -41,7 +41,7 @@ export const EffortValueChart = ({ data }: Props) => {
   return (
     <ResponsiveContainer
       aspect={1.6}
-      width='100%'
+      width='99%'
       className={styles.responsiveContainer}>
       <ScatterChart
         margin={{
