@@ -78,7 +78,7 @@ public class PitangaService {
 
     }
 
-    public CreateUserResult createUser(String sessionId) {
+    public CreateUserResult createUser(UUID sessionId) {
 
         if (userRepository.count() >= userProperties.getMaxUsers()) {
             return CreateUserResult.builder()
@@ -87,7 +87,7 @@ public class PitangaService {
         }
 
         var user = User.builder()
-                .id(UUID.fromString(sessionId))
+                .id(sessionId)
                 .build();
         user = userRepository.save(user);
 
@@ -162,8 +162,8 @@ public class PitangaService {
         return roomRepository.findById(roomId);
     }
 
-    public Optional<User> retrieveUser(String id) {
-        return userRepository.findById(UUID.fromString(id));
+    public Optional<User> retrieveUser(UUID id) {
+        return userRepository.findById(id);
     }
 
     private void updateVotingStatusForRoom(Room room) {
@@ -214,11 +214,6 @@ public class PitangaService {
     private Room findMandatoryRoomById(long id) {
         return roomRepository.findById(id)
                 .orElseThrow(() -> new IllegalArgumentException(String.format("Could not find a room with id \"%d\"", id)));
-    }
-
-    public Attendee findMandatoryAttendeeById(AttendeeId id) {
-        return attendeeRepository.findById(id)
-                .orElseThrow(() -> new IllegalArgumentException(String.format("Could not find an attendee with user id \"%s\" and room id \"%d\".", id.getUserId(), id.getRoomId())));
     }
 
     public Attendee findMandatoryAttendeeByUserId(UUID userId) {

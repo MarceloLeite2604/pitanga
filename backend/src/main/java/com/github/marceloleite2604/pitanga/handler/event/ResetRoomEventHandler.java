@@ -27,8 +27,8 @@ public class ResetRoomEventHandler extends AbstractEventHandler<EmptyPayload> {
 
     @Override
     protected OutgoingContext doHandle(IncomingContext incomingContext) {
-        var userId = UUID.fromString(incomingContext.sender()
-                .getId());
+        var userId = incomingContext.sender()
+                .getId();
 
         pitangaService.resetRoomWithUser(userId);
 

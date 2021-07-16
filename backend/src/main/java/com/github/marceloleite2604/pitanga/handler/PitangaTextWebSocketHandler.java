@@ -20,11 +20,7 @@ import org.springframework.web.socket.WebSocketSession;
 import org.springframework.web.socket.handler.TextWebSocketHandler;
 
 import java.io.IOException;
-import java.util.HashMap;
-import java.util.Map;
-import java.util.Objects;
-import java.util.Optional;
-import java.util.Set;
+import java.util.*;
 
 @Component
 @Slf4j
@@ -47,7 +43,7 @@ public class PitangaTextWebSocketHandler extends TextWebSocketHandler {
         sessions.put(session.getId(), session);
 
         var user = UserDto.builder()
-                .id(session.getId())
+                .id(UUID.fromString(session.getId()))
                 .build();
 
         var createUserPayload = CreateUserPayload.builder()
@@ -74,7 +70,7 @@ public class PitangaTextWebSocketHandler extends TextWebSocketHandler {
         sessions.remove(session.getId());
 
         var user = UserDto.builder()
-                .id(session.getId())
+                .id(UUID.fromString(session.getId()))
                 .build();
 
         var userDroppedPayload = UserDroppedPayload.builder()
@@ -125,7 +121,7 @@ public class PitangaTextWebSocketHandler extends TextWebSocketHandler {
 
         outgoingContext.getRecipients()
                 .forEach(recipient ->
-                        Optional.ofNullable(sessions.get(recipient.getId()))
+                        Optional.ofNullable(sessions.get(recipient.getId().toString()))
                                 .ifPresent(webSocketSession -> sendOutgoingTextMessage(webSocketSession, outgoingTextMessage)));
     }
 
@@ -133,7 +129,7 @@ public class PitangaTextWebSocketHandler extends TextWebSocketHandler {
         var event = retrieveEvent(incomingTextMessage);
 
         var userDao = UserDto.builder()
-                .id(session.getId())
+                .id(UUID.fromString(session.getId()))
                 .build();
 
         return IncomingContext.builder()

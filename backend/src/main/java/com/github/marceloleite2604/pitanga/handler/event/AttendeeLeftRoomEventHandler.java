@@ -29,8 +29,8 @@ public class AttendeeLeftRoomEventHandler extends AbstractEventHandler<AttendeeL
     protected OutgoingContext doHandle(IncomingContext incomingContext) {
         var incomingAttendeeLeftRoomPayload = retrievePayload(incomingContext);
         var attendeeDto = incomingAttendeeLeftRoomPayload.getAttendee();
-        var attendee = pitangaService.findMandatoryAttendeeByUserId(UUID.fromString(attendeeDto.getUser()
-                .getId()));
+        var attendee = pitangaService.findMandatoryAttendeeByUserId(attendeeDto.getUser()
+                .getId());
         pitangaService.deleteAttendee(attendee);
 
         Attendee newRoomOwner = null;

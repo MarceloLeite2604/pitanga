@@ -13,8 +13,7 @@ public class UserToDtoMapper extends AbstractMapper<User, UserDto> {
     public UserDto doMapTo(User user) {
 
         return UserDto.builder()
-                .id(user.getId()
-                        .toString())
+                .id(user.getId())
                 .build();
     }
 
@@ -22,7 +21,7 @@ public class UserToDtoMapper extends AbstractMapper<User, UserDto> {
     public User doMapFrom(UserDto userDao) {
 
         return User.builder()
-                .id(UUID.fromString(userDao.getId()))
+                .id(userDao.getId())
                 .build();
     }
 }

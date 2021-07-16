@@ -16,7 +16,6 @@ public class AttendeeDtoToAttendeeIdMapper extends AbstractMapper<AttendeeDto, A
 
         var userId = Optional.ofNullable(attendeeDto.getUser())
                 .map(UserDto::getId)
-                .map(UUID::fromString)
                 .orElse(null);
 
         var roomId = Optional.ofNullable(attendeeDto.getRoom())

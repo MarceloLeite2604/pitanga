@@ -8,6 +8,8 @@ import lombok.EqualsAndHashCode;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 
+import java.util.UUID;
+
 @JsonInclude(JsonInclude.Include.NON_NULL)
 @Builder
 @NoArgsConstructor
@@ -17,5 +19,5 @@ import lombok.NoArgsConstructor;
 public class UserDto {
 
     @EqualsAndHashCode.Include
-    private String id;
+    private UUID id;
 }
