@@ -1,57 +1,41 @@
-import { ChartPoint } from './ChartPoint';
-import { User } from './User';
-import { Vote } from './Vote';
+import {
+  ChartPoint,
+  UserDto,
+  User,
+  Vote,
+  createUser
+} from '.';
 
-export interface Attendee {
-  user: User,
+export interface AttendeeDto {
+  user: UserDto,
   icon: string,
   joinedAt: number,
   roomOwner: boolean
-  vote?: Vote
+  vote?: Vote,
 }
 
-export const sortByJoinedAtWithCurrentUserFirst = (attendees: Attendee[], user: User) => {
-  return attendees.sort((first, second) => {
-    if (first.user.id === user.id) {
-      return -1;
-    }
+export type Attendee = Omit<AttendeeDto, 'user'> & {
+  user: User
+  createChartPoint: () => ChartPoint
+}
 
-    if (second.user.id === user.id) {
-      return 1;
-    }
-
-    return first.joinedAt - second.joinedAt;
-  });
-};
-
-export const removeAttendeeFromAttendees = (attendee: Attendee, attendees: Attendee[]) => {
-  if (attendees.length === 0 || !attendee) {
-    return attendees;
+export const createAttendee = ({
+  user,
+  icon,
+  joinedAt,
+  roomOwner,
+  vote
+} = {} as AttendeeDto) => ({
+  user: createUser(user),
+  icon,
+  joinedAt,
+  roomOwner,
+  vote,
+  createChartPoint(): ChartPoint {
+    return {
+      effort: this.vote?.effort || 0,
+      value: this.vote?.value || 0,
+      label: this.icon
+    };
   }
-
-  return attendees.filter(att => att.user.id !== attendee.user.id);
-};
-
-export const removeUserFromAttendees = (user: User, attendees: Attendee[]) => {
-  if (attendees.length === 0 || !user) {
-    return attendees;
-  }
-
-  return attendees.filter(attendee => attendee.user.id !== user.id);
-};
-
-export const retrieveAttendeeForUser = (attendees: Attendee[], user: User) => {
-  if (attendees.length === 0 || !user) {
-    return undefined;
-  }
-
-  return attendees.filter(attendee => attendee.user.id === user.id)[0];
-};
-
-export const createChartPoint = (attendee: Attendee) => {
-  return {
-    effort: attendee.vote?.effort,
-    value: attendee.vote?.value,
-    label: attendee.icon
-  } as ChartPoint;
-};
+} as Attendee);

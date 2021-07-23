@@ -28,14 +28,12 @@ export const useCheckAttendeeLeftRoomCallback = ([data]: CallbackHookParams) => 
   const [unregisterCallbackControl, setUnregisterCallbackControl] = useState<UnregisterCallbackControl>({});
 
   if (!unregisterCallbackControl.callback) {
-    console.log('[CBR] Registering callback for the first time.');
     setUnregisterCallbackControl({
       callback: history.listen(checkAttendeeLeftRoomCallback),
       deps: deps
     });
   } else {
     if (!unregisterCallbackControl.deps?.every((element, index) => element === deps[index])) {
-      console.log('[CBR] Updating callback.');
       unregisterCallbackControl.callback();
       setUnregisterCallbackControl({
         callback: history.listen(checkAttendeeLeftRoomCallback),

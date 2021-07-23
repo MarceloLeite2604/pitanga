@@ -1,9 +1,9 @@
-import { Room } from '../Room';
+import { RoomDto } from '..';
 import { Event } from './Event';
 import { EventType } from './EventType';
 
 export interface ResetRoomPayload {
-  room: Room
+  room: RoomDto
 }
 
 export interface ResetRoomEvent extends Event<EventType.ResetRoom, ResetRoomPayload> {

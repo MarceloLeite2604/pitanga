@@ -1,13 +1,11 @@
 export interface ChartPoint {
   value: number,
   effort: number,
-  label: string
+  label: string,
 }
 
-export const roundChartPoint = (x: number, y: number, label?: string) => {
-  return {
-    value: Math.round(x),
-    effort: Math.round(y),
-    label
-  } as ChartPoint;
-};
+export const createChartPoint = (x: number, y: number, label?: string) => ({
+  value: Math.round(x),
+  effort: Math.round(y),
+  label
+} as ChartPoint);

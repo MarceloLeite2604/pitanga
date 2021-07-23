@@ -12,10 +12,12 @@ export const Controls = ({ data }: Props) => {
   const { onResetButtonClick, onRevealButtonClick } = useButtonsCallback(data);
 
   const noVotes = useMemo(() => {
+    console.log(`Attendees: ${JSON.stringify(data.room?.attendees)}`);
     if (!data.room?.attendees) {
       return false;
     }
 
+    debugger;
     return data.room
       .attendees
       .filter(attendee => attendee.vote)

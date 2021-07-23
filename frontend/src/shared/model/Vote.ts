@@ -1,11 +1,11 @@
-export interface Vote {
+export interface VoteDto {
   effort: number,
   value: number
-};
+}
 
-export const createVote = (x: number, y: number) => {
-  return {
-    value: Math.round(x),
-    effort: Math.round(y)
-  } as Vote;
-};
+export type Vote = VoteDto;
+
+export const createVote = (x: number, y: number) => ({
+  value: Math.round(x),
+  effort: Math.round(y)
+} as Vote);

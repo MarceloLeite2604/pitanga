@@ -1,6 +1,6 @@
 import { Grid } from '@material-ui/core';
 import { useUpdateState } from '../../../shared/hooks';
-import { sortByJoinedAtWithCurrentUserFirst, User, Room } from '../../../shared/model';
+import { User, Room } from '../../../shared/model';
 import { Attendee } from './attendee';
 
 interface Props {
@@ -19,7 +19,8 @@ export const Attendees = ({ room, user }: Props) => {
       justify='flex-start'
       spacing={1} >
       {
-        sortByJoinedAtWithCurrentUserFirst(room.attendees, user)
+        room.sortAttendeesByJoinedAtWithUserFirst(user)
+          .attendees
           .map((attendee, index) =>
             <Grid
               item

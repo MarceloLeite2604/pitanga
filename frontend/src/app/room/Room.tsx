@@ -1,7 +1,7 @@
 import { Grid } from '@material-ui/core';
 import { useMemo } from 'react';
 import { useUpdateState } from '../../shared/hooks';
-import { Data, retrieveAttendeeForUser } from '../../shared/model';
+import { Data } from '../../shared/model';
 import { Attendees } from './attendees';
 import { Controls } from './controls';
 import { EffortValueChart } from './effort-value-chart';
@@ -18,7 +18,7 @@ export const Room = ({ data }: Params) => {
 
   const roomOwner = useMemo(() => {
     if (data.room?.attendees && data.user) {
-      const userAttendee = retrieveAttendeeForUser(data.room?.attendees, data.user);
+      const userAttendee = data.room?.findAttendeeByUser(data.user);
       return userAttendee?.roomOwner || false;
     }
     return false;

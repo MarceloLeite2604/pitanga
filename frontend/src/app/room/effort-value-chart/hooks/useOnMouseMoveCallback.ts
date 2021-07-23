@@ -1,5 +1,9 @@
 import { useCallback } from 'react';
-import { ChartPoint, ChartEventProps, roundChartPoint } from '../../../../shared/model';
+import {
+  ChartPoint,
+  ChartEventProps,
+  createChartPoint
+} from '../../../../shared/model';
 import { useThrottledState } from '../../../../shared/hooks';
 
 export const useOnMouseMoveCallback: () => [ChartPoint | undefined, (props?: ChartEventProps | undefined) => void] = () => {
@@ -8,7 +12,7 @@ export const useOnMouseMoveCallback: () => [ChartPoint | undefined, (props?: Cha
   const onMouseMoveCallback = useCallback((props?: ChartEventProps) => {
     if (props) {
       const { xValue, yValue } = props;
-      setSuggestedPoint(roundChartPoint(xValue, yValue));
+      setSuggestedPoint(createChartPoint(xValue, yValue));
     }
   }, [setSuggestedPoint]);
 

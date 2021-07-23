@@ -1,5 +1,9 @@
 import { useCallback } from 'react';
-import { UserJoinedEvent } from '../../../shared/model';
+import {
+  createAttendee,
+  createRoom,
+  UserJoinedEvent
+} from '../../../shared/model';
 import { CallbackHookParams } from '../types';
 
 export const useUserJoinedCallback = ([data, setData]: CallbackHookParams) => {
@@ -8,7 +12,7 @@ export const useUserJoinedCallback = ([data, setData]: CallbackHookParams) => {
       setData(previousState => {
         return {
           ...previousState,
-          room: event.payload?.room
+          room: createRoom(event.payload?.room)
         };
       });
       if (!data.attendee) {
@@ -17,7 +21,7 @@ export const useUserJoinedCallback = ([data, setData]: CallbackHookParams) => {
           setData(previousState => {
             return {
               ...previousState,
-              attendee: roomAttendee
+              attendee: createAttendee(roomAttendee)
             };
           });
         }
