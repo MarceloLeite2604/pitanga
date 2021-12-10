@@ -1,4 +1,4 @@
-package com.github.marceloleite2604.pitanga.configurartion;
+package com.github.marceloleite2604.pitanga.configuration;
 
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;

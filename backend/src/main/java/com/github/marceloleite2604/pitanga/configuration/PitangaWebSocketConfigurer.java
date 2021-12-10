@@ -1,4 +1,4 @@
-package com.github.marceloleite2604.pitanga.configurartion;
+package com.github.marceloleite2604.pitanga.configuration;
 
 import com.github.marceloleite2604.pitanga.handler.PitangaTextWebSocketHandler;
 import com.github.marceloleite2604.pitanga.properties.WebSocketProperties;

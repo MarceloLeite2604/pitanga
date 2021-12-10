@@ -16,8 +16,8 @@ pitanga:
   room:
     min-id: 10000000
     max-id: 99999999
-    max-rooms: 4
-    max-users: 4
+    max-rooms: 16
+    max-users: 40
   web-socket:
     paths:
       - pitanga
