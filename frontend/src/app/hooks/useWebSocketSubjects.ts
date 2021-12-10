@@ -6,7 +6,8 @@ import { Event, WebSocketSubjects, Toast } from '../../shared/model';
 
 function elaborateWebsocketUri() {
   const schema = location.protocol === 'https:' ? 'wss:' : 'ws:';
-  return `${schema}//${configuration.host}:${configuration.port}${configuration.path}`;
+  const port = location.protocol === 'https:' ? 443 : configuration.port;
+  return `${schema}//${configuration.host}:${port}${configuration.path}`;
 }
 
 function createClient(webSocketSubjects: WebSocketSubjects) {
